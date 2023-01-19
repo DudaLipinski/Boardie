@@ -1,4 +1,4 @@
-import { authUser } from '../../services/user.ts'
+import { authUser } from '../../services/user'
 
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
@@ -31,7 +31,7 @@ export const Login = () => {
         dispatch(userActions.setUser(response.user))
         navigate('/dashboard')
       })
-      .catch((error) => alert(error.message))
+      .catch((error: any) => alert(error.message))
   }
 
   return (

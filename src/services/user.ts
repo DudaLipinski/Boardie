@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { User } from '../types/User'
 
-export const createUser = (userPayload: Omit<User, 'id'>) =>
+export const createUser = (createUserPayload: Omit<User, 'id'>) =>
   axios
-    .post<User>('http://localhost:3007/user', userPayload)
+    .post<User>('http://localhost:3007/user', createUserPayload)
     .then((response) => {
       // const token = response.data.token
       // localStorage.setItem('token', token)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { createUser } from '../../services/user.ts'
+import { createUser } from '../../services/user'
 
 import { useDispatch } from 'react-redux'
 import { actions as userActions } from '../../state/user'
@@ -12,22 +12,23 @@ import { Button, AutoCenter } from 'antd-mobile'
 import { Centralizer } from '../../components/Centralizer'
 import { Input } from '../../components/Input'
 import { Form } from '../../components/Form'
+import { User } from '../../types/User'
 
 export const CreateAccount = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const createNewAccount = (formData) => {
-    console.log(formData)
-    createUser(formData).then((createdUser) => {
+  const createNewAccount = (createUserPayload: Omit<User, 'id'>) => {
+    console.log(createUserPayload)
+    createUser(createUserPayload).then((createdUser) => {
       dispatch(userActions.setUser(createdUser))
     })
 
     navigate('/dashboard')
   }
 
-  const onFinishFailed = (errorInfo) => {
-    alert('Failed:', errorInfo)
+  const onFinishFailed = (errorInfo: string) => {
+    alert(`Failed: ${errorInfo}`)
   }
 
   return (
@@ -93,7 +94,6 @@ export const CreateAccount = () => {
             label="Age"
             rules={[
               {
-                type: 'number',
                 min: 0,
                 max: 99,
                 required: true,
@@ -101,7 +101,7 @@ export const CreateAccount = () => {
               },
             ]}
           >
-            <Input placeholder="Age" />
+            <Input type={'number'} placeholder="Age" />
           </Form.Item>
           <Form.Item
             label="Password"

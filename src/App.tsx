@@ -1,6 +1,5 @@
-import React from 'react'
 import './App.css'
-import 'antd/dist/antd.css'
+import 'antd/dist/antd.min.css'
 import AppRoutes from './AppRoutes'
 import state from './state'
 import { Provider } from 'react-redux'

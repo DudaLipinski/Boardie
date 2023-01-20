@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 // import { authUser } from './services/user.ts'
 
@@ -7,7 +7,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectors as userSelectors } from './state/user'
 
-import { MenuLayoutWrapper } from './components/MenuLayoutWrapper/MenuLayoutWrapper'
+import { MenuLayoutWrapper } from './components/Menu/MenuLayoutWrapper'
 import { Login } from './pages/Login/Login'
 import { CreateAccount } from './pages/CreateAccount/CreateAccount'
 import { Dashboard } from './pages/Dashboard/Dashboard'
@@ -26,7 +26,7 @@ const AuthenticatedRoutes = () => {
         <Routes location={location} key={location.pathname}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/matches" element={<MatchList />} />
-          <Route path="/match" exact element={<MatchItem />} />
+          <Route path="/match" element={<MatchItem />} />
           <Route path="/matches/:matchId" element={<MatchItem />} />
           <Route path="/first-player" element={<FirstPlayer />} />
           <Route path="*" element={<Dashboard />} />

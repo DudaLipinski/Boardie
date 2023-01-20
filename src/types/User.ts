@@ -5,4 +5,5 @@ export interface User {
   age: string
   email: string
   password: string
+  token: string
 }

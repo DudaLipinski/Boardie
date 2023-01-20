@@ -27,10 +27,6 @@ export const CreateAccount = () => {
     navigate('/dashboard')
   }
 
-  const onFinishFailed = (errorInfo: string) => {
-    alert(`Failed: ${errorInfo}`)
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -46,12 +42,7 @@ export const CreateAccount = () => {
         <Styled.Paragraph>
           Please fill your details to create your account.
         </Styled.Paragraph>
-        <Form
-          name="normal_login"
-          layout="vertical"
-          onFinishFailed={onFinishFailed}
-          onFinish={createNewAccount}
-        >
+        <Form name="normal_login" layout="vertical" onFinish={createNewAccount}>
           <Form.Item
             name={'firstName'}
             label="First name"

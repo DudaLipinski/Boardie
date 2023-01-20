@@ -17,10 +17,6 @@ export const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const onFinishFailed = (errorInfo: string) => {
-    alert(`Failed: ${errorInfo}`)
-  }
-
   const handleLogin = (loginPayload: Pick<User, 'email' | 'password'>) => {
     authUser(loginPayload)
       .then((response) => {
@@ -55,7 +51,6 @@ export const Login = () => {
           initialValues={{
             remember: true,
           }}
-          onFinishFailed={onFinishFailed}
           onFinish={handleLogin}
         >
           <Form.Item

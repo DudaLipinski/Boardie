@@ -6,16 +6,8 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { selectors as userSelectors } from '../state/user'
 
-import styled from 'styled-components'
-import { AuthenticatedRoutes } from './AuthenticatedRoutes'
 import { UnauthenticatedRoutes } from './UnauthenticatedRoutes'
-
-const BackgroundWrapper = styled.div`
-  width: 100%;
-  height: 100vh;
-  margin: auto;
-  background-color: #1c1b1e;
-`
+import { AuthenticatedWrapper } from './AuthenticatedWrapper'
 
 const AppRoutes = () => {
   // const dispatch = useDispatch()
@@ -26,15 +18,7 @@ const AppRoutes = () => {
     //todo: getUser by token to maintain login
   }, [])
 
-  return isLoggedIn ? (
-    <BackgroundWrapper>
-      <AuthenticatedRoutes />
-    </BackgroundWrapper>
-  ) : (
-    <BackgroundWrapper>
-      <UnauthenticatedRoutes />
-    </BackgroundWrapper>
-  )
+  return isLoggedIn ? <AuthenticatedWrapper /> : <UnauthenticatedRoutes />
 }
 
 export default AppRoutes

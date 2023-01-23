@@ -5,7 +5,7 @@ import {
   UserOutline,
 } from 'antd-mobile-icons'
 
-export const tabsItems = [
+export const tabItems = [
   {
     key: '/dashboard',
     title: 'Dashboard',

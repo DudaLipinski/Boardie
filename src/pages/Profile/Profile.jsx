@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { selectors as userSelectors } from '../state/user'
+import { selectors as userSelectors } from '../../state/user'
 import { motion } from 'framer-motion'
 
 export const Profile = () => {

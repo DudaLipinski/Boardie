@@ -8,19 +8,28 @@ import styled from 'styled-components'
 
 const MobileWrapper = styled.div`
   max-width: 479px;
-  margin-left: auto;
+  margin: 0 auto;
   display: block;
   margin-right: auto;
+`
+
+const BackgroundWrapper = styled.div`
+  width: 100%;
+  height: 100vh;
+  margin: auto;
+  background-color: #1c1b1e;
 `
 
 function App() {
   return (
     <MobileWrapper>
-      <Provider store={state}>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </Provider>
+      <BackgroundWrapper>
+        <Provider store={state}>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </Provider>
+      </BackgroundWrapper>
     </MobileWrapper>
   )
 }

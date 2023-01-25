@@ -25,12 +25,12 @@ export const reducer = (
 
 export const actions = {
   setUser: (user: User) => ({ type: SET_USER, payload: user }),
-  setMatches: (matches: Match) => ({ type: SET_MATCHES, payload: matches }),
+  setMatches: (matches: Match[]) => ({ type: SET_MATCHES, payload: matches }),
 }
 
 export const selectors = {
   getUser: (state: { user: User }) => state.user,
   getUserId: (state: { user: { id: string } }) => state.user.id,
   getIsLoggedIn: (state: { user: User }) => !!state.user,
-  getUserMatches: (state: { user: { matches: [Match] } }) => state.user.matches,
+  getUserMatches: (state: { user: { matches: Match[] } }) => state.user.matches,
 }

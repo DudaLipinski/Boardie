@@ -7,7 +7,7 @@ import {
   actions as userActions,
 } from '../state/user'
 
-export const useMatches = (userId) => {
+export const useMatches = (userId: string) => {
   const dispatch = useDispatch()
   const matches = useSelector(userSelectors.getUserMatches)
 

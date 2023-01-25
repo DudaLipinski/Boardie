@@ -19,8 +19,10 @@ export const CreateAccount = () => {
   const navigate = useNavigate()
 
   const createNewAccount = (createUserPayload: Omit<User, 'id'>) => {
-    console.log(createUserPayload)
     createUser(createUserPayload).then((createdUser) => {
+      if (!createdUser) {
+        return
+      }
       dispatch(userActions.setUser(createdUser))
     })
 

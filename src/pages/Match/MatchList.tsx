@@ -1,5 +1,4 @@
-import React from 'react'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { columns } from '../../components/Match/ColumnsMatchList'
 // import { expandedRowRender } from './ExpandedMatch'
 import { Table, Button } from 'antd'
@@ -7,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMatches } from '../../hooks/useMatches'
 import { useSelector } from 'react-redux'
 import { selectors as userSelectors } from '../../state/user'
+import { Match } from '../../types/Match'
 import { motion } from 'framer-motion'
 
 export const MatchList = () => {
@@ -15,7 +15,7 @@ export const MatchList = () => {
 
   const matches = useMatches(userId)
 
-  const matchItems = matches?.map((item) => {
+  const matchItems = matches?.map((item: Match) => {
     const winner = item.participants.find((item) => item.isWinner)
     const date = dayjs(item.date).format('ddd, MMMM D, YYYY')
 
@@ -23,7 +23,7 @@ export const MatchList = () => {
       id: item.id,
       key: item.id,
       boardgameName: item.boardgameName,
-      winner: winner.fullName,
+      winner: winner,
       date: date,
       duration: item.duration,
     }

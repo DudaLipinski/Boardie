@@ -1,4 +1,3 @@
-import React from 'react'
 import { Layout } from 'antd'
 import { motion } from 'framer-motion'
 const { Content } = Layout
@@ -12,7 +11,7 @@ export const Dashboard = () => {
       exit={{ opacity: 0 }}
     >
       <Layout>
-        <Content className="site-layout-background">Welcome!</Content>
+        <Content>Welcome!</Content>
       </Layout>
     </motion.div>
   )

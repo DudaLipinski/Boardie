@@ -1,11 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import moment, { Moment } from 'moment'
 import { useParams } from 'react-router-dom'
-import {
-  MinusCircleOutlined,
-  PlusOutlined,
-} from '@ant-design/icons'
 import { getMatch, createMatch } from '../../services/match'
 import { motion } from 'framer-motion'
 import { useSelector } from 'react-redux'
@@ -16,77 +12,16 @@ import {
   Form,
   Input,
   Row,
-  Space,
   DatePicker,
   Typography,
   InputNumber,
-  FormListFieldData,
 } from 'antd'
+import { Match } from '../../types/Match'
+import { Participants } from './Participants'
+import dayjs from 'dayjs'
 
 const { TextArea } = Input
 const { Title } = Typography
-
-interface ParticipantsProps {
-  fields: FormListFieldData[]
-  add: () => void
-  remove: (index: number) => void
-}
-const Participants = ({ fields, add, remove }: ParticipantsProps) => {
-  return (
-    <>
-      {fields.map(({ key, name, ...restField }, index) => {
-        return (
-          <>
-            <Space
-              key={key}
-              style={{
-                display: 'flex',
-                marginBottom: 25,
-                alignItems: 'center',
-              }}
-              className="hello"
-              align="baseline"
-            >
-              <Form.Item
-                {...restField}
-                name={[name, 'fullName']}
-                label="Player's name"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Missing score',
-                  },
-                ]}
-              >
-                <Input placeholder="Player's name" />
-              </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, 'score']}
-                label="Score"
-                style={{ marginBottom: 0 }}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Missing score',
-                  },
-                ]}
-              >
-                <InputNumber placeholder="Score" />
-              </Form.Item>
-              <MinusCircleOutlined onClick={() => remove(index)} />
-            </Space>
-          </>
-        )
-      })}
-      <Form.Item>
-        <Button type="dashed" onClick={add} block icon={<PlusOutlined />}>
-          Add player
-        </Button>
-      </Form.Item>
-    </>
-  )
-}
 
 export const MatchItem = () => {
   const { id } = useSelector(userSelectors.getUser)
@@ -99,8 +34,8 @@ export const MatchItem = () => {
     notes: string
   }>()
 
-  const loadMatch = async () => {
-    const foundMatch = await getMatch(matchId)
+  const loadMatch = async (matchId: string) => {
+    const foundMatch: Match = await getMatch(matchId)
     setLoading(false)
     setInitialValues({
       boardgameName: foundMatch.boardgameName,
@@ -112,7 +47,7 @@ export const MatchItem = () => {
 
   useEffect(() => {
     if (matchId) {
-      loadMatch()
+      loadMatch(matchId)
     }
   }, [])
 
@@ -120,9 +55,8 @@ export const MatchItem = () => {
     return null
   }
 
-  const handleMatch = (matchData: any) => {
-    // REMOVE any
-    const date = matchData.date.format()
+  const handleMatch = (matchData: Match) => {
+    const date = dayjs(matchData.date).format('ddd, MMMM D, YYYY')
     const match = { ...matchData, authorId: String(id), date: date }
 
     createMatch(match)

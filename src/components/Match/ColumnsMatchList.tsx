@@ -1,8 +1,11 @@
 import { Space } from 'antd'
-import React from 'react'
 import { Link } from 'react-router-dom'
 
-export const renderActionColumn = (text, { id }) => {
+interface Id {
+  id: string
+}
+
+export const renderActionColumn = (text: string, { id }: Id) => {
   return (
     <Space size="middle">
       <Link to={`${id}`}>View</Link>

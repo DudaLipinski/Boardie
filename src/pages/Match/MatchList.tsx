@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { selectors as userSelectors } from '../../state/user'
 import { Match } from '../../types/Match'
 import { motion } from 'framer-motion'
+import { matches as matchesMock } from '../../__mocks__/matches'
 
 export const MatchList = () => {
   const navigate = useNavigate()
@@ -23,7 +24,7 @@ export const MatchList = () => {
       id: item.id,
       key: item.id,
       boardgameName: item.boardgameName,
-      winner: winner,
+      winner: winner?.fullName,
       date: date,
       duration: item.duration,
     }
@@ -48,7 +49,7 @@ export const MatchList = () => {
         // expandable={{
         //   expandedRowRender,
         // }}
-        dataSource={matchItems}
+        dataSource={matchesMock}
       />
     </motion.div>
   )

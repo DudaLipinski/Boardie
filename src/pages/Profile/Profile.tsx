@@ -14,7 +14,7 @@ export const Profile = () => {
     >
       <div data-testid="user-details">
         <p data-testid="user-details__name">
-          Name: {user?.firstName} {user?.lastName}
+          Name: {user?.firstName} {user?.middleAndSurname}
         </p>
         <p>E-mail: {user?.email}</p>
         <p>Age: {user?.age}</p>

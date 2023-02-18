@@ -7,12 +7,12 @@ import {
   actions as userActions,
 } from '../state/user'
 
-export const useMatches = (userId: string) => {
+export const useOwnMatches = () => {
   const dispatch = useDispatch()
   const matches = useSelector(userSelectors.getUserMatches)
 
   const loadMatches = async () => {
-    const loadedMatches = await getMatches(userId)
+    const loadedMatches = await getMatches()
     dispatch(userActions.setMatches(loadedMatches))
   }
 

@@ -58,7 +58,7 @@ export const CreateAccount = () => {
             <Input placeholder="First name" />
           </Form.Item>
           <Form.Item
-            name={'lastName'}
+            name={'middleAndSurname'}
             label="Last name"
             rules={[
               {

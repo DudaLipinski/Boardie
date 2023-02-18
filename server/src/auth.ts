@@ -13,7 +13,11 @@ export function generateAccessToken(userId: string | number) {
 }
 
 export const authenticateToken: RequestHandler = (req, res, next) => {
-  if (req.path === '/auth' || (req.path === '/user' && req.method === 'POST'))  {
+  if (
+    req.path === '/auth' ||
+    (req.path === '/user' && req.method === 'POST') ||
+    (req.path === '/me' && req.method === 'POST')
+  ) {
     return next()
   }
 

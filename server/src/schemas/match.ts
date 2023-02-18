@@ -1,7 +1,7 @@
 import ajv from './ajv'
 import { JSONSchemaType } from 'ajv'
 import { MatchParticipant } from '../models/matchParticipant'
-import { Match } from '../models/match'
+import { Match } from '../models/matches'
 
 export interface MatchResponseDTO extends Match {
   participants: Omit<MatchParticipant, 'matchId'>[]

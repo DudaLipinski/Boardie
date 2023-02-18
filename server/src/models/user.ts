@@ -1,9 +1,12 @@
 import db from '../database'
+import { CURRENT_DATETIME } from '../utils/sql'
+
+const HASNT_UNREGISTERED = 'unregisteredAt IS NULL'
 
 export interface User {
   id: string
   firstName: string
-  lastName: string
+  middleAndSurname: string
   age: number
   email: string
   password: string
@@ -12,7 +15,7 @@ export interface User {
 export const create = (user: Omit<User, 'id'>) => {
   const query = `INSERT INTO user(
     firstName,
-    lastName,
+    middleAndSurname,
     age,
     email,
     password
@@ -21,7 +24,13 @@ export const create = (user: Omit<User, 'id'>) => {
   return new Promise((resolve, reject) => {
     db.run(
       query,
-      [user.firstName, user.lastName, user.age, user.email, user.password],
+      [
+        user.firstName,
+        user.middleAndSurname,
+        user.age,
+        user.email,
+        user.password,
+      ],
       function (error) {
         if (error) {
           reject(
@@ -35,27 +44,35 @@ export const create = (user: Omit<User, 'id'>) => {
   })
 }
 
-export const remove = (auth: Pick<User, 'email' | 'password'>) => {
-  const query = `DELETE FROM user
-    WHERE email = $email
-    AND password = $password
+export const unregister = (
+  userId: number,
+  auth: Pick<User, 'email' | 'password'>
+) => {
+  const query = `UPDATE user
+    SET unregisteredAt = ${CURRENT_DATETIME}
+    WHERE
+      rowId = $userId
+      AND email = $email
+      AND password = $password
+      AND ${HASNT_UNREGISTERED}
   `
 
   return new Promise((resolve, reject) => {
     db.run(
       query,
       {
+        $userId: userId,
         $email: auth.email,
         $password: auth.password,
       },
       function (error) {
         if (error) {
           reject(
-            `An error occurred while trying to delete an user: ${error?.message}`
+            `An error occurred while trying to unregister an user: ${error?.message}`
           )
         }
 
-        resolve(this.changes > 0)
+        resolve(this.changes && this.changes > 0)
       }
     )
   })
@@ -63,7 +80,9 @@ export const remove = (auth: Pick<User, 'email' | 'password'>) => {
 
 export const getByEmail = (email: string) => {
   const query = `SELECT * FROM user
-    WHERE email = $email
+    WHERE
+      email = $email
+      AND ${HASNT_UNREGISTERED}
     LIMIT 1
   `
 
@@ -87,10 +106,12 @@ export const getByEmail = (email: string) => {
 }
 
 export const auth = (auth: Pick<User, 'email' | 'password'>) => {
-  const query = `SELECT rowId id, firstName, lastName, age, email
+  const query = `SELECT rowId id, firstName, middleAndSurname, age, email
     FROM user
-    WHERE email = $email
-    AND password = $password
+    WHERE
+      email = $email
+      AND password = $password
+      AND ${HASNT_UNREGISTERED}
     LIMIT 1
   `
 

@@ -7,6 +7,9 @@ export const getErrorMessage = (validationResult: ValidateFunction) => {
   }
 
   return validationResult.errors
-    .map(({ instancePath, message }) => `[${instancePath}] ${message}`)
+    .map(
+      ({ instancePath, message }) =>
+        `${instancePath ? `[${instancePath}] ` : ''}${message}`
+    )
     .join(', ')
 }

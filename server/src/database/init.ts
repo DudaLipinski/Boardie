@@ -9,10 +9,11 @@ db.run(`
   CREATE TABLE IF NOT EXISTS \`user\` (
     \`email\` TEXT NOT NULL,
     \`firstName\` TEXT NOT NULL,
-    \`lastName\` TEXT NOT NULL,
+    \`middleAndSurname\` TEXT NOT NULL,
     \`age\` INTEGER NOT NULL,
     \`password\` TEXT NOT NULL,
-    \`addressId\` INTEGER
+    \`addressId\` INTEGER,
+    \`unregisteredAt\` TEXT
   );
 `)
 

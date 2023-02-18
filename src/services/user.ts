@@ -3,7 +3,7 @@ import { User } from '../types/User'
 
 export const createUser = (createUserPayload: Omit<User, 'id'>) =>
   axios
-    .post<User>('http://localhost:3007/user', createUserPayload)
+    .post<User>('http://localhost:3007/me', createUserPayload)
     .then((response) => {
       const token = response.data.token
       localStorage.setItem('token', token)

@@ -1,15 +1,15 @@
 import { RequestHandler } from 'express'
 import omit from 'lodash.omit'
-import * as matchModel from '../models/match'
+import * as matchesModel from '../models/matches'
 import * as matchParticipantModel from '../models/matchParticipant'
 
 import { MatchCreationDTO, validateMatchCreationSchema } from '../schemas/match'
 import { getErrorMessage } from '../schemas/utils'
 
-export const create: RequestHandler = async (req, res) => {
+export const createForLoggedUser: RequestHandler = async (req, res) => {
   const matchDTO = req.body as MatchCreationDTO
   if (!matchDTO) {
-    return res.status(400).send()
+    return res.sendStatus(400)
   }
 
   const authorId = req.userId
@@ -30,41 +30,41 @@ export const create: RequestHandler = async (req, res) => {
   const { participants } = matchDTO
 
   try {
-    const matchId = await matchModel.create(match)
+    const matchId = await matchesModel.create(match)
 
     await matchParticipantModel.createMultiple({ matchId, participants })
-  } catch (e: any) {
-    res.status(500).send('Internal error')
+  } catch (e) {
+    res.sendStatus(500)
   }
 
-  res.send(200)
+  res.sendStatus(200)
 }
 
 export const getAllByLoggedUser: RequestHandler = async (req, res) => {
   const { userId } = req
 
   try {
-    const matches = await matchModel.getAllByAuthor({ authorId: userId })
+    const matches = await matchesModel.getAllByAuthor({ authorId: userId })
     res.status(200).send(matches)
-  } catch (e: any) {
-    res.status(500).send('Internal error')
+  } catch (e) {
+    res.sendStatus(500)
   }
 }
 
 export const getById: RequestHandler = async (req, res) => {
   const { matchId } = req.params
   if (!matchId) {
-    return res.status(400).send()
+    return res.sendStatus(400)
   }
 
   try {
-    const match = await matchModel.getById({ id: matchId })
+    const match = await matchesModel.getById({ id: matchId })
     if (!match) {
       return res.status(404).send('Match not found')
     }
 
     res.status(200).send(match)
-  } catch (e: any) {
-    res.status(500).send('Internal error')
+  } catch (e) {
+    res.sendStatus(500)
   }
 }

@@ -2,7 +2,7 @@ Table user {
   id INTEGER [pk, increment]
   email TEXT [not null]
   firstName TEXT [not null]
-  lastName TEXT [not null]
+  middleAndSurname TEXT [not null]
   age INTEGER [not null]
   password TEXT [not null]
   addressId INTEGER

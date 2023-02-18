@@ -5,14 +5,18 @@ import validateUser from '../schemas/user'
 import validateAuth from '../schemas/auth'
 import * as userModel from '../models/user'
 import { getErrorMessage } from '../schemas/utils'
+import { produce } from 'immer'
+import { logInternalError } from '../utils/log'
 
 export const create: RequestHandler = async (req, res) => {
-  const user = req.body
-  if (!user) {
+  const rawUser = req.body
+  if (!rawUser) {
     return res.status(400).send('bla')
   }
 
-  user.age = user.age ? parseInt(user.age) : user.age
+  const user = produce(rawUser, (user: Record<string, unknown>) => {
+    user.age = typeof user.age === 'string' ? parseInt(user.age) : user.age
+  })
 
   const validUser = validateUser(user)
   if (!validUser) {
@@ -26,7 +30,7 @@ export const create: RequestHandler = async (req, res) => {
     const userWithSameEmail = await userModel.getByEmail(user.email)
     if (userWithSameEmail) {
       return res
-        .status(409)
+        .sendStatus(409)
         .send("There's already a user registered with this email")
     }
 
@@ -40,27 +44,42 @@ export const create: RequestHandler = async (req, res) => {
   }
 }
 
-export const remove: RequestHandler = async (req, res) => {
+/**
+ * The ideal solution here would be to send an "unregistering confirmal" email
+ * to the user and then complete the operation after that.
+ *
+ * To do so, we would have to generate a token containing the needed information
+ * to identify the user that is trying to be unregistered, and, inside the email,
+ * provide a link with the token for the user to confirm the unregistering
+ *
+ * The front-end will then have to have a specific route to handle that, that
+ * will basically call a "confirm unregistering" endpoint passing the token
+ */
+export const unregisterLoggedUser: RequestHandler = async (req, res) => {
   const auth = req.body
   if (!auth) {
-    return res.status(400)
+    return res
+      .sendStatus(400)
+      .send({ message: "You should provide user's email and password" })
   }
 
   const validAuth = validateAuth(auth)
   if (!validAuth) {
-    console.error(validateAuth.errors)
-    res.status(400)
+    const errorMessage = getErrorMessage(validateAuth)
+
+    res.status(400).send({ message: errorMessage })
     return
   }
 
   try {
-    const deleted = await userModel.remove(auth)
-    if (!deleted) {
-      return res.status(404).send()
+    const unregistered = await userModel.unregister(req.userId, auth)
+    if (!unregistered) {
+      return res.sendStatus(401)
     }
 
-    res.status(200).send()
+    res.sendStatus(200)
   } catch (e) {
-    res.status(500).send()
+    logInternalError(e)
+    res.sendStatus(500)
   }
 }

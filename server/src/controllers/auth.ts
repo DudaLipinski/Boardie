@@ -21,7 +21,7 @@ export const auth: RequestHandler = async (req, res) => {
   try {
     const loggedUser = await userModel.auth(auth)
     if (!loggedUser) {
-      return res.status(401).send()
+      return res.sendStatus(401)
     }
 
     const token = generateAccessToken(loggedUser.id)
@@ -32,6 +32,6 @@ export const auth: RequestHandler = async (req, res) => {
     })
   } catch (e) {
     console.error(e)
-    res.status(500).send()
+    res.sendStatus(500)
   }
 }

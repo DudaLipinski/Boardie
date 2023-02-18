@@ -9,10 +9,23 @@ BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS `user` (
   `email` TEXT NOT NULL,
   `firstName` TEXT NOT NULL,
-  `lastName` TEXT NOT NULL,
+  `middleAndSurname` TEXT NOT NULL,
   `age` INTEGER NOT NULL,
   `password` TEXT NOT NULL,
-  `addressId` INTEGER
+  `addressId` INTEGER,
+  `unregisteredAt` TEXT
+);
+
+CREATE TABLE `friendship` (
+  `userAId` INTEGER,
+  `userBId` INTEGER,
+  PRIMARY KEY (`userAId`, `userBId`)
+);
+
+CREATE TABLE `friendshipRequest` (
+  `requestingUserId` INTEGER,
+  `requestedUserId` INTEGER,
+  PRIMARY KEY (`requestingUserId`, `requestedUserId`)
 );
 
 CREATE TABLE IF NOT EXISTS `match` (
@@ -28,6 +41,14 @@ CREATE TABLE IF NOT EXISTS `matchParticipant` (
   `fullName` TEXT NOT NULL,
   `score` INTEGER
 );
+
+ALTER TABLE `friendship` ADD FOREIGN KEY (`userAId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `friendship` ADD FOREIGN KEY (`userBId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `friendshipRequest` ADD FOREIGN KEY (`requestingUserId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `friendshipRequest` ADD FOREIGN KEY (`requestedUserId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 CREATE INDEX IF NOT EXISTS `match_index_0` ON `match` (`authorId`);
 

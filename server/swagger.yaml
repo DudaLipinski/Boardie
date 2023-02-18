@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: Duda Leo Proj 1
-  description: Duda Leo Proj 1
+  title: Boardie
+  description: API to serve the Boardie application
 paths:
   /user:
     post:
@@ -11,7 +11,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserCreationPayload'
-      summary: Create a user
+      summary: Creates a user. [DEPRECATED] Use "POST /me" instead
       responses:
         '200':
           description: The created user's data
@@ -37,28 +37,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /user/{userId}/friend:
+  /me:
     post:
-      summary: Get all friends related to given user
-      parameters:
-        - in: path
-          name: userId
-          schema:
-            type: integer
-          required: true
-          description: id of the user to have its friends returned
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreationPayload'
+      summary: Creates a user
       responses:
         '200':
-          description: The friends related to the given user
+          description: The created user's data
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  allOf:
-                    - $ref: '#/components/schemas/UserInfo'
-        '404':
-          description: No user found with the given id
+                $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Incorrect user format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: User already exists with given email
           content:
             application/json:
               schema:
@@ -69,28 +70,89 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /user/{userId}/friends:
+  /me/unregister:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth'
+      summary: Unregisters the logged user
+      responses:
+        '200':
+          description: User unregistered successfully
+        '400':
+          description: Incorrect auth format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No user was found with the provided authentication
+        '409':
+          description: User already exists with given email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /me/matches:
     get:
-      summary: Get all friends related to given user
-      parameters:
-        - in: path
-          name: userId
-          schema:
-            type: integer
-          required: true
-          description: id of the user to have its friends returned
+      summary: Get all matches on which the logged user participated
       responses:
         '200':
-          description: The friends related to the given user
+          description: The matches related to the given user
           content:
             application/json:
               schema:
                 type: array
                 items:
                   allOf:
-                    - $ref: '#/components/schemas/UserInfo'
-        '404':
-          description: No user found with the given id
+                    - $ref: '#/components/schemas/Match'
+                  properties:
+                    participants:
+                      type: array
+                      items:
+                        allOf:
+                          - $ref: '#/components/schemas/HydratedMatchParticipant'
+                        properties:
+                          isWinner:
+                            type: boolean
+                  required:
+                    - participants
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Creates a match for the logged user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/MatchBase'
+              properties:
+                participants:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MatchParticipantBase'
+      responses:
+        '200':
+          description: The match was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Match'
+        '400':
+          description: Incorrect match format
           content:
             application/json:
               schema:
@@ -101,6 +163,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  # /user/{userId}/friends:
+  #   get:
+  #     summary: Get all friends related to given user
+  #     parameters:
+  #       - in: path
+  #         name: userId
+  #         schema:
+  #           type: integer
+  #         required: true
+  #         description: id of the user to have its friends returned
+  #     responses:
+  #       '200':
+  #         description: The friends related to the given user
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 allOf:
+  #                   - $ref: '#/components/schemas/UserInfo'
+  #       '404':
+  #         description: No user found with the given id
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
   /auth:
     post:
       summary: Log in with user
@@ -135,70 +229,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /friendship-request/send:
+  # /friendship-request/send:
+  #   post:
+  #     summary: Send friendship request
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/FriendshipRequestBase'
+  #     responses:
+  #       '200':
+  #         description: Friendship request sent
+  #       '409':
+  #         description: Friendship request already exists
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  # /friendship-request/{friendshipRequestId}/accept:
+  #   post:
+  #     summary: Accept friendship request
+  #     parameters:
+  #       - in: path
+  #         name: friendshipRequestId
+  #         schema:
+  #           type: string
+  #         required: true
+  #         description: id of the friendship request to be accepted
+  #     responses:
+  #       '200':
+  #         description: Friendship request accepted successfully
+  #       '404':
+  #         description: Friendship request doesn't exist
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  # /friendship-request/{friendshipRequestId}/decline:
+  #   post:
+  #     summary: Decline friendship request
+  #     parameters:
+  #       - in: path
+  #         name: friendshipRequestId
+  #         schema:
+  #           type: string
+  #         required: true
+  #         description: id of the friendship request to be declined
+  #     responses:
+  #       '200':
+  #         description: Friendship request declined successfully
+  #       '404':
+  #         description: Friendship request doesn't exist
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  /matches:
     post:
-      summary: Send friendship request
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FriendshipRequestBase'
-      responses:
-        '200':
-          description: Friendship request sent
-        '409':
-          description: Friendship request already exists
-        '500':
-          description: Unexpected internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /friendship-request/{friendshipRequestId}/accept:
-    post:
-      summary: Accept friendship request
-      parameters:
-        - in: path
-          name: friendshipRequestId
-          schema:
-            type: string
-          required: true
-          description: id of the friendship request to be accepted
-      responses:
-        '200':
-          description: Friendship request accepted successfully
-        '404':
-          description: Friendship request doesn't exist
-        '500':
-          description: Unexpected internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /friendship-request/{friendshipRequestId}/decline:
-    post:
-      summary: Decline friendship request
-      parameters:
-        - in: path
-          name: friendshipRequestId
-          schema:
-            type: string
-          required: true
-          description: id of the friendship request to be declined
-      responses:
-        '200':
-          description: Friendship request declined successfully
-        '404':
-          description: Friendship request doesn't exist
-        '500':
-          description: Unexpected internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /match:
-    post:
-      summary: Create a match
+      summary: Creates a match. [DEPRECATED] Use "POST /me/matches" instead
       requestBody:
         content:
           application/json:
@@ -229,37 +323,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /matches:
-    get:
-      summary: Get all matches on which the logged user participated
-      responses:
-        '200':
-          description: The matches related to the given user
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  allOf:
-                    - $ref: '#/components/schemas/Match'
-                  properties:
-                    participants:
-                      type: array
-                      items:
-                        allOf:
-                          - $ref: '#/components/schemas/HydratedMatchParticipant'
-                        properties:
-                          isWinner:
-                            type: boolean
-                  required:
-                    - participants
-        '500':
-          description: Unexpected internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /match/{matchId}:
+  /matches/{matchId}:
     get:
       summary: Get a match by id, along with its paticipants
       parameters:
@@ -346,7 +410,7 @@ components:
       properties:
         firstName:
           type: string
-        lastName:
+        middleAndSurname:
           type: string
         email:
           type: string
@@ -356,7 +420,7 @@ components:
           maximum: 120
       required:
         - firstName
-        - lastName
+        - middleAndSurname
         - age
         - email
       additionalProperties: false

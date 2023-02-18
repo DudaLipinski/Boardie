@@ -1,16 +1,15 @@
-export interface Partipants {
-  participants: Array<{
-    userId: string
-    fullName: string
-    score: number
-    isWinner: boolean
-  }>
+export interface Participant {
+  userId: string
+  fullName: string
+  score: number
+  isWinner: boolean
 }
-export interface Match extends Partipants {
+export interface Match {
   id: string
   authorId: string
   boardgameName: string
   date: string
   duration: number
   notes: string
+  participants: Participant[]
 }

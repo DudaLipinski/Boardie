@@ -4,7 +4,7 @@ import { Match } from '../types/Match'
 export const createMatch = (matchPayload: Omit<Match, 'id' | 'participants'>) =>
   axios({
     method: 'post',
-    url: 'http://localhost:3007/match',
+    url: 'http://localhost:3007/me/matches',
     data: matchPayload,
   })
     .then((response) => {
@@ -22,10 +22,10 @@ export const createMatch = (matchPayload: Omit<Match, 'id' | 'participants'>) =>
       }
     })
 
-export const getMatches = (authorId: string) =>
+export const getMatches = () =>
   axios({
     method: 'get',
-    url: `http://localhost:3007/user/${authorId}/matches`,
+    url: `http://localhost:3007/me/matches`,
   })
     .then((response) => {
       return response.data

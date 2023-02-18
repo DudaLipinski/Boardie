@@ -3,18 +3,15 @@ import { columns } from '../../components/Match/ColumnsMatchList'
 // import { expandedRowRender } from './ExpandedMatch'
 import { Table, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import { useMatches } from '../../hooks/useMatches'
-import { useSelector } from 'react-redux'
-import { selectors as userSelectors } from '../../state/user'
+import { useOwnMatches } from '../../hooks/useOwnMatches'
 import { Match } from '../../types/Match'
 import { motion } from 'framer-motion'
 import { matches as matchesMock } from '../../__mocks__/matches'
 
 export const MatchList = () => {
   const navigate = useNavigate()
-  const userId = useSelector(userSelectors.getUserId)
 
-  const matches = useMatches(userId)
+  const matches = useOwnMatches()
 
   const matchItems = matches?.map((item: Match) => {
     const winner = item.participants.find((item) => item.isWinner)

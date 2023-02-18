@@ -8,12 +8,12 @@ const schema: JSONSchemaType<Omit<User, 'id'>> = {
   type: 'object',
   properties: {
     firstName: { type: 'string' },
-    lastName: { type: 'string' },
+    middleAndSurname: { type: 'string' },
     age: { type: 'integer', minimum: 1, maximum: 120 },
     email: { type: 'string' },
     password: { type: 'string' },
   },
-  required: ['firstName', 'lastName', 'age', 'email', 'password'],
+  required: ['firstName', 'middleAndSurname', 'age', 'email', 'password'],
   additionalProperties: false,
 }
 

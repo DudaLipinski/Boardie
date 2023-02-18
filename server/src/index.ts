@@ -23,7 +23,7 @@ app.use(express.json())
 
 app.use(ipfilter.IpFilter(['127.0.0.1']))
 
-app.use(pino())
+// app.use(pino())
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 

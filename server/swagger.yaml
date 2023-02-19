@@ -4,39 +4,6 @@ info:
   title: Boardie
   description: API to serve the Boardie application
 paths:
-  /user:
-    post:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCreationPayload'
-      summary: Creates a user. [DEPRECATED] Use "POST /me" instead
-      responses:
-        '200':
-          description: The created user's data
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInfo'
-        '400':
-          description: Incorrect user format
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '409':
-          description: User already exists with given email
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Unexpected internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /me:
     post:
       requestBody:
@@ -69,7 +36,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/InternalError'
   /me/unregister:
     post:
       requestBody:
@@ -100,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/InternalError'
   /me/matches:
     get:
       summary: Get all matches on which the logged user participated
@@ -130,7 +97,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/InternalError'
     post:
       summary: Creates a match for the logged user
       requestBody:
@@ -162,7 +129,35 @@ paths:
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/InternalError'
+  /me/anonfriends:
+    post:
+      summary: Creates an anonymous friend for the logged user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AnonFriendBase'
+      responses:
+        '200':
+          description: The anonymous friend was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnonFriend'
+        '400':
+          description: Incorrect anonymous friend format
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
   # /user/{userId}/friends:
   #   get:
   #     summary: Get all friends related to given user
@@ -228,7 +223,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/InternalError'
   # /friendship-request/send:
   #   post:
   #     summary: Send friendship request
@@ -290,39 +285,6 @@ paths:
   #           application/json:
   #             schema:
   #               $ref: '#/components/schemas/Error'
-  /matches:
-    post:
-      summary: Creates a match. [DEPRECATED] Use "POST /me/matches" instead
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/MatchBase'
-              properties:
-                participants:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/MatchParticipantBase'
-      responses:
-        '200':
-          description: The match was successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Match'
-        '400':
-          description: Incorrect match format
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Unexpected internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /matches/{matchId}:
     get:
       summary: Get a match by id, along with its paticipants
@@ -357,7 +319,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/InternalError'
     # put:
     #   parameters:
     #     - in: path
@@ -448,6 +410,30 @@ components:
           type: string
       required:
         - password
+      additionalProperties: false
+    AnonFriendBase:
+      title: Anonymous friend base data
+      description: Base data for creating an anonymous friend
+      type: object
+      properties:
+        fullName:
+          type: string
+          example: Meeple Catanicus
+      required:
+        - fullName
+      additionalProperties: false
+    AnonFriend:
+      title: AnonFriend
+      description: An existent anonymous friend's data
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AnonFriendBase'
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+      required:
+        - id
       additionalProperties: false
     FriendshipRequestBase:
       title: Friendship request base data
@@ -584,6 +570,14 @@ components:
       properties:
         message:
           description: A human readable error message
+          type: string
+    InternalError:
+      type: object
+      required:
+        - ref
+      properties:
+        ref:
+          description: A reference for the internal error that occurred. Can be used to retrieve details through logs
           type: string
 security:
   - BearerAuth: []

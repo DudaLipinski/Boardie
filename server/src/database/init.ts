@@ -18,6 +18,13 @@ db.run(`
 `)
 
 db.run(`
+  CREATE TABLE IF NOT EXISTS \`anonFriend\` (
+    \`userId\` INTEGER NOT NULL,
+    \`fullName\` TEXT
+  );
+`)
+
+db.run(`
   CREATE TABLE IF NOT EXISTS \`match\` (
     \`authorId\` INTEGER NOT NULL,
     \`boardgameName\` TEXT NOT NULL,

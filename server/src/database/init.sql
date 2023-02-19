@@ -16,17 +16,22 @@ CREATE TABLE IF NOT EXISTS `user` (
   `unregisteredAt` TEXT
 );
 
-CREATE TABLE `friendship` (
-  `userAId` INTEGER,
-  `userBId` INTEGER,
-  PRIMARY KEY (`userAId`, `userBId`)
+CREATE TABLE `anonFriend` (
+  `userId` INTEGER NOT NULL,
+  `fullName` TEXT
 );
 
-CREATE TABLE `friendshipRequest` (
-  `requestingUserId` INTEGER,
-  `requestedUserId` INTEGER,
-  PRIMARY KEY (`requestingUserId`, `requestedUserId`)
-);
+-- CREATE TABLE `friendship` (
+--   `userAId` INTEGER,
+--   `userBId` INTEGER,
+--   PRIMARY KEY (`userAId`, `userBId`)
+-- );
+
+-- CREATE TABLE `friendshipRequest` (
+--   `requestingUserId` INTEGER,
+--   `requestedUserId` INTEGER,
+--   PRIMARY KEY (`requestingUserId`, `requestedUserId`)
+-- );
 
 CREATE TABLE IF NOT EXISTS `match` (
   `authorId` INTEGER NOT NULL,
@@ -42,13 +47,16 @@ CREATE TABLE IF NOT EXISTS `matchParticipant` (
   `score` INTEGER
 );
 
-ALTER TABLE `friendship` ADD FOREIGN KEY (`userAId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `anonFriend` ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE `friendship` ADD FOREIGN KEY (`userBId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+-- ALTER TABLE `friendship` ADD FOREIGN KEY (`userAId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE `friendshipRequest` ADD FOREIGN KEY (`requestingUserId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+-- ALTER TABLE `friendship` ADD FOREIGN KEY (`userBId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE `friendshipRequest` ADD FOREIGN KEY (`requestedUserId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+-- ALTER TABLE `friendshipRequest` ADD FOREIGN KEY (`requestingUserId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- ALTER TABLE `friendshipRequest` ADD FOREIGN KEY (`requestedUserId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
 
 CREATE INDEX IF NOT EXISTS `match_index_0` ON `match` (`authorId`);
 

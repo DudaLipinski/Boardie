@@ -6,15 +6,16 @@ Table user {
   age INTEGER [not null]
   password TEXT [not null]
   addressId INTEGER
+  unregisteredAt DATETIME
 }
 Ref: user.addressId > address.id [delete: no action, update: no action]
 
-Table unregisteredFriend {
+Table anonFriend {
   id INTEGER [pk, increment]
   userId INTEGER [not null]
-  friendName TEXT
+  fullName TEXT
 }
-Ref: unregisteredFriend.userId > user.id [delete: cascade, update: no action]
+Ref: anonFriend.userId > user.id [delete: cascade, update: no action]
 
 Table match {
   id INTEGER [pk, increment]
@@ -34,7 +35,7 @@ Ref: match.authorId > user.id [delete: no action, update: no action]
 Table matchParticipant {
   matchId INTEGER [not null]
   // userId INTEGER [ref: > user.id]
-  // unregisteredFriendId INTEGER [not null, ref: > unregisteredFriend.id]
+  // anonFriendId INTEGER [not null, ref: > anonFriend.id]
   fullName TEXT [not null]
   score INTEGER
   // notes TEXT
@@ -44,7 +45,7 @@ Table matchParticipant {
     (matchId, fullName) [pk]
   }
   // Indexes {
-  //   (matchId, userId, unregisteredFriendId) [pk]
+  //   (matchId, userId, anonFriendId) [pk]
   // }
 }
 Ref: matchParticipant.matchId > match.id [delete: cascade, update: no action]
@@ -64,6 +65,17 @@ Table friendship {
 }
 Ref: friendship.userAId > user.id [delete: cascade, update: no action]
 Ref: friendship.userBId > user.id [delete: cascade, update: no action]
+
+Table friendshipRequest {
+  requestingUserId INTEGER
+  requestedUserId INTEGER
+
+  Indexes {
+    (requestingUserId, requestedUserId) [pk]
+  }
+}
+Ref: friendshipRequest.requestingUserId > user.id [delete: cascade, update: no action]
+Ref: friendshipRequest.requestedUserId > user.id [delete: cascade, update: no action]
 
 Table address {
   id INTEGER [pk, increment] // auto-increment

@@ -13,7 +13,7 @@ export function set(app: Express) {
   app.get(`${meEndpoint}/matches`, matchesController.getAllByLoggedUser)
 
   app.post(
-    `${meEndpoint}/anonfriend`,
+    `${meEndpoint}/anonfriends`,
     anonFriendsController.createForLoggedUser
   )
 }

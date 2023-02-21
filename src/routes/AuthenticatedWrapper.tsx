@@ -10,10 +10,9 @@ export const MenuWrapper = styled.div`
 `
 
 export const Content = styled.div`
+  padding: 12px 12px;
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
 `
 
 export const AuthenticatedWrapper = () => {

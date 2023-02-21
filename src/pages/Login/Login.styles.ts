@@ -21,13 +21,13 @@ export const WrapperLinks = styled.div`
 `
 
 export const Title = styled.h1`
-  color: var(--adm-color-white);
+  color: var(--adm-color-neutral-800);
   font-size: var(--adm-font-size-15);
   font-weight: bold;
 `
 
 export const Paragraph = styled.p`
-  color: var(--adm-color-white);
+  color: var(--adm-color-neutral-800);
   font-size: var(--adm-font-size-6);
   text-align: center;
 `

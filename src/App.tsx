@@ -17,7 +17,7 @@ const BackgroundWrapper = styled.div`
   width: 100%;
   height: 100vh;
   margin: auto;
-  background-color: #1c1b1e;
+  background-color: var(--adm-color-background);
 `
 
 function App() {

@@ -9,7 +9,7 @@ const Top = styled.nav`
 export const Navbar = () => {
   return (
     <Top>
-      <Nav>NavBar</Nav>
+      <Nav></Nav>
     </Top>
   )
 }

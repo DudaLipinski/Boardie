@@ -1,6 +1,7 @@
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--adm-color-neutral-800);
 }
 
 code {
@@ -9,24 +10,24 @@ code {
 }
 
 :root:root {
-  --adm-color-primary: #794DFD;
+  --adm-color-primary: #794dfd;
   --adm-color-success: #00b578;
   --adm-color-warning: #ff8f1f;
   --adm-color-danger: #ff3141;
 
   --adm-color-white: #ffffff;
-  --adm-color-text: #fff;
-  --adm-color-text-secondary: #fff;
-  --adm-color-weak: #fff;
-  --adm-color-light: #cccccc;
-  --adm-color-border: #eeeeee;
-  --adm-color-box: #f5f5f5;
+  --adm-color-text: #313033;
+  --adm-color-text-secondary: #313033;
+  --adm-color-weak: #313033;
+  --adm-color-light: #313033;
+  --adm-color-border: ##313033;
+  --adm-color-box: #313033;
 
   --adm-color-neutral-800: #313033;
-  --adm-color-background: #1C1B1E;
+  --adm-color-background: #f5f5f5;
+  --adm-color-input-background: #eee;
   --adm-button-border-radius: 16px;
 
   --adm-font-size-15: 28px;
-  --adm-font-family: 'Inter',
-    sans-serif !important;
+  --adm-font-family: 'Inter', sans-serif !important;
 }

@@ -14,3 +14,18 @@
   flex-direction: row;
   height: 100vh;
 }
+
+.adm-list-item {
+  background-color: var(--adm-color-input-white) !important;
+  padding-left: 0 !important;
+  padding-bottom: 5px;
+}
+
+.adm-list-body {
+  background-color: var(--adm-color-input-white) !important;
+  --font-size: var(--adm-font-size-6) !important;
+}
+
+.adm-input {
+  --font-size: var(--adm-font-size-6) !important;
+}

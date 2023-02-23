@@ -30,7 +30,7 @@ export const create: RequestHandler = async (req, res) => {
     const userWithSameEmail = await userModel.getByEmail(user.email)
     if (userWithSameEmail) {
       return res
-        .sendStatus(409)
+        .status(409)
         .send("There's already a user registered with this email")
     }
 
@@ -40,6 +40,21 @@ export const create: RequestHandler = async (req, res) => {
       ...omit(user, 'password'),
     })
   } catch (e) {
+    logInternalError(e)
+    res.status(500).send('Internal error')
+  }
+}
+
+export const getLoggedUser: RequestHandler = async (req, res) => {
+  try {
+    const user = await userModel.getById(req.userId)
+    if (!user) {
+      return res.sendStatus(404)
+    }
+
+    res.status(200).send(user)
+  } catch (e) {
+    logInternalError(e)
     res.status(500).send('Internal error')
   }
 }
@@ -59,7 +74,7 @@ export const unregisterLoggedUser: RequestHandler = async (req, res) => {
   const auth = req.body
   if (!auth) {
     return res
-      .sendStatus(400)
+      .status(400)
       .send({ message: "You should provide user's email and password" })
   }
 

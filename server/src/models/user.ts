@@ -78,6 +78,39 @@ export const unregister = (
   })
 }
 
+export const getById = (id: number) => {
+  const query = `SELECT
+    rowId as id,
+    firstName,
+    middleAndSurname,
+    age,
+    email
+  FROM user
+    WHERE
+      rowId = $id
+      AND ${HASNT_UNREGISTERED}
+    LIMIT 1
+  `
+
+  return new Promise((resolve, reject) => {
+    db.get(
+      query,
+      {
+        $id: id,
+      },
+      function (error, user) {
+        if (error) {
+          reject(
+            `An error occurred while trying to fetch an user by id: ${error?.message}`
+          )
+        }
+
+        resolve(user)
+      }
+    )
+  })
+}
+
 export const getByEmail = (email: string) => {
   const query = `SELECT * FROM user
     WHERE

@@ -4,6 +4,7 @@ import validateAuth from '../schemas/auth'
 import * as userModel from '../models/user'
 import { generateAccessToken } from '../auth'
 import { getErrorMessage } from '../schemas/utils'
+import { logInternalError } from '../utils/log'
 
 export const auth: RequestHandler = async (req, res) => {
   const auth = req.body
@@ -31,7 +32,7 @@ export const auth: RequestHandler = async (req, res) => {
       token,
     })
   } catch (e) {
-    console.error(e)
+    logInternalError(e)
     res.sendStatus(500)
   }
 }

@@ -5,6 +5,21 @@ info:
   description: API to serve the Boardie application
 paths:
   /me:
+    get:
+      summary: Gets the logged user
+      responses:
+        '200':
+          description: The user's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
     post:
       requestBody:
         content:

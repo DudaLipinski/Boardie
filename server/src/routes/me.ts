@@ -6,6 +6,7 @@ import * as anonFriendsController from '../controllers/anonFriends'
 const meEndpoint = '/me'
 
 export function set(app: Express) {
+  app.get(meEndpoint, userController.getLoggedUser)
   app.post(meEndpoint, userController.create)
   app.post(`${meEndpoint}/unregister`, userController.unregisterLoggedUser)
 

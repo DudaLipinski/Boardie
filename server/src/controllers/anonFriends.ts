@@ -31,8 +31,8 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
   try {
     const id = await anonFriendsModel.create(anonFriend)
     res.status(200).send({
-      ...anonFriend,
       id,
+      fullName: anonFriend.fullName,
     })
   } catch (e) {
     logInternalError(e)

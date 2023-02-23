@@ -5,6 +5,7 @@ import * as matchParticipantModel from '../models/matchParticipant'
 
 import { MatchCreationDTO, validateMatchCreationSchema } from '../schemas/match'
 import { getErrorMessage } from '../schemas/utils'
+import { logInternalError } from '../utils/log'
 
 export const createForLoggedUser: RequestHandler = async (req, res) => {
   const matchDTO = req.body as MatchCreationDTO
@@ -34,7 +35,9 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
 
     await matchParticipantModel.createMultiple({ matchId, participants })
   } catch (e) {
+    logInternalError(e)
     res.sendStatus(500)
+    return
   }
 
   res.sendStatus(200)
@@ -47,6 +50,7 @@ export const getAllByLoggedUser: RequestHandler = async (req, res) => {
     const matches = await matchesModel.getAllByAuthor({ authorId: userId })
     res.status(200).send(matches)
   } catch (e) {
+    logInternalError(e)
     res.sendStatus(500)
   }
 }
@@ -65,6 +69,7 @@ export const getById: RequestHandler = async (req, res) => {
 
     res.status(200).send(match)
   } catch (e) {
+    logInternalError(e)
     res.sendStatus(500)
   }
 }

@@ -9,7 +9,16 @@ import * as anonFriendsModel from '../models/anonFriends'
 import { getErrorMessage } from '../schemas/utils'
 import { logInternalError } from '../utils/log'
 
-export const createForLoggedUser: RequestHandler = async (req, res) => {
+interface GenericFriend {
+  id: number
+  fullName: string
+  isAnonymous: boolean
+}
+
+export const createAnonymousForLoggedUser: RequestHandler = async (
+  req,
+  res
+) => {
   const anonFriendCreationDTO = req.body as AnonFriendCreationDTO
   if (!anonFriendCreationDTO) {
     return res.sendStatus(400)
@@ -34,6 +43,21 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
       id,
       fullName: anonFriend.fullName,
     })
+  } catch (e) {
+    logInternalError(e)
+    res.sendStatus(500)
+  }
+}
+
+export const getAllByLoggedUser: RequestHandler = async (req, res) => {
+  const { userId } = req
+
+  try {
+    const anonFriends: GenericFriend[] = (
+      await anonFriendsModel.getAllByUserId({ userId })
+    ).map((friend) => ({ ...friend, isAnonymous: true }))
+
+    res.status(200).send(anonFriends)
   } catch (e) {
     logInternalError(e)
     res.sendStatus(500)

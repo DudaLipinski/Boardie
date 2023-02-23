@@ -30,3 +30,30 @@ export function create(anonFriend: Omit<AnonFriend, 'id'>) {
     })
   })
 }
+
+export function getAllByUserId(params: { userId: number }) {
+  const query = `
+      SELECT
+        rowId as id,
+        fullName
+      FROM anonFriend
+      WHERE
+        userId = $userId;
+    `
+
+  return new Promise<AnonFriend[]>((resolve, reject) => {
+    db.all(
+      query,
+      prepareParameters(params),
+      function (error: any, friends: AnonFriend[]) {
+        if (error) {
+          reject(
+            `An error occurred while trying to fetch anon friends by userId: ${error?.message}`
+          )
+        }
+
+        resolve(friends)
+      }
+    )
+  })
+}

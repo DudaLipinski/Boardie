@@ -14,6 +14,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: Invalid credentials
         '500':
           description: Unexpected internal error
           content:
@@ -69,6 +71,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid credentials
         '404':
           description: No user was found with the provided authentication
         '409':
@@ -107,6 +111,8 @@ paths:
                             type: boolean
                   required:
                     - participants
+        '401':
+          description: Invalid credentials
         '500':
           description: Unexpected internal error
           content:
@@ -139,6 +145,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+  /me/friends:
+    get:
+      summary: Returns all the logged user's friends, including anonymous ones
+      responses:
+        '200':
+          description: The friends related to the given user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/GenericFriend'
+        '401':
+          description: Invalid credentials
         '500':
           description: Unexpected internal error
           content:
@@ -167,6 +196,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid credentials
         '500':
           description: Unexpected internal error
           content:
@@ -323,6 +354,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/HydratedMatchParticipant'
+        '401':
+          description: Invalid credentials
         '404':
           description: No match was found with the provided id
           content:
@@ -426,6 +459,22 @@ components:
       required:
         - password
       additionalProperties: false
+    GenericFriend:
+      title: Generic friend data
+      description: Data that can represent an anonymous or registered friend
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        fullName:
+          type: string
+          example: Meeple Catanicus
+        # avatar:
+        #   type: string
+        isAnonymous:
+          type: boolean
+      additionalProperties: false
     AnonFriendBase:
       title: Anonymous friend base data
       description: Base data for creating an anonymous friend
@@ -450,31 +499,31 @@ components:
       required:
         - id
       additionalProperties: false
-    FriendshipRequestBase:
-      title: Friendship request base data
-      description: Information that define a friendship request
-      type: object
-      properties:
-        requestingUserId:
-          type: string
-        requestedUserId:
-          type: string
-      required:
-        - requestingUserId
-        - requestedUserId
-      additionalProperties: false
-    FriendshipRequestInfo:
-      title: Friendship request info
-      description: Existent friendship request info
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/FriendshipRequestBase'
-      properties:
-        id:
-          type: string
-      required:
-        - id
-      additionalProperties: false
+    # FriendshipRequestBase:
+    #   title: Friendship request base data
+    #   description: Information that define a friendship request
+    #   type: object
+    #   properties:
+    #     requestingUserId:
+    #       type: string
+    #     requestedUserId:
+    #       type: string
+    #   required:
+    #     - requestingUserId
+    #     - requestedUserId
+    #   additionalProperties: false
+    # FriendshipRequestInfo:
+    #   title: Friendship request info
+    #   description: Existent friendship request info
+    #   type: object
+    #   allOf:
+    #     - $ref: '#/components/schemas/FriendshipRequestBase'
+    #   properties:
+    #     id:
+    #       type: string
+    #   required:
+    #     - id
+    #   additionalProperties: false
     Auth:
       title: Auth
       description: Data to authenticate a user

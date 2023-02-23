@@ -97,7 +97,7 @@ export const Login = () => {
               name="email"
               label="E-mail"
               margin="none"
-              type={'email'}
+              type="email"
             />
             <TextField
               fullWidth
@@ -107,7 +107,7 @@ export const Login = () => {
               name="password"
               label="Password"
               margin="dense"
-              type={'password'}
+              type="password"
             />
             <FormControlLabel
               value="end"

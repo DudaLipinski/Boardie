@@ -1,29 +1,41 @@
 import { authUser } from '../../services/user'
+import { Link } from 'react-router-dom'
 
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { actions as userActions } from '../../state/user'
-import { Link } from 'react-router-dom'
 
-import * as Styled from './Login.styles'
-import { Input } from '../../components/Input'
-import { Form } from '../../components/Form'
-import { Centralizer } from '../../components/Centralizer'
-import { Button, AutoCenter } from 'antd-mobile'
 import { motion } from 'framer-motion'
 import { User } from '../../types/User'
+import {
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+} from '@mui/material'
 
 export const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleLogin = (loginPayload: Pick<User, 'email' | 'password'>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const data = new FormData(event.currentTarget)
+
+    const loginPayload: Pick<User, 'email' | 'password'> = {
+      email: data.get('email') as string,
+      password: data.get('password') as string,
+    }
+
     authUser(loginPayload)
       .then((response) => {
         if (!response) {
           throw new Error('Internal error')
         }
-
         dispatch(userActions.setUser(response.user))
         navigate('/dashboard')
       })
@@ -38,65 +50,89 @@ export const Login = () => {
       exit={{ opacity: 0 }}
       style={{ height: 'inherit' }}
     >
-      <Centralizer>
-        <AutoCenter>
-          <Styled.Title>Boardy</Styled.Title>
-        </AutoCenter>
-        <Styled.Paragraph>
-          Please fill your details to access your account.
-        </Styled.Paragraph>
-        <Form
-          name="normal_login"
-          layout="vertical"
-          initialValues={{
-            remember: true,
+      <Container
+        sx={{
+          height: 'inherit',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            width: '80%',
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            gap: '12px',
           }}
-          onFinish={handleLogin}
         >
-          <Form.Item
-            name="email"
-            label="E-mail"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your e-mail!',
-              },
-            ]}
+          <Typography
+            variant="h1"
+            component="h1"
+            align="center"
+            sx={{ fontWeight: '600' }}
           >
-            <Input placeholder="E-mail" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your Password!',
-              },
-            ]}
+            Boardie
+          </Typography>
+          <Typography gutterBottom align="center">
+            Please fill your details to access your account.
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              gap: '12px',
+            }}
           >
-            <Input type="password" placeholder="Password" />
-          </Form.Item>
-          <Form.Item>
-            <Styled.Checkbox>Remember me</Styled.Checkbox>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              block
-              size="large"
-              color="primary"
-              type="submit"
-              style={{ fontSize: 'var(--adm-font-size-6)' }}
-            >
+            <TextField
+              fullWidth
+              required
+              variant="filled"
+              id="email"
+              name="email"
+              label="E-mail"
+              margin="none"
+              type={'email'}
+            />
+            <TextField
+              fullWidth
+              required
+              variant="filled"
+              id="password"
+              name="password"
+              label="Password"
+              margin="dense"
+              type={'password'}
+            />
+            <FormControlLabel
+              value="end"
+              control={<Checkbox />}
+              label="Remember me"
+              labelPlacement="end"
+            />
+            <Button fullWidth variant="contained" size="large" type="submit">
               Login
             </Button>
-            <Styled.WrapperLinks>
-              <Link to="/create-account">Register now!</Link>
-              <Link to="">Forgot password</Link>
-            </Styled.WrapperLinks>
-          </Form.Item>
-        </Form>
-      </Centralizer>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              margin: '12px 0',
+            }}
+          >
+            <Link to="#">Forgot password</Link>
+            <Link to="/create-account">Register now!</Link>
+          </Box>
+        </Box>
+      </Container>
     </motion.div>
   )
 }

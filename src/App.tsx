@@ -5,32 +5,28 @@ import state from './state'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import styled from 'styled-components'
+import { ThemeProvider } from '@mui/material'
+import { theme } from './styles/theme'
 
 const MobileWrapper = styled.div`
   max-width: 479px;
+  height: 100vh;
+  background-color: var(--adm-color-background);
   margin: 0 auto;
   display: block;
-  margin-right: auto;
-`
-
-const BackgroundWrapper = styled.div`
-  width: 100%;
-  height: 100vh;
-  margin: auto;
-  background-color: var(--adm-color-background);
 `
 
 function App() {
   return (
-    <MobileWrapper>
-      <BackgroundWrapper>
+    <ThemeProvider theme={theme}>
+      <MobileWrapper>
         <Provider store={state}>
           <BrowserRouter>
             <AppRoutes />
           </BrowserRouter>
         </Provider>
-      </BackgroundWrapper>
-    </MobileWrapper>
+      </MobileWrapper>
+    </ThemeProvider>
   )
 }
 

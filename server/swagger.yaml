@@ -7,6 +7,8 @@ paths:
   /me:
     get:
       summary: Gets the logged user
+      tags:
+        - auth
       responses:
         '200':
           description: The user's data
@@ -29,6 +31,8 @@ paths:
             schema:
               $ref: '#/components/schemas/UserCreationPayload'
       summary: Creates a user
+      tags:
+        - auth
       responses:
         '200':
           description: The created user's data
@@ -62,6 +66,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Auth'
       summary: Unregisters the logged user
+      tags:
+        - auth
       responses:
         '200':
           description: User unregistered successfully
@@ -90,6 +96,8 @@ paths:
   /me/matches:
     get:
       summary: Get all matches on which the logged user participated
+      tags:
+        - matches
       responses:
         '200':
           description: The matches related to the given user
@@ -121,6 +129,8 @@ paths:
                 $ref: '#/components/schemas/InternalError'
     post:
       summary: Creates a match for the logged user
+      tags:
+        - matches
       requestBody:
         content:
           application/json:
@@ -156,6 +166,8 @@ paths:
   /me/friends:
     get:
       summary: Returns all the logged user's friends, including anonymous ones
+      tags:
+        - friends
       responses:
         '200':
           description: The friends related to the given user
@@ -177,6 +189,8 @@ paths:
   /me/anonfriends:
     post:
       summary: Creates an anonymous friend for the logged user
+      tags:
+        - friends
       requestBody:
         content:
           application/json:
@@ -239,6 +253,8 @@ paths:
   /auth:
     post:
       summary: Log in with user
+      tags:
+        - auth
       requestBody:
         content:
           application/json:
@@ -334,6 +350,8 @@ paths:
   /matches/{matchId}:
     get:
       summary: Get a match by id, along with its paticipants
+      tags:
+        - matches
       parameters:
         - in: path
           name: matchId
@@ -356,6 +374,36 @@ paths:
                       $ref: '#/components/schemas/HydratedMatchParticipant'
         '401':
           description: Invalid credentials
+        '404':
+          description: No match was found with the provided id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+    delete:
+      summary: Deletes a match by id, along with its paticipants (NOT IMPLEMENTED)
+      tags:
+        - matches
+      parameters:
+        - in: path
+          name: matchId
+          schema:
+            type: integer
+          required: true
+          description: id of the match to be deleted
+      responses:
+        '200':
+          description: The match has been successfully deleted
+        '401':
+          description: Invalid credentials
+        '403':
+          description: You don't have the needed permissions to delete the match
         '404':
           description: No match was found with the provided id
           content:

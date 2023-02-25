@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `match` (
   `date` STRING,
   `duration` INTEGER,
   `notes` TEXT
+  `deletedAt` TEXT
 );
 
 CREATE TABLE IF NOT EXISTS `matchParticipant` (

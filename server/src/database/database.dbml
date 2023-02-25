@@ -25,6 +25,7 @@ Table match {
   date STRING
   duration INTEGER [note: 'Match duration in seconds']
   notes TEXT
+  deletedAt STRING
 
   Indexes {
     authorId

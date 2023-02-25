@@ -387,7 +387,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalError'
     delete:
-      summary: Deletes a match by id, along with its paticipants (NOT IMPLEMENTED)
+      summary: Deletes a match by id
       tags:
         - matches
       parameters:

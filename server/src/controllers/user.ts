@@ -5,18 +5,13 @@ import validateUser from '../schemas/user'
 import validateAuth from '../schemas/auth'
 import * as userModel from '../models/user'
 import { getErrorMessage } from '../schemas/utils'
-import { produce } from 'immer'
 import { logInternalError } from '../utils/log'
 
 export const create: RequestHandler = async (req, res) => {
-  const rawUser = req.body
-  if (!rawUser) {
+  const user = req.body
+  if (!user) {
     return res.status(400).send('bla')
   }
-
-  const user = produce(rawUser, (user: Record<string, unknown>) => {
-    user.age = typeof user.age === 'string' ? parseInt(user.age) : user.age
-  })
 
   const validUser = validateUser(user)
   if (!validUser) {

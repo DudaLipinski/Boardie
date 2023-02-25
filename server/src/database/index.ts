@@ -10,6 +10,9 @@ const dbCli = new sqlite3Cli.Database('./database.db', (error) => {
   console.log('Connected to database')
 })
 
+/**
+ * Those dorky addons are meant to go away once we migrate to MySQL.
+ */
 function asyncRun(statement: string) {
   return new Promise<boolean>((resolve, reject) => {
     dbCli.run(statement, function (err) {
@@ -20,7 +23,6 @@ function asyncRun(statement: string) {
     })
   })
 }
-
 const modifiedDbCli: typeof dbCli & { asyncRun?: typeof asyncRun } = dbCli
 modifiedDbCli.asyncRun = asyncRun
 

@@ -62,12 +62,41 @@ export const getById: RequestHandler = async (req, res) => {
   }
 
   try {
-    const match = await matchesModel.getById({ id: matchId })
+    const match = await matchesModel.getWithParticipantsById({ id: matchId })
     if (!match) {
-      return res.status(404).send('Match not found')
+      return res.sendStatus(404)
     }
 
     res.status(200).send(match)
+  } catch (e) {
+    logInternalError(e)
+    res.sendStatus(500)
+  }
+}
+
+export const deleteById: RequestHandler = async (req, res) => {
+  if (!req.params.matchId) {
+    return res.sendStatus(400)
+  }
+  const matchId = parseInt(req.params.matchId, 10)
+
+  try {
+    const match = await matchesModel.getById({ id: matchId })
+    if (!match) {
+      return res.sendStatus(404)
+    }
+
+    const loggedUserId = req.userId
+    if (match.authorId !== loggedUserId) {
+      return res.sendStatus(403)
+    }
+
+    const matchDeleted = await matchesModel.deleteById({ id: matchId })
+    if (!matchDeleted) {
+      return res.sendStatus(404)
+    }
+
+    res.sendStatus(200)
   } catch (e) {
     logInternalError(e)
     res.sendStatus(500)

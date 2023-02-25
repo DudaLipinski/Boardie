@@ -1,5 +1,15 @@
 import db from '.'
 
+/**
+ * I'm not proud of this solution, but it's a fast way that I came up with to
+ * avoid the need of writing a disclaimer for the API consumers each time
+ * some breaking changes are introduced.
+ *
+ * This is mainly for development purposes during the stage where the API
+ * still uses SQLite as a database, and will be removed once we migrate to
+ * a more robust database.
+ */
+
 const currentUserVersion = 1
 
 function getUserVersion() {

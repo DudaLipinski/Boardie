@@ -1,6 +1,10 @@
 import omit from 'lodash.omit'
 
 import db from '../database'
+import { prepareParameters } from './utils'
+import { CURRENT_DATETIME } from '../utils/sql'
+
+const ISNT_DELETED = 'deletedAt IS NULL'
 
 export interface Match {
   id: string
@@ -64,7 +68,7 @@ const digestMatchParticipants = (match: MatchWithParticipantsData) => {
 const GET_MATCH_WITH_PARTICIPANTS_QUERY = `
   SELECT
     m.*,
-    m.rowid as id,
+    m.rowId as id,
     group_concat(mp.fullName, '","') as participantsFullNames,
     group_concat(mp.score) as participantsScores
   FROM
@@ -102,11 +106,12 @@ export const create = (match: Omit<Match, 'id'>) => {
   })
 }
 
-export const getById = ({ id }: { id: string }) => {
+export const getWithParticipantsById = ({ id }: { id: string }) => {
   const query = `
     ${GET_MATCH_WITH_PARTICIPANTS_QUERY}
     WHERE
-      m.rowid = $id;
+      m.rowId = $id
+      AND ${ISNT_DELETED};
   `
 
   return new Promise<DigestedMatch | null>((resolve, reject) => {
@@ -120,7 +125,7 @@ export const getById = ({ id }: { id: string }) => {
 
         if (error) {
           reject(
-            `An error occurred while trying to fetch matches by id: ${error?.message}`
+            `An error occurred while trying to fetch a match and its participants by id: ${error?.message}`
           )
         }
 
@@ -134,11 +139,63 @@ export const getById = ({ id }: { id: string }) => {
   })
 }
 
+export const getById = (params: { id: number }) => {
+  const query = `
+    SELECT *, rowId as id FROM match
+    WHERE
+      rowId = $id
+      AND ${ISNT_DELETED};
+  `
+
+  return new Promise<Match | null>((resolve, reject) => {
+    db.get(
+      query,
+      prepareParameters(params),
+      function (error: any, match: Match) {
+        if (!match) {
+          return resolve(null)
+        }
+
+        if (error) {
+          return reject(
+            `An error occurred while trying to fetch a match by id: ${error?.message}`
+          )
+        }
+
+        resolve(match)
+      }
+    )
+  })
+}
+
+export const deleteById = (params: { id: number }) => {
+  const query = `
+    UPDATE match
+    SET deletedAt = ${CURRENT_DATETIME}
+    WHERE
+      rowId = $id
+      AND ${ISNT_DELETED};
+  `
+
+  return new Promise<boolean>((resolve, reject) => {
+    db.run(query, prepareParameters(params), function (error) {
+      if (error) {
+        return reject(
+          `An error occurred while trying to delete a match: ${error?.message}`
+        )
+      }
+
+      resolve(!!this.changes && this.changes > 0)
+    })
+  })
+}
+
 export const getAllByAuthor = ({ authorId }: { authorId: number }) => {
   const query = `
     ${GET_MATCH_WITH_PARTICIPANTS_QUERY}
     WHERE
-      m.authorId = $authorId;
+      m.authorId = $authorId
+      AND ${ISNT_DELETED};
   `
 
   return new Promise<DigestedMatch[]>((resolve, reject) => {

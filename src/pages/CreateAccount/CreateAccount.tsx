@@ -1,38 +1,60 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 import { createUser } from '../../services/user'
 
 import { useDispatch } from 'react-redux'
 import { actions as userActions } from '../../state/user'
 
 import { motion } from 'framer-motion'
-import { User } from '../../types/User'
-import { Container, TextField, Box, Typography, Button } from '@mui/material'
+import { TextField, Box, Typography, Button } from '@mui/material'
+
+const textFieldProps = {
+  fullWidth: true,
+  required: true,
+  margin: 'dense',
+} as const
+
+const validationSchema = yup.object({
+  email: yup.string().email('Invalid email address'),
+  password: yup
+    .string()
+    .min(8, 'Password should be of minimum 8 characters length'),
+})
 
 export const CreateAccount = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const createNewAccount = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const formik = useFormik({
+    initialValues: {
+      firstName: '',
+      middleAndSurname: '',
+      email: '',
+      age: '',
+      password: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      createUser(values).then((createdUser) => {
+        if (!createdUser) {
+          return
+        }
+        dispatch(userActions.setUser(createdUser))
+      })
 
-    const data = new FormData(event.currentTarget)
+      navigate('/dashboard')
+    },
+  })
 
-    const createUserPayload: Omit<User, 'id' | 'token'> = {
-      firstName: data.get('firstName') as string,
-      middleAndSurname: data.get('middleAndSurname') as string,
-      email: data.get('email') as string,
-      age: data.get('age') as string,
-      password: data.get('password') as string,
+  const getFormikProps = (field: keyof typeof formik.touched) => {
+    const error = formik.touched[field] && Boolean(formik.errors[field])
+    const helperText = formik.touched[field] && formik.errors[field]
+
+    return {
+      error: error,
+      helperText: helperText,
     }
-
-    createUser(createUserPayload).then((createdUser) => {
-      if (!createdUser) {
-        return
-      }
-      dispatch(userActions.setUser(createdUser))
-    })
-
-    navigate('/dashboard')
   }
 
   return (
@@ -43,109 +65,77 @@ export const CreateAccount = () => {
       exit={{ opacity: 0 }}
       style={{ height: 'inherit' }}
     >
-      <Container
-        sx={{
-          height: 'inherit',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}
+      <Box
+        height="inherit"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap="12px"
       >
+        <Typography variant="h1" component="h1" align="center" fontWeight="600">
+          Boardie
+        </Typography>
+        <Typography gutterBottom align="center">
+          Please fill your details to create your account.
+        </Typography>
         <Box
-          sx={{
-            width: '80%',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: '12px',
-          }}
+          component="form"
+          onSubmit={formik.handleSubmit}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          gap="12px"
         >
-          <Typography
-            variant="h1"
-            component="h1"
-            align="center"
-            sx={{ fontWeight: '600' }}
-          >
-            Boardie
-          </Typography>
-          <Typography gutterBottom align="center">
-            Please fill your details to create your account.
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={createNewAccount}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              gap: '12px',
-            }}
-          >
-            <TextField
-              fullWidth
-              required
-              variant="filled"
-              id="firstName"
-              name="firstName"
-              label="First name"
-              margin="dense"
-              type="text"
-            />
-            <TextField
-              fullWidth
-              required
-              variant="filled"
-              id="middleAndSurname"
-              name="middleAndSurname"
-              label="Last name"
-              margin="dense"
-              type="text"
-            />
-            <TextField
-              fullWidth
-              required
-              variant="filled"
-              id="email"
-              name="email"
-              label="E-mail"
-              margin="dense"
-              type="email"
-            />
-            <TextField
-              fullWidth
-              required
-              variant="filled"
-              id="age"
-              name="age"
-              label="Age"
-              margin="dense"
-              type="number"
-              InputProps={{ inputProps: { min: '0', max: '99' } }}
-            />
-            <TextField
-              fullWidth
-              required
-              variant="filled"
-              id="password"
-              name="password"
-              label="Password"
-              margin="dense"
-              type="password"
-            />
-            <Button fullWidth variant="contained" size="large" type="submit">
-              Create account
-            </Button>
-          </Box>
-          <Box
-            sx={{
-              margin: '12px 0',
-            }}
-          >
-            <Link to="/login">Login</Link>
-          </Box>
+          <TextField
+            id="firstName"
+            label="First name"
+            type="text"
+            value={formik.values.firstName}
+            onChange={formik.handleChange}
+            {...textFieldProps}
+          />
+          <TextField
+            id="middleAndSurname"
+            label="Last name"
+            type="text"
+            value={formik.values.middleAndSurname}
+            onChange={formik.handleChange}
+            {...textFieldProps}
+          />
+          <TextField
+            id="email"
+            label="Email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            {...getFormikProps('email')}
+            {...textFieldProps}
+          />
+          <TextField
+            id="age"
+            label="Age"
+            type="number"
+            value={formik.values.age}
+            onChange={formik.handleChange}
+            InputProps={{ inputProps: { min: '0', max: '99' } }}
+            {...textFieldProps}
+          />
+          <TextField
+            id="password"
+            label="Password"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            {...getFormikProps('password')}
+            {...textFieldProps}
+          />
+          <Button fullWidth variant="contained" size="large" type="submit">
+            Create account
+          </Button>
         </Box>
-      </Container>
+        <Box margin="12px 0" textAlign="center">
+          <Link to="/login">Login</Link>
+        </Box>
+      </Box>
     </motion.div>
   )
 }

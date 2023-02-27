@@ -6,9 +6,7 @@ import { useDispatch } from 'react-redux'
 import { actions as userActions } from '../../state/user'
 
 import { motion } from 'framer-motion'
-import { User } from '../../types/User'
 import {
-  Container,
   Box,
   Typography,
   TextField,
@@ -16,31 +14,31 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@mui/material'
+import { useFormik } from 'formik'
 
 export const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit: (values) => {
+      authUser(values)
+        .then((response) => {
+          if (!response) {
+            throw new Error('Internal error')
+          }
+          dispatch(userActions.setUser(response.user))
+          navigate('/dashboard')
+        })
+        .catch((error: any) => alert(error.message))
 
-    const data = new FormData(event.currentTarget)
-
-    const loginPayload: Pick<User, 'email' | 'password'> = {
-      email: data.get('email') as string,
-      password: data.get('password') as string,
-    }
-
-    authUser(loginPayload)
-      .then((response) => {
-        if (!response) {
-          throw new Error('Internal error')
-        }
-        dispatch(userActions.setUser(response.user))
-        navigate('/dashboard')
-      })
-      .catch((error: any) => alert(error.message))
-  }
+      navigate('/dashboard')
+    },
+  })
 
   return (
     <motion.div
@@ -50,89 +48,70 @@ export const Login = () => {
       exit={{ opacity: 0 }}
       style={{ height: 'inherit' }}
     >
-      <Container
-        sx={{
-          height: 'inherit',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}
+      <Box
+        height="inherit"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap="12px"
       >
+        <Typography variant="h1" component="h1" align="center" fontWeight="600">
+          Boardie
+        </Typography>
+        <Typography gutterBottom align="center">
+          Please fill your details to access your account.
+        </Typography>
         <Box
-          sx={{
-            width: '80%',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: '12px',
-          }}
+          component="form"
+          onSubmit={formik.handleSubmit}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          gap="12px"
         >
-          <Typography
-            variant="h1"
-            component="h1"
-            align="center"
-            sx={{ fontWeight: '600' }}
-          >
-            Boardie
-          </Typography>
-          <Typography gutterBottom align="center">
-            Please fill your details to access your account.
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              gap: '12px',
-            }}
-          >
-            <TextField
-              fullWidth
-              required
-              variant="filled"
-              id="email"
-              name="email"
-              label="E-mail"
-              margin="none"
-              type="email"
-            />
-            <TextField
-              fullWidth
-              required
-              variant="filled"
-              id="password"
-              name="password"
-              label="Password"
-              margin="dense"
-              type="password"
-            />
-            <FormControlLabel
-              value="end"
-              control={<Checkbox />}
-              label="Remember me"
-              labelPlacement="end"
-            />
-            <Button fullWidth variant="contained" size="large" type="submit">
-              Login
-            </Button>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '100%',
-              margin: '12px 0',
-            }}
-          >
-            <Link to="#">Forgot password</Link>
-            <Link to="/create-account">Register now!</Link>
-          </Box>
+          <TextField
+            fullWidth
+            required
+            variant="filled"
+            id="email"
+            label="E-mail"
+            margin="dense"
+            type="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+          />
+          <TextField
+            fullWidth
+            required
+            variant="filled"
+            id="password"
+            label="Password"
+            margin="dense"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+          />
+          <FormControlLabel
+            value="end"
+            control={<Checkbox />}
+            label="Remember me"
+            labelPlacement="end"
+          />
+          <Button fullWidth variant="contained" size="large" type="submit">
+            Login
+          </Button>
         </Box>
-      </Container>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          margin="12px 0"
+          gap="12px"
+        >
+          <Link to="#">Forgot password</Link>
+          <Link to="/create-account">Register now!</Link>
+        </Box>
+      </Box>
     </motion.div>
   )
 }

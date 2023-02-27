@@ -1,34 +1,44 @@
 import { authUser } from '../../services/user'
+import { Link } from 'react-router-dom'
 
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { actions as userActions } from '../../state/user'
-import { Link } from 'react-router-dom'
 
-import * as Styled from './Login.styles'
-import { Input } from '../../components/Input'
-import { Form } from '../../components/Form'
-import { Centralizer } from '../../components/Centralizer'
-import { Button, AutoCenter } from 'antd-mobile'
 import { motion } from 'framer-motion'
-import { User } from '../../types/User'
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+} from '@mui/material'
+import { useFormik } from 'formik'
 
 export const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleLogin = (loginPayload: Pick<User, 'email' | 'password'>) => {
-    authUser(loginPayload)
-      .then((response) => {
-        if (!response) {
-          throw new Error('Internal error')
-        }
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit: (values) => {
+      authUser(values)
+        .then((response) => {
+          if (!response) {
+            throw new Error('Internal error')
+          }
+          dispatch(userActions.setUser(response.user))
+          navigate('/dashboard')
+        })
+        .catch((error: any) => alert(error.message))
 
-        dispatch(userActions.setUser(response.user))
-        navigate('/dashboard')
-      })
-      .catch((error: any) => alert(error.message))
-  }
+      navigate('/dashboard')
+    },
+  })
 
   return (
     <motion.div
@@ -38,65 +48,70 @@ export const Login = () => {
       exit={{ opacity: 0 }}
       style={{ height: 'inherit' }}
     >
-      <Centralizer>
-        <AutoCenter>
-          <Styled.Title>Boardy</Styled.Title>
-        </AutoCenter>
-        <Styled.Paragraph>
+      <Box
+        height="inherit"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap="12px"
+      >
+        <Typography variant="h1" component="h1" align="center" fontWeight="600">
+          Boardie
+        </Typography>
+        <Typography gutterBottom align="center">
           Please fill your details to access your account.
-        </Styled.Paragraph>
-        <Form
-          name="normal_login"
-          layout="vertical"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={handleLogin}
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          gap="12px"
         >
-          <Form.Item
-            name="email"
+          <TextField
+            fullWidth
+            required
+            variant="filled"
+            id="email"
             label="E-mail"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your e-mail!',
-              },
-            ]}
-          >
-            <Input placeholder="E-mail" />
-          </Form.Item>
-          <Form.Item
-            name="password"
+            margin="dense"
+            type="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+          />
+          <TextField
+            fullWidth
+            required
+            variant="filled"
+            id="password"
             label="Password"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your Password!',
-              },
-            ]}
-          >
-            <Input type="password" placeholder="Password" />
-          </Form.Item>
-          <Form.Item>
-            <Styled.Checkbox>Remember me</Styled.Checkbox>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              block
-              size="large"
-              color="primary"
-              type="submit"
-              style={{ fontSize: 'var(--adm-font-size-6)' }}
-            >
-              Login
-            </Button>
-            <Styled.WrapperLinks>
-              <Link to="/create-account">Register now!</Link>
-              <Link to="">Forgot password</Link>
-            </Styled.WrapperLinks>
-          </Form.Item>
-        </Form>
-      </Centralizer>
+            margin="dense"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+          />
+          <FormControlLabel
+            value="end"
+            control={<Checkbox />}
+            label="Remember me"
+            labelPlacement="end"
+          />
+          <Button fullWidth variant="contained" size="large" type="submit">
+            Login
+          </Button>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          margin="12px 0"
+          gap="12px"
+        >
+          <Link to="#">Forgot password</Link>
+          <Link to="/create-account">Register now!</Link>
+        </Box>
+      </Box>
     </motion.div>
   )
 }

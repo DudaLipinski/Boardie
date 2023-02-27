@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { User } from '../types/User'
 
-export const createUser = (createUserPayload: Omit<User, 'id'>) =>
+export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
   axios
     .post<User>('http://localhost:3007/me', createUserPayload)
     .then((response) => {

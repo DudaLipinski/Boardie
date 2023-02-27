@@ -1,32 +1,60 @@
-import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 import { createUser } from '../../services/user'
 
 import { useDispatch } from 'react-redux'
 import { actions as userActions } from '../../state/user'
 
-import * as Styled from '../Login/Login.styles'
-
 import { motion } from 'framer-motion'
-import { Button, AutoCenter } from 'antd-mobile'
-import { Centralizer } from '../../components/Centralizer'
-import { Input } from '../../components/Input'
-import { Form } from '../../components/Form'
-import { User } from '../../types/User'
+import { TextField, Box, Typography, Button } from '@mui/material'
+
+const textFieldProps = {
+  fullWidth: true,
+  required: true,
+  margin: 'dense',
+} as const
+
+const validationSchema = yup.object({
+  email: yup.string().email('Invalid email address'),
+  password: yup
+    .string()
+    .min(8, 'Password should be of minimum 8 characters length'),
+})
 
 export const CreateAccount = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const createNewAccount = (createUserPayload: Omit<User, 'id'>) => {
-    createUser(createUserPayload).then((createdUser) => {
-      if (!createdUser) {
-        return
-      }
-      dispatch(userActions.setUser(createdUser))
-    })
+  const formik = useFormik({
+    initialValues: {
+      firstName: '',
+      middleAndSurname: '',
+      email: '',
+      age: '',
+      password: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      createUser(values).then((createdUser) => {
+        if (!createdUser) {
+          return
+        }
+        dispatch(userActions.setUser(createdUser))
+      })
 
-    navigate('/dashboard')
+      navigate('/dashboard')
+    },
+  })
+
+  const getFormikProps = (field: keyof typeof formik.touched) => {
+    const error = formik.touched[field] && Boolean(formik.errors[field])
+    const helperText = formik.touched[field] && formik.errors[field]
+
+    return {
+      error: error,
+      helperText: helperText,
+    }
   }
 
   return (
@@ -37,98 +65,77 @@ export const CreateAccount = () => {
       exit={{ opacity: 0 }}
       style={{ height: 'inherit' }}
     >
-      <Centralizer>
-        <AutoCenter>
-          <Styled.Title>Boardy</Styled.Title>
-        </AutoCenter>
-        <Styled.Paragraph>
+      <Box
+        height="inherit"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap="12px"
+      >
+        <Typography variant="h1" component="h1" align="center" fontWeight="600">
+          Boardie
+        </Typography>
+        <Typography gutterBottom align="center">
           Please fill your details to create your account.
-        </Styled.Paragraph>
-        <Form name="normal_login" layout="vertical" onFinish={createNewAccount}>
-          <Form.Item
-            name={'firstName'}
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          gap="12px"
+        >
+          <TextField
+            id="firstName"
             label="First name"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your first name!',
-              },
-            ]}
-          >
-            <Input placeholder="First name" />
-          </Form.Item>
-          <Form.Item
-            name={'middleAndSurname'}
+            type="text"
+            value={formik.values.firstName}
+            onChange={formik.handleChange}
+            {...textFieldProps}
+          />
+          <TextField
+            id="middleAndSurname"
             label="Last name"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your last name',
-              },
-            ]}
-          >
-            <Input placeholder="Last name" />
-          </Form.Item>
-          <Form.Item
-            name={'email'}
+            type="text"
+            value={formik.values.middleAndSurname}
+            onChange={formik.handleChange}
+            {...textFieldProps}
+          />
+          <TextField
+            id="email"
             label="Email"
-            rules={[
-              {
-                type: 'email',
-                required: true,
-                message: 'Please input your e-mail',
-              },
-            ]}
-          >
-            <Input placeholder="E-mail" />
-          </Form.Item>
-          <Form.Item
-            name={'age'}
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            {...getFormikProps('email')}
+            {...textFieldProps}
+          />
+          <TextField
+            id="age"
             label="Age"
-            rules={[
-              {
-                min: 0,
-                max: 99,
-                required: true,
-                message: 'Please input your age',
-              },
-            ]}
-          >
-            <Input type={'number'} placeholder="Age" />
-          </Form.Item>
-          <Form.Item
+            type="number"
+            value={formik.values.age}
+            onChange={formik.handleChange}
+            InputProps={{ inputProps: { min: '0', max: '99' } }}
+            {...textFieldProps}
+          />
+          <TextField
+            id="password"
             label="Password"
-            name={'password'}
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password',
-              },
-            ]}
-          >
-            <Input type="password" placeholder="Password" />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              block
-              size="large"
-              color="primary"
-              type="submit"
-              style={{ fontSize: 'var(--adm-font-size-6)' }}
-            >
-              Create Account
-            </Button>
-            <AutoCenter
-              style={{
-                fontSize: 'var(--adm-font-size-6)',
-                marginTop: '20px',
-              }}
-            >
-              <Link to="/login">Login</Link>
-            </AutoCenter>
-          </Form.Item>
-        </Form>
-      </Centralizer>
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            {...getFormikProps('password')}
+            {...textFieldProps}
+          />
+          <Button fullWidth variant="contained" size="large" type="submit">
+            Create account
+          </Button>
+        </Box>
+        <Box margin="12px 0" textAlign="center">
+          <Link to="/login">Login</Link>
+        </Box>
+      </Box>
     </motion.div>
   )
 }

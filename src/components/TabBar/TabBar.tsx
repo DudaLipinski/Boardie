@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { tabItems } from './tabItems'
 
 const Bottom = styled.nav`
+  z-index: 9;
   flex: 0;
   border-top: solid 1px var(--adm-color-border);
 `

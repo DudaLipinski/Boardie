@@ -1,28 +1,16 @@
 import { TabBar } from '../components/TabBar/TabBar'
-import styled from 'styled-components'
 import { Navbar } from '../components/Navbar/Navbar'
 import { AuthenticatedRoutes } from './AuthenticatedRoutes'
-
-export const MenuWrapper = styled.div`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-`
-
-export const Content = styled.div`
-  padding: 12px 12px;
-  flex: 1;
-  display: flex;
-`
+import { Box } from '@mui/material'
 
 export const AuthenticatedWrapper = () => {
   return (
-    <MenuWrapper>
+    <Box height="100vh" display="flex" flexDirection="column" width="inherit">
       <Navbar />
-      <Content>
+      <Box display="flex" flex="1" height="inherit" overflow="hidden auto">
         <AuthenticatedRoutes />
-      </Content>
+      </Box>
       <TabBar />
-    </MenuWrapper>
+    </Box>
   )
 }

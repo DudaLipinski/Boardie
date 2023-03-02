@@ -8,17 +8,15 @@ interface Props {
 }
 
 export const MatchInfo = ({ boardgameName, date, duration }: Props) => {
-  const [weekDay, month, day] = dayjs(date).format('ddd, MMM, D').split(',')
+  const [weekDay, month, day] = dayjs(date).format('ddd MMM D').split(' ')
 
   return (
     <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: 'inherit',
-        alignItems: 'center',
-      }}
+      display="flex"
+      flexDirection="row"
+      justifyContent="space-between"
+      width="inherit"
+      alignItems="center"
     >
       <Box textAlign="center">
         <Typography
@@ -31,9 +29,9 @@ export const MatchInfo = ({ boardgameName, date, duration }: Props) => {
         </Typography>
         <Typography
           variant="body1"
+          margin="-5px 0"
           fontSize="18px"
           fontWeight="700"
-          margin="-5px 0"
           color="primary.darker"
         >
           {day}
@@ -51,18 +49,18 @@ export const MatchInfo = ({ boardgameName, date, duration }: Props) => {
       <Box>
         <Typography
           variant="h3"
-          fontWeight="700"
           margin="5px 0 2px 0"
           fontSize="18px"
+          fontWeight="700"
           color="primary.darker"
         >
           {boardgameName}
         </Typography>
         <Typography
           variant="subtitle1"
-          fontWeight="400"
           margin="0"
           fontSize="14px"
+          fontWeight="400"
           color="secondary.darker"
         >
           {duration} hour gaming between 4pm~6pm

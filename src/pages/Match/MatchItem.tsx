@@ -19,6 +19,7 @@ import {
 import { Match } from '../../types/Match'
 import { Participants } from './Participants'
 import dayjs from 'dayjs'
+import { animationProps } from '../../styles/animation'
 
 const { TextArea } = Input
 const { Title } = Typography
@@ -35,7 +36,7 @@ export const MatchItem = () => {
   }>()
 
   const loadMatch = async (matchId: string) => {
-    const foundMatch: Match = await getMatch(matchId)
+    const foundMatch = await getMatch(matchId)
     setLoading(false)
     setInitialValues({
       boardgameName: foundMatch.boardgameName,
@@ -67,12 +68,7 @@ export const MatchItem = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      transition={{ delay: 0.1 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
+    <motion.div {...animationProps}>
       <Row
         style={{
           justifyContent: 'center',

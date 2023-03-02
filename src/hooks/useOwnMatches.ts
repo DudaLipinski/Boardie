@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Match } from './../types/Match'
 import { useEffect } from 'react'
 import { getMatches } from '../services/match'
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,20 +9,16 @@ import {
 
 export const useOwnMatches = () => {
   const dispatch = useDispatch()
-  const matches: Match[] = useSelector(userSelectors.getUserMatches)
+  const matches = useSelector(userSelectors.getUserMatches)
 
   const loadMatches = async () => {
-    const loadedMatches: Match[] = await getMatches()
+    const loadedMatches = await getMatches()
     dispatch(userActions.setMatches(loadedMatches))
   }
 
   useEffect(() => {
-    if (matches) {
-      return
-    }
-
     loadMatches()
-  }, [matches])
+  }, [])
 
   return matches
 }

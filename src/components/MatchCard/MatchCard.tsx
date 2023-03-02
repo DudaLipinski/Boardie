@@ -1,26 +1,18 @@
 import { Match } from '../../types/Match'
 import { Link } from 'react-router-dom'
+
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
 import { ListItem, IconButton, Box } from '@mui/material'
 import { Avatars } from './Avatars'
 import { MatchInfo } from './MatchInfo'
+import { styledListItem } from './MatchCard.styles'
 
-export const MatchItem = ({ match }: { match: Match }) => {
+export const MatchCard = ({ match }: { match: Match }) => {
   const { id, boardgameName, date, duration, participants } = match
 
   return (
     <Link to={`/matches/${id}`} style={{ textDecoration: 'none' }}>
-      <ListItem
-        sx={{
-          bgcolor: 'background.paper',
-          marginBottom: '10px',
-          borderRadius: '8px',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <ListItem sx={{ ...styledListItem }}>
         <Box width="90%" paddingTop="6px">
           <MatchInfo
             boardgameName={boardgameName}

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Match } from '../types/Match'
 
-export const createMatch = (matchPayload: Omit<Match, 'id' | 'participants'>) =>
+export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
   axios({
     method: 'post',
     url: 'http://localhost:3007/me/matches',

@@ -1,5 +1,5 @@
 export interface Participant {
-  userId: string
+  userId?: string
   fullName: string
   score: number
   isWinner: boolean

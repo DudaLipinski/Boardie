@@ -2,7 +2,7 @@ import ajv from './ajv'
 import { JSONSchemaType } from 'ajv'
 import { User } from '../models/user'
 
-const schema: JSONSchemaType<Omit<User, 'id'>> = {
+const userCreationSchema: JSONSchemaType<Omit<User, 'id'>> = {
   title: 'User',
   description: 'Contact and auth information about a user',
   type: 'object',
@@ -16,5 +16,4 @@ const schema: JSONSchemaType<Omit<User, 'id'>> = {
   required: ['firstName', 'middleAndSurname', 'age', 'email', 'password'],
   additionalProperties: false,
 }
-
-export default ajv.compile(schema)
+export const validateUserCreationSchema = ajv.compile(userCreationSchema)

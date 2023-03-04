@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import validateAuth from '../schemas/auth'
+import { validateAuthSchema } from '../schemas/auth'
 
 import * as userModel from '../models/user'
 import { generateAccessToken } from '../auth'
@@ -12,9 +12,9 @@ export const auth: RequestHandler = async (req, res) => {
     return res.status(400).send('You must provide an email and password')
   }
 
-  const validAuth = validateAuth(auth)
+  const validAuth = validateAuthSchema(auth)
   if (!validAuth) {
-    const errorMessage = getErrorMessage(validateAuth)
+    const errorMessage = getErrorMessage(validateAuthSchema)
     res.status(400).send(errorMessage)
     return
   }

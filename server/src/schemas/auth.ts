@@ -2,7 +2,7 @@ import ajv from './ajv'
 import { JSONSchemaType } from 'ajv'
 import { User } from '../models/user'
 
-const schema: JSONSchemaType<Pick<User, 'email' | 'password'>> = {
+const authSchema: JSONSchemaType<Pick<User, 'email' | 'password'>> = {
   title: 'auth',
   description: 'Contact and auth information about a user',
   type: 'object',
@@ -14,4 +14,4 @@ const schema: JSONSchemaType<Pick<User, 'email' | 'password'>> = {
   additionalProperties: false,
 }
 
-export default ajv.compile(schema)
+export const validateAuthSchema = ajv.compile(authSchema)

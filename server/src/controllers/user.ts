@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express'
 import omit from 'lodash.omit'
 
-import validateUser from '../schemas/user'
-import validateAuth from '../schemas/auth'
+import { validateUserCreationSchema } from '../schemas/user'
+import { validateAuthSchema } from '../schemas/auth'
 import * as userModel from '../models/user'
 import { getErrorMessage } from '../schemas/utils'
 import { logInternalError } from '../utils/log'
@@ -13,9 +13,9 @@ export const create: RequestHandler = async (req, res) => {
     return res.status(400).send('bla')
   }
 
-  const validUser = validateUser(user)
+  const validUser = validateUserCreationSchema(user)
   if (!validUser) {
-    const errorMessage = getErrorMessage(validateUser)
+    const errorMessage = getErrorMessage(validateUserCreationSchema)
 
     res.status(400).send({ message: errorMessage })
     return
@@ -73,9 +73,9 @@ export const unregisterLoggedUser: RequestHandler = async (req, res) => {
       .send({ message: "You should provide user's email and password" })
   }
 
-  const validAuth = validateAuth(auth)
+  const validAuth = validateAuthSchema(auth)
   if (!validAuth) {
-    const errorMessage = getErrorMessage(validateAuth)
+    const errorMessage = getErrorMessage(validateAuthSchema)
 
     res.status(400).send({ message: errorMessage })
     return

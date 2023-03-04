@@ -47,7 +47,7 @@ export const create = (match: Omit<Match, 'id'>) => {
   })
 }
 
-export const getHydratedById = ({ id }: { id: string }) => {
+export const getHydratedById = ({ id }: { id: number }) => {
   const query = `
     SELECT
       m.*,

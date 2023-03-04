@@ -35,10 +35,10 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
 
     await matchParticipantModel.createMultiple({ matchId, participants })
 
-    res.send({
+    const createdMatch = await matchesModel.getHydratedById({
       id: matchId,
-      ...matchDTO,
     })
+    res.send(omit(createdMatch, ['authorId'])).status(200)
   } catch (e) {
     logInternalError(e)
     res.sendStatus(500)
@@ -64,7 +64,7 @@ export const getById: RequestHandler = async (req, res) => {
   }
 
   try {
-    const match = await matchesModel.getHydratedById({ id: matchId })
+    const match = await matchesModel.getHydratedById({ id: parseInt(matchId) })
     if (!match) {
       return res.sendStatus(404)
     }

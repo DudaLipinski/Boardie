@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `unregisteredAt` TEXT
 );
 
-CREATE TABLE `anonFriend` (
+CREATE TABLE IF NOT EXISTS `anonFriend` (
   `userId` INTEGER NOT NULL,
   `fullName` TEXT
 );
@@ -44,8 +44,10 @@ CREATE TABLE IF NOT EXISTS `match` (
 
 CREATE TABLE IF NOT EXISTS `matchParticipant` (
   `matchId` INTEGER NOT NULL,
-  `fullName` TEXT NOT NULL,
-  `score` INTEGER
+  `userId` INTEGER,
+  `anonFriendId` INTEGER,
+  `score` INTEGER,
+  PRIMARY KEY (`matchId`, `userId`, `anonFriendId`)
 );
 
 ALTER TABLE `anonFriend` ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -63,9 +65,14 @@ CREATE INDEX IF NOT EXISTS `match_index_0` ON `match` (`authorId`);
 
 CREATE INDEX IF NOT EXISTS `matchParticipant_index_1` ON `matchParticipant` (`matchId`);
 
-ALTER TABLE `match` ADD FOREIGN KEY IF NOT EXISTS (`authorId`) REFERENCES `user` (`id`);
+ALTER TABLE `matchParticipant` ADD FOREIGN KEY (`matchId`) REFERENCES `match` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE `matchParticipant` ADD FOREIGN KEY (`matchId`) REFERENCES `match` (`id`);
+ALTER TABLE `matchParticipant` ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `matchParticipant` ADD FOREIGN KEY (`anonFriendId`) REFERENCES `anonFriend` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `match` ADD FOREIGN KEY IF NOT EXISTS (`authorId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;;
+
 
 COMMIT;
 PRAGMA ignore_check_constraints = ON;

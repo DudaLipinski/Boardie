@@ -1,10 +1,8 @@
-/**
- * Append a "$" to the name of each key in the provided object.
- * Values will not be changed.
- */
-export const prepareParameters = (
-  parameters: Record<string, string | number | boolean>
-) =>
+export const prefixKeysWithDollar = <
+  T extends Record<string, string | number | boolean>
+>(
+  parameters: T
+): Record<string, T[keyof T]> =>
   Object.entries(parameters).reduce(
     (result, [key, value]) => ({
       ...result,
@@ -12,3 +10,8 @@ export const prepareParameters = (
     }),
     {}
   )
+
+export enum FriendType {
+  ANON_FRIEND = 'ANON_FRIEND',
+  USER = 'USER',
+}

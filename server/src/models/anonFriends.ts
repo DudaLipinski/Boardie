@@ -1,5 +1,5 @@
 import db from '../database'
-import { prepareParameters } from './utils'
+import { prefixKeysWithDollar } from './utils'
 
 export interface AnonFriend {
   id: number
@@ -19,7 +19,7 @@ export function create(anonFriend: Omit<AnonFriend, 'id'>) {
   `
 
   return new Promise((resolve, reject) => {
-    db.run(query, prepareParameters(anonFriend), function (error) {
+    db.run(query, prefixKeysWithDollar(anonFriend), function (error) {
       if (error) {
         reject(
           `An error occurred while creating an anon friend: ${error?.message}`
@@ -44,7 +44,7 @@ export function getAllByUserId(params: { userId: number }) {
   return new Promise<AnonFriend[]>((resolve, reject) => {
     db.all(
       query,
-      prepareParameters(params),
+      prefixKeysWithDollar(params),
       function (error: any, friends: AnonFriend[]) {
         if (error) {
           reject(

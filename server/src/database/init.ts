@@ -14,8 +14,17 @@ function handleDatabaseError(error: any) {
   process.exit()
 }
 
-function initDb() {
-  return db.asyncRun(`
+async function getSchemaVersion() {
+  const response = await db.asyncGet<{ schema_version: number }>(
+    'PRAGMA schema_version'
+  )
+  return response.schema_version
+}
+
+async function initDb() {
+  const wasDatabaseJustCreated = (await getSchemaVersion()) === 0
+
+  await db.asyncRun(`
     CREATE TABLE IF NOT EXISTS \`user\` (
       \`email\` TEXT NOT NULL,
       \`firstName\` TEXT NOT NULL,
@@ -39,10 +48,14 @@ function initDb() {
     );
     CREATE TABLE IF NOT EXISTS \`matchParticipant\` (
       \`matchId\` INTEGER NOT NULL,
-      \`fullName\` TEXT NOT NULL,
-      \`score\` INTEGER
+      \`userId\` INTEGER,
+      \`anonFriendId\` INTEGER,
+      \`score\` INTEGER,
+      PRIMARY KEY (\`matchId\`, \`userId\`, \`anonFriendId\`)
     );
   `)
+
+  return wasDatabaseJustCreated
 }
 
 initDb().then(runMigrations).catch(handleDatabaseError)

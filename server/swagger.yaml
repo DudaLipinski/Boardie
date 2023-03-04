@@ -112,13 +112,7 @@ paths:
                     participants:
                       type: array
                       items:
-                        allOf:
-                          - $ref: '#/components/schemas/HydratedMatchParticipant'
-                        properties:
-                          isWinner:
-                            type: boolean
-                  required:
-                    - participants
+                        $ref: '#/components/schemas/HydratedMatchParticipant'
         '401':
           description: Invalid credentials
         '500':
@@ -520,8 +514,10 @@ components:
           example: Meeple Catanicus
         # avatar:
         #   type: string
-        isAnonymous:
-          type: boolean
+        type:
+          type: string
+          enum: [ANON_FRIEND, USER]
+          description: type of the friend's user registration
       additionalProperties: false
     AnonFriendBase:
       title: Anonymous friend base data
@@ -542,10 +538,14 @@ components:
         - $ref: '#/components/schemas/AnonFriendBase'
       properties:
         id:
+          type: number
+          example: 1
+        type:
           type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
+          enum: [ANON_FRIEND]
       required:
         - id
+        - type
       additionalProperties: false
     # FriendshipRequestBase:
     #   title: Friendship request base data
@@ -639,18 +639,14 @@ components:
       description: Relationship between a match and participant, along with his score and notes on that specific match
       type: object
       properties:
-        # userId:
-        #   type: integer
-        #   description: id of the user who participated on the match
-        #   example: 13803
-        # unregisteredFriendId:
-        #   type: integer
-        #   description: id of the unregistered friend who participated in the match
-        #   example: 13803
-        fullName: # --- TEMPORARY
+        id:
+          type: integer
+          description: id of the user/anon_friend(depending on the participant type) who participated on the match
+          example: 13803
+        type:
           type: string
-          description: (temporary) full name of the participant
-          example: Maria Lipânska
+          enum: [ANON_FRIEND, USER]
+          description: type of the participant registration
         score:
           type: number
           description: Score that the user achieved on the match
@@ -660,10 +656,11 @@ components:
         #   description: Further details related to the user's perfomance on the match
         #   example: Maria was able to increase her titanium production in the beginning, which snowballed her Terraforming mars company that was increase each of her titanium worth one more MC
       required:
-        - fullName
+        - id
+        - type
         - score
     HydratedMatchParticipant:
-      title: Match participant base
+      title: Hydrated match aprticipant
       description: Relationship between a match and participant, along with his score and notes on that specific match
       type: object
       allOf:
@@ -671,8 +668,12 @@ components:
       properties:
         fullName:
           type: string
-          description: Full name of the user/unregistered friend
+          description: Full name of the user/anon friend
           example: Guilherme Tatibana
+        isWinner:
+          type: boolean
+          description: If the user was a winner or not
+          example: true
       required:
         - fullName
     Error:

@@ -1,17 +1,10 @@
 import ajv from './ajv'
 import { JSONSchemaType } from 'ajv'
-import { MatchParticipant } from '../models/matchParticipant'
+import { MatchParticipantDTO } from '../models/matchParticipants'
 import { Match } from '../models/matches'
+import { FriendType } from '../models/utils'
 
-export interface MatchResponseDTO extends Match {
-  participants: Omit<MatchParticipant, 'matchId'>[]
-}
-
-export type MatchCreationParticipantData = Omit<
-  MatchParticipant,
-  'id' | 'matchId'
->
-
+export type MatchCreationParticipantData = Omit<MatchParticipantDTO, 'fullName'>
 export interface MatchCreationDTO extends Omit<Match, 'id' | 'authorId'> {
   participants: MatchCreationParticipantData[]
 }
@@ -35,10 +28,16 @@ const matchCreationSchema: JSONSchemaType<MatchCreationData> = {
       items: {
         type: 'object',
         properties: {
-          fullName: { type: 'string' },
+          id: { type: 'number' },
+          type: {
+            type: 'string',
+            enum: [FriendType.USER, FriendType.ANON_FRIEND],
+          },
           score: { type: 'number' },
+          isWinner: { type: 'boolean', nullable: true },
         },
-        required: ['fullName', 'score'],
+        required: ['id', 'type', 'score'],
+        additionalProperties: false,
       },
     },
   },

@@ -3,7 +3,6 @@ import { JSONSchemaType } from 'ajv'
 import { AnonFriend } from '../models/anonFriends'
 
 export type AnonFriendCreationDTO = Omit<AnonFriend, 'id'>
-
 const anonFriendCreationSchema: JSONSchemaType<AnonFriendCreationDTO> = {
   title: 'Anonymous friend creation data',
   description: 'Data used to create an anonymous friend',
@@ -15,6 +14,7 @@ const anonFriendCreationSchema: JSONSchemaType<AnonFriendCreationDTO> = {
   required: ['userId', 'fullName'],
   additionalProperties: false,
 }
+
 export const validateAnonFriendCreationSchema = ajv.compile(
   anonFriendCreationSchema
 )

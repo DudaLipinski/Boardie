@@ -10,38 +10,38 @@ import db from '.'
  * a more robust database.
  */
 
-const currentUserVersion = 1
-
-function getUserVersion() {
-  return new Promise<number>((resolve, reject) => {
-    db.get(
-      `PRAGMA user_version`,
-      function (err: any, result: { user_version: number }) {
-        if (err) {
-          return reject(err)
-        }
-
-        resolve(result.user_version)
-      }
-    )
-  })
+async function getUserVersion() {
+  const { user_version } = await db.asyncGet<{ user_version: number }>(
+    'PRAGMA user_version'
+  )
+  return user_version
 }
 
-const updateToLatestUserVersion = () =>
-  db.asyncRun(`PRAGMA user_version = ${currentUserVersion}`)
-
-const migrations: Record<number, string> = {
+const CURRENT_VERSION = 2
+export const migrations: Record<number, string> = {
   0: `
     ALTER TABLE \`match\` ADD COLUMN \`deletedAt\` TEXT;
   `,
+  1: `
+    ALTER TABLE \`matchParticipant\` DROP COLUMN \`fullName\`;
+    ALTER TABLE \`matchParticipant\` ADD COLUMN \`userId\` INTEGER;
+    ALTER TABLE \`matchParticipant\` ADD COLUMN \`anonFriendId\` INTEGER;
+    DELETE FROM \`matchParticipant\`;
+    DELETE FROM \`match\`;
+  `,
 }
+
+const updateToLatestUserVersion = () =>
+  db.asyncRun(`PRAGMA user_version = ${CURRENT_VERSION}`)
 const runMigrations = async (currentVersion: number) => {
-  for (let i = currentVersion; i < currentUserVersion; i++) {
+  for (let i = currentVersion; i < CURRENT_VERSION; i++) {
     if (migrations[i]) {
-      await db.asyncRun(migrations[i])
+      await db.asyncExec(migrations[i])
     }
   }
 }
 
-export default () =>
-  getUserVersion().then(runMigrations).then(updateToLatestUserVersion)
+export default (wasDatabaseJustCreated: boolean) =>
+  wasDatabaseJustCreated
+    ? updateToLatestUserVersion()
+    : getUserVersion().then(runMigrations).then(updateToLatestUserVersion)

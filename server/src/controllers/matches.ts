@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
-import * as matchParticipantModel from '../models/matchParticipant'
+import * as matchParticipantModel from '../models/matchParticipants'
 
 import { MatchCreationDTO, validateMatchCreationSchema } from '../schemas/match'
 import { getErrorMessage } from '../schemas/utils'
@@ -34,20 +34,22 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
     const matchId = await matchesModel.create(match)
 
     await matchParticipantModel.createMultiple({ matchId, participants })
+
+    res.send({
+      id: matchId,
+      ...matchDTO,
+    })
   } catch (e) {
     logInternalError(e)
     res.sendStatus(500)
-    return
   }
-
-  res.sendStatus(200)
 }
 
 export const getAllByLoggedUser: RequestHandler = async (req, res) => {
   const { userId } = req
 
   try {
-    const matches = await matchesModel.getAllByAuthor({ authorId: userId })
+    const matches = await matchesModel.getHydratedByAuthor({ authorId: userId })
     res.status(200).send(matches)
   } catch (e) {
     logInternalError(e)
@@ -62,7 +64,7 @@ export const getById: RequestHandler = async (req, res) => {
   }
 
   try {
-    const match = await matchesModel.getWithParticipantsById({ id: matchId })
+    const match = await matchesModel.getHydratedById({ id: matchId })
     if (!match) {
       return res.sendStatus(404)
     }

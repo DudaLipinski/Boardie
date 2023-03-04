@@ -25,7 +25,7 @@ Table match {
   date STRING
   duration INTEGER [note: 'Match duration in seconds']
   notes TEXT
-  deletedAt STRING
+  deleted_at STRING
 
   Indexes {
     authorId
@@ -35,21 +35,25 @@ Ref: match.authorId > user.id [delete: no action, update: no action]
 
 Table matchParticipant {
   matchId INTEGER [not null]
-  // userId INTEGER [ref: > user.id]
-  // anonFriendId INTEGER [not null, ref: > anonFriend.id]
-  fullName TEXT [not null]
+  userId INTEGER
+  anonFriendId INTEGER
   score INTEGER
   // notes TEXT
 
   Indexes {
     matchId
-    (matchId, fullName) [pk]
+    (matchId, userId, anonFriendId) [pk]
   }
-  // Indexes {
-  //   (matchId, userId, anonFriendId) [pk]
-  // }
+  // TODO: add constraint to require either a userId or an anonFriendId
+  // CONSTRAINT user_or_anon_friend
+  // check (
+  //   (userId IS NOT NULL AND anonFriendId IS NULL)
+  //   OR (userId IS NULL AND anonFriendId IS NOT NULL)
+  // )
 }
 Ref: matchParticipant.matchId > match.id [delete: cascade, update: no action]
+Ref: matchParticipant.userId > user.id [delete: cascade, update: no action]
+Ref: matchParticipant.anonFriendId > anonFriend.id [delete: cascade, update: no action]
 
 
 // --------------

@@ -8,11 +8,12 @@ import * as anonFriendsModel from '../models/anonFriends'
 
 import { getErrorMessage } from '../schemas/utils'
 import { logInternalError } from '../utils/log'
+import { FriendType } from '../models/utils'
 
 interface GenericFriend {
   id: number
   fullName: string
-  isAnonymous: boolean
+  type: FriendType
 }
 
 export const createAnonymousForLoggedUser: RequestHandler = async (
@@ -42,6 +43,7 @@ export const createAnonymousForLoggedUser: RequestHandler = async (
     res.status(200).send({
       id,
       fullName: anonFriend.fullName,
+      type: FriendType.ANON_FRIEND,
     })
   } catch (e) {
     logInternalError(e)
@@ -55,7 +57,7 @@ export const getAllByLoggedUser: RequestHandler = async (req, res) => {
   try {
     const anonFriends: GenericFriend[] = (
       await anonFriendsModel.getAllByUserId({ userId })
-    ).map((friend) => ({ ...friend, isAnonymous: true }))
+    ).map((friend) => ({ ...friend, type: FriendType.ANON_FRIEND }))
 
     res.status(200).send(anonFriends)
   } catch (e) {

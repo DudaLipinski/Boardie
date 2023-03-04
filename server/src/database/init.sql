@@ -18,7 +18,13 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 CREATE TABLE IF NOT EXISTS `anonFriend` (
   `userId` INTEGER NOT NULL,
-  `fullName` TEXT
+  `fullName` TEXT,
+
+  CONSTRAINT fk_userId
+    FOREIGN KEY `userId`
+    REFERENCES  `user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );
 
 -- CREATE TABLE `friendship` (
@@ -38,8 +44,14 @@ CREATE TABLE IF NOT EXISTS `match` (
   `boardgameName` TEXT NOT NULL,
   `date` STRING,
   `duration` INTEGER,
-  `notes` TEXT
-  `deletedAt` TEXT
+  `notes` TEXT,
+  `deletedAt` TEXT,
+
+  CONSTRAINT fk_authorId
+    FOREIGN KEY `authorId`
+    REFERENCES `user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS `matchParticipant` (
@@ -47,10 +59,27 @@ CREATE TABLE IF NOT EXISTS `matchParticipant` (
   `userId` INTEGER,
   `anonFriendId` INTEGER,
   `score` INTEGER,
-  PRIMARY KEY (`matchId`, `userId`, `anonFriendId`)
-);
 
-ALTER TABLE `anonFriend` ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  PRIMARY KEY (`matchId`, `userId`, `anonFriendId`),
+
+  CONSTRAINT fk_matchId
+    FOREIGN KEY `matchId`
+    REFERENCES `match` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+
+  CONSTRAINT fk_userId
+    FOREIGN KEY `userId`
+    REFERENCES `user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+
+  CONSTRAINT fk_anonFriendId
+    FOREIGN KEY `anonFriendId`
+    REFERENCES `anonFriend` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+);
 
 -- ALTER TABLE `friendship` ADD FOREIGN KEY (`userAId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
@@ -64,14 +93,6 @@ ALTER TABLE `anonFriend` ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON 
 CREATE INDEX IF NOT EXISTS `match_index_0` ON `match` (`authorId`);
 
 CREATE INDEX IF NOT EXISTS `matchParticipant_index_1` ON `matchParticipant` (`matchId`);
-
-ALTER TABLE `matchParticipant` ADD FOREIGN KEY (`matchId`) REFERENCES `match` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
-ALTER TABLE `matchParticipant` ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
-ALTER TABLE `matchParticipant` ADD FOREIGN KEY (`anonFriendId`) REFERENCES `anonFriend` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
-ALTER TABLE `match` ADD FOREIGN KEY IF NOT EXISTS (`authorId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;;
 
 
 COMMIT;

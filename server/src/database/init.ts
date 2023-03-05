@@ -41,7 +41,8 @@ async function initDb() {
     CREATE TABLE IF NOT EXISTS \`match\` (
       \`authorId\` INTEGER NOT NULL,
       \`boardgameName\` TEXT NOT NULL,
-      \`date\` STRING,
+      \`startedAt\` STRING,
+      \`endedAt\` STRING,
       \`duration\` INTEGER,
       \`notes\` TEXT
       \`deletedAt\` TEXT

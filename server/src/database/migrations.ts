@@ -17,7 +17,7 @@ async function getUserVersion() {
   return user_version
 }
 
-const CURRENT_VERSION = 2
+const CURRENT_VERSION = 3
 export const migrations: Record<number, string> = {
   0: `
     ALTER TABLE \`match\` ADD COLUMN \`deletedAt\` TEXT;
@@ -28,6 +28,12 @@ export const migrations: Record<number, string> = {
     ALTER TABLE \`matchParticipant\` ADD COLUMN \`anonFriendId\` INTEGER;
     DELETE FROM \`matchParticipant\`;
     DELETE FROM \`match\`;
+  `,
+  2: `
+    ALTER TABLE \`match\` ADD COLUMN \`startedAt\` STRING;
+    UPDATE \`match\` SET \`startedAt\` = \`date\`;
+    ALTER TABLE \`match\` DROP COLUMN \`date\`;
+    ALTER TABLE \`match\` ADD COLUMN \`endedAt\` STRING;
   `,
 }
 

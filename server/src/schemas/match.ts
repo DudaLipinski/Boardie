@@ -20,7 +20,8 @@ const matchCreationSchema: JSONSchemaType<MatchCreationData> = {
   properties: {
     authorId: { type: 'number' },
     boardgameName: { type: 'string' },
-    date: { type: 'string', nullable: true },
+    startedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
+    endedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
     duration: { type: 'number', nullable: true },
     notes: { type: 'string', nullable: true },
     participants: {

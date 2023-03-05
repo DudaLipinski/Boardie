@@ -106,13 +106,7 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:
-                    - $ref: '#/components/schemas/Match'
-                  properties:
-                    participants:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/HydratedMatchParticipant'
+                  $ref: '#/components/schemas/MatchWithParticipants'
         '401':
           description: Invalid credentials
         '500':
@@ -212,38 +206,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalError'
-  # /user/{userId}/friends:
-  #   get:
-  #     summary: Get all friends related to given user
-  #     parameters:
-  #       - in: path
-  #         name: userId
-  #         schema:
-  #           type: integer
-  #         required: true
-  #         description: id of the user to have its friends returned
-  #     responses:
-  #       '200':
-  #         description: The friends related to the given user
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 allOf:
-  #                   - $ref: '#/components/schemas/UserInfo'
-  #       '404':
-  #         description: No user found with the given id
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Error'
-  #       '500':
-  #         description: Unexpected internal error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Error'
   /auth:
     post:
       summary: Log in with user
@@ -280,67 +242,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalError'
-  # /friendship-request/send:
-  #   post:
-  #     summary: Send friendship request
-  #     requestBody:
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/FriendshipRequestBase'
-  #     responses:
-  #       '200':
-  #         description: Friendship request sent
-  #       '409':
-  #         description: Friendship request already exists
-  #       '500':
-  #         description: Unexpected internal error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Error'
-  # /friendship-request/{friendshipRequestId}/accept:
-  #   post:
-  #     summary: Accept friendship request
-  #     parameters:
-  #       - in: path
-  #         name: friendshipRequestId
-  #         schema:
-  #           type: string
-  #         required: true
-  #         description: id of the friendship request to be accepted
-  #     responses:
-  #       '200':
-  #         description: Friendship request accepted successfully
-  #       '404':
-  #         description: Friendship request doesn't exist
-  #       '500':
-  #         description: Unexpected internal error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Error'
-  # /friendship-request/{friendshipRequestId}/decline:
-  #   post:
-  #     summary: Decline friendship request
-  #     parameters:
-  #       - in: path
-  #         name: friendshipRequestId
-  #         schema:
-  #           type: string
-  #         required: true
-  #         description: id of the friendship request to be declined
-  #     responses:
-  #       '200':
-  #         description: Friendship request declined successfully
-  #       '404':
-  #         description: Friendship request doesn't exist
-  #       '500':
-  #         description: Unexpected internal error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Error'
   /matches/{matchId}:
     get:
       summary: Get a match by id, along with its paticipants
@@ -359,15 +260,45 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/Match'
-                properties:
-                  participants:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/HydratedMatchParticipant'
+                $ref: '#/components/schemas/MatchWithParticipants'
         '401':
           description: Invalid credentials
+        '404':
+          description: No match was found with the provided id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+    put:
+      tags:
+        - matches
+      parameters:
+        - in: path
+          name: matchId
+          schema:
+            type: integer
+          required: true
+          description: id of the match to update
+      summary: Update an existing match
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/MatchBase'
+      responses:
+        '200':
+          description: The match has been successfully updated
+        '401':
+          description: Invalid credentials
+        '403':
+          description: You don't have the needed permissions to update the match
         '404':
           description: No match was found with the provided id
           content:
@@ -410,45 +341,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalError'
-    # put:
-    #   parameters:
-    #     - in: path
-    #       name: matchId
-    #       schema:
-    #         type: integer
-    #       required: true
-    #       description: id of the match to update
-    #   summary: Update an existing match
-    #   requestBody:
-    #     content:
-    #       application/json:
-    #         schema:
-    #           allOf:
-    #             - $ref: '#/components/schemas/MatchBase'
-    #           properties:
-    #             participants:
-    #               type: array
-    #               items:
-    #                 $ref: '#/components/schemas/MatchParticipantBase'
-    #   responses:
-    #     '200':
-    #       description: The match was successfully created
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/Match'
-    #     '400':
-    #       description: Incorrect match format
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/Error'
-    #     '500':
-    #       description: Unexpected internal error
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     BearerAuth:
@@ -547,31 +439,6 @@ components:
         - id
         - type
       additionalProperties: false
-    # FriendshipRequestBase:
-    #   title: Friendship request base data
-    #   description: Information that define a friendship request
-    #   type: object
-    #   properties:
-    #     requestingUserId:
-    #       type: string
-    #     requestedUserId:
-    #       type: string
-    #   required:
-    #     - requestingUserId
-    #     - requestedUserId
-    #   additionalProperties: false
-    # FriendshipRequestInfo:
-    #   title: Friendship request info
-    #   description: Existent friendship request info
-    #   type: object
-    #   allOf:
-    #     - $ref: '#/components/schemas/FriendshipRequestBase'
-    #   properties:
-    #     id:
-    #       type: string
-    #   required:
-    #     - id
-    #   additionalProperties: false
     Auth:
       title: Auth
       description: Data to authenticate a user
@@ -594,10 +461,15 @@ components:
           type: string
           description: (temporary) name of the boardgame
           example: Everdell
-        date:
+        startedAt:
           type: string
-          description: Date when the match took place, in UTC
-          example: 2022-17-10 16:30
+          description: Date and time when the match started, in ISO 8601 and UTC
+          example: 2019-11-14T00:55:31.820Z
+          nullable: true
+        endedAt:
+          type: string
+          description: Date and time when the match ended, in ISO 8601 and UTC
+          example: 2019-11-14T00:55:31.820Z
           nullable: true
         duration:
           type: integer
@@ -613,12 +485,7 @@ components:
         #   type: number
         #   description: id of boardgame registered at boardgamegeek api (https://boardgamegeek.com/boardgame/\<boardgameId\>)
         #   example: 174430
-        # winnerUserId:
-        #   type: integer
-        #   description: The id of the user who won the match
-        #   example: 13872
       required:
-        - authorId
         - boardgameName
     Match:
       title: Match
@@ -676,6 +543,17 @@ components:
           example: true
       required:
         - fullName
+    MatchWithParticipants:
+      title: Match with participnats
+      description: The match description, along with its participants
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Match'
+      properties:
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/HydratedMatchParticipant'
     Error:
       type: object
       required:
@@ -694,3 +572,122 @@ components:
           type: string
 security:
   - BearerAuth: []
+
+  # FriendshipRequestBase:
+  #   title: Friendship request base data
+  #   description: Information that define a friendship request
+  #   type: object
+  #   properties:
+  #     requestingUserId:
+  #       type: string
+  #     requestedUserId:
+  #       type: string
+  #   required:
+  #     - requestingUserId
+  #     - requestedUserId
+  #   additionalProperties: false
+  # FriendshipRequestInfo:
+  #   title: Friendship request info
+  #   description: Existent friendship request info
+  #   type: object
+  #   allOf:
+  #     - $ref: '#/components/schemas/FriendshipRequestBase'
+  #   properties:
+  #     id:
+  #       type: string
+  #   required:
+  #     - id
+  #   additionalProperties: false
+  # /friendship-request/send:
+  #   post:
+  #     summary: Send friendship request
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/FriendshipRequestBase'
+  #     responses:
+  #       '200':
+  #         description: Friendship request sent
+  #       '409':
+  #         description: Friendship request already exists
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  # /friendship-request/{friendshipRequestId}/accept:
+  #   post:
+  #     summary: Accept friendship request
+  #     parameters:
+  #       - in: path
+  #         name: friendshipRequestId
+  #         schema:
+  #           type: string
+  #         required: true
+  #         description: id of the friendship request to be accepted
+  #     responses:
+  #       '200':
+  #         description: Friendship request accepted successfully
+  #       '404':
+  #         description: Friendship request doesn't exist
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  # /friendship-request/{friendshipRequestId}/decline:
+  #   post:
+  #     summary: Decline friendship request
+  #     parameters:
+  #       - in: path
+  #         name: friendshipRequestId
+  #         schema:
+  #           type: string
+  #         required: true
+  #         description: id of the friendship request to be declined
+  #     responses:
+  #       '200':
+  #         description: Friendship request declined successfully
+  #       '404':
+  #         description: Friendship request doesn't exist
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  # /user/{userId}/friends:
+  #   get:
+  #     summary: Get all friends related to given user
+  #     parameters:
+  #       - in: path
+  #         name: userId
+  #         schema:
+  #           type: integer
+  #         required: true
+  #         description: id of the user to have its friends returned
+  #     responses:
+  #       '200':
+  #         description: The friends related to the given user
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 allOf:
+  #                   - $ref: '#/components/schemas/UserInfo'
+  #       '404':
+  #         description: No user found with the given id
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'
+  #       '500':
+  #         description: Unexpected internal error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Error'

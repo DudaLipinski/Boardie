@@ -9,7 +9,8 @@ export interface Match {
   id: number
   authorId: number
   boardgameName: string
-  date?: string
+  startedAt?: string
+  endedAt?: string
   duration?: number
   notes?: string
 }
@@ -22,14 +23,16 @@ export const create = (match: Omit<Match, 'id'>) => {
   const query = `INSERT INTO match(
     authorId,
     boardgameName,
-    date,
+    startedAt,
+    endedAt,
     duration,
     notes
-  ) VALUES (?, ?, ?, ?, ?)`
+  ) VALUES (?, ?, ?, ?, ?, ?)`
   const values = [
     match.authorId,
     match.boardgameName,
-    match.date,
+    match.startedAt,
+    match.endedAt,
     match.duration,
     match.notes,
   ]
@@ -88,7 +91,8 @@ export const getHydratedByAuthor = (params: { authorId: number }) => {
     SELECT
       rowId as id,
       boardgameName,
-      date,
+      startedAt,
+      endedAt,
       duration
     FROM match
     WHERE
@@ -108,6 +112,10 @@ export const getHydratedByAuthor = (params: { authorId: number }) => {
         }
 
         try {
+          /**
+           * We are fine with this N+1 query since the server and the database
+           * will be running within the same machine, with low latency
+           */
           const result: HydratedMatch[] = []
           for (const match of matches) {
             const participants = await getAllByMatchId({ matchId: match.id })
@@ -128,7 +136,10 @@ export const getHydratedByAuthor = (params: { authorId: number }) => {
 
 export const getById = (params: { id: number }) => {
   const query = `
-    SELECT *, rowId as id FROM match
+    SELECT
+      rowId as id,
+      *
+    FROM match
     WHERE
       rowId = $id
       AND ${ISNT_DELETED};

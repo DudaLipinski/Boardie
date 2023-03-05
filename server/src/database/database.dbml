@@ -22,7 +22,8 @@ Table match {
   authorId INTEGER [not null]
   // boardgameId TEXT // FUTURE
   boardgameName TEXT [not null]
-  date STRING
+  startedAt STRING
+  endedAt STRING
   duration INTEGER [note: 'Match duration in seconds']
   notes TEXT
   deleted_at STRING

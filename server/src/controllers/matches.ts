@@ -3,31 +3,33 @@ import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
 import * as matchParticipantModel from '../models/matchParticipants'
 
-import { MatchCreationDTO, validateMatchCreationSchema } from '../schemas/match'
+import {
+  validateMatchCreationSchema,
+  validateMatchUpdateSchema,
+} from '../schemas/match'
 import { getErrorMessage } from '../schemas/utils'
 import { logInternalError } from '../utils/log'
 
 export const createForLoggedUser: RequestHandler = async (req, res) => {
-  const matchDTO = req.body as MatchCreationDTO
-  if (!matchDTO) {
+  const matchData = req.body
+  if (!matchData) {
     return res.sendStatus(400)
   }
 
   const authorId = req.userId
-  const matchDTOWithAuthorId = {
-    ...matchDTO,
+  const matchDTO = {
+    ...matchData,
     authorId,
   }
 
-  const validMatch = validateMatchCreationSchema(matchDTOWithAuthorId)
+  const validMatch = validateMatchCreationSchema(matchDTO)
   if (!validMatch) {
     const errorMessage = getErrorMessage(validateMatchCreationSchema)
-
     res.status(400).send({ message: errorMessage })
     return
   }
 
-  const match = omit(matchDTOWithAuthorId, ['participants'])
+  const match = omit(matchDTO, ['participants'])
   const { participants } = matchDTO
 
   try {
@@ -70,6 +72,46 @@ export const getById: RequestHandler = async (req, res) => {
     }
 
     res.status(200).send(match)
+  } catch (e) {
+    logInternalError(e)
+    res.sendStatus(500)
+  }
+}
+
+export const update: RequestHandler = async (req, res) => {
+  if (!req.params.matchId) {
+    return res.sendStatus(400)
+  }
+  const matchId = parseInt(req.params.matchId, 10)
+
+  const matchUpdateDTO = req.body
+  if (!matchUpdateDTO) {
+    return res.sendStatus(400)
+  }
+
+  try {
+    const match = await matchesModel.getById({ id: matchId })
+    if (!match) {
+      return res.sendStatus(404)
+    }
+
+    const loggedUserId = req.userId
+    if (match.authorId !== loggedUserId) {
+      return res.sendStatus(403)
+    }
+
+    const validMatch = validateMatchUpdateSchema(matchUpdateDTO)
+    if (!validMatch) {
+      const errorMessage = getErrorMessage(validateMatchUpdateSchema)
+      return res.status(400).send({ message: errorMessage })
+    }
+
+    const matchUpdated = await matchesModel.update(matchId, matchUpdateDTO)
+    if (!matchUpdated) {
+      return res.sendStatus(404)
+    }
+
+    return res.sendStatus(200)
   } catch (e) {
     logInternalError(e)
     res.sendStatus(500)

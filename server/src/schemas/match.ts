@@ -5,15 +5,10 @@ import { Match } from '../models/matches'
 import { FriendType } from '../models/utils'
 
 export type MatchCreationParticipantData = Omit<MatchParticipantDTO, 'fullName'>
-export interface MatchCreationDTO extends Omit<Match, 'id' | 'authorId'> {
+export interface MatchCreationDTO extends Omit<Match, 'id'> {
   participants: MatchCreationParticipantData[]
 }
-
-export type MatchCreationData = MatchCreationDTO & {
-  authorId: Match['authorId']
-}
-
-const matchCreationSchema: JSONSchemaType<MatchCreationData> = {
+const matchCreationSchema: JSONSchemaType<MatchCreationDTO> = {
   title: 'Match',
   description: 'Match data with its participants',
   type: 'object',
@@ -46,3 +41,20 @@ const matchCreationSchema: JSONSchemaType<MatchCreationData> = {
   additionalProperties: false,
 }
 export const validateMatchCreationSchema = ajv.compile(matchCreationSchema)
+
+export type MatchUpdateDTO = Omit<Match, 'id' | 'authorId'>
+const matchUpdateSchema: JSONSchemaType<MatchUpdateDTO> = {
+  title: 'Match',
+  description: 'Match data with its participants',
+  type: 'object',
+  properties: {
+    boardgameName: { type: 'string' },
+    startedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
+    endedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
+    duration: { type: 'number', nullable: true },
+    notes: { type: 'string', nullable: true },
+  },
+  required: ['boardgameName'],
+  additionalProperties: false,
+}
+export const validateMatchUpdateSchema = ajv.compile(matchUpdateSchema)

@@ -5,5 +5,6 @@ const matchEndpoint = '/matches'
 
 export function set(app: Express) {
   app.get(`${matchEndpoint}/:matchId`, matchesController.getById)
+  app.put(`${matchEndpoint}/:matchId`, matchesController.update)
   app.delete(`${matchEndpoint}/:matchId`, matchesController.deleteById)
 }

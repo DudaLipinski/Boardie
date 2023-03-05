@@ -1,7 +1,8 @@
 import db from '../database'
-import { prefixKeysWithDollar } from './utils'
+import { generateUpdate, prefixKeysWithDollar } from './utils'
 import { CURRENT_DATETIME } from '../utils/sql'
 import { MatchParticipantDTO, getAllByMatchId } from './matchParticipants'
+import { MatchUpdateDTO } from '../schemas/match'
 
 const ISNT_DELETED = 'deletedAt IS NULL'
 
@@ -27,18 +28,17 @@ export const create = (match: Omit<Match, 'id'>) => {
     endedAt,
     duration,
     notes
-  ) VALUES (?, ?, ?, ?, ?, ?)`
-  const values = [
-    match.authorId,
-    match.boardgameName,
-    match.startedAt,
-    match.endedAt,
-    match.duration,
-    match.notes,
-  ]
+  ) VALUES (
+    $authorId,
+    $boardgameName,
+    $startedAt,
+    $endedAt,
+    $duration,
+    $notes
+  )`
 
   return new Promise<number>((resolve, reject) => {
-    db.run(query, values, function (error) {
+    db.run(query, prefixKeysWithDollar(match), function (error) {
       if (error) {
         reject(
           `An error occurred while creating multiple match participants: ${error?.message}`
@@ -47,6 +47,36 @@ export const create = (match: Omit<Match, 'id'>) => {
 
       resolve(this.lastID)
     })
+  })
+}
+
+export const update = (matchId: number, match: MatchUpdateDTO) => {
+  const { fieldAssignments, params } = generateUpdate(match)
+  const query = `
+    UPDATE match
+    SET
+      ${fieldAssignments}
+    WHERE
+      rowId = $matchId
+  `
+
+  return new Promise<boolean>((resolve, reject) => {
+    db.run(
+      query,
+      {
+        ...params,
+        $matchId: matchId,
+      },
+      function (error) {
+        if (error) {
+          reject(
+            `An error occurred while trying to update a match: ${error?.message}`
+          )
+        }
+
+        resolve(this.changes === 1)
+      }
+    )
   })
 }
 
@@ -79,7 +109,7 @@ export const getHydratedById = ({ id }: { id: number }) => {
           ...match,
           participants,
         })
-      } catch (e: any) {
+      } catch (e) {
         reject(e)
       }
     })
@@ -126,7 +156,7 @@ export const getHydratedByAuthor = (params: { authorId: number }) => {
           }
 
           resolve(result)
-        } catch (e: any) {
+        } catch (e) {
           reject(e)
         }
       }
@@ -149,7 +179,7 @@ export const getById = (params: { id: number }) => {
     db.get(
       query,
       prefixKeysWithDollar(params),
-      function (error: any, match: Match) {
+      function (error: Error | null, match: Match) {
         if (!match) {
           return resolve(null)
         }

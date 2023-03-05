@@ -30,7 +30,7 @@ export const create: RequestHandler = async (req, res) => {
     }
 
     const id = await userModel.create(user)
-    res.status(200).send({
+    res.status(201).send({
       id,
       ...omit(user, 'password'),
     })

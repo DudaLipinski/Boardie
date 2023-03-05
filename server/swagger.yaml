@@ -34,7 +34,7 @@ paths:
       tags:
         - auth
       responses:
-        '200':
+        '201':
           description: The created user's data
           content:
             application/json:
@@ -137,7 +137,7 @@ paths:
                   items:
                     $ref: '#/components/schemas/MatchParticipantBase'
       responses:
-        '200':
+        '201':
           description: The match was successfully created
           content:
             application/json:
@@ -192,7 +192,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AnonFriendBase'
       responses:
-        '200':
+        '201':
           description: The anonymous friend was successfully created
           content:
             application/json:

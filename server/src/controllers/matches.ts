@@ -38,7 +38,7 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
     const createdMatch = await matchesModel.getHydratedById({
       id: matchId,
     })
-    res.send(omit(createdMatch, ['authorId'])).status(200)
+    res.send(omit(createdMatch, ['authorId'])).status(201)
   } catch (e) {
     logInternalError(e)
     res.sendStatus(500)

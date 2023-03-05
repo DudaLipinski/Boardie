@@ -40,7 +40,7 @@ export const createAnonymousForLoggedUser: RequestHandler = async (
 
   try {
     const id = await anonFriendsModel.create(anonFriend)
-    res.status(200).send({
+    res.status(201).send({
       id,
       fullName: anonFriend.fullName,
       type: FriendType.ANON_FRIEND,

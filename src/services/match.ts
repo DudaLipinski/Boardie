@@ -22,7 +22,7 @@ export const createMatch = (matchPayload: Omit<Match, 'id' | 'participants'>) =>
       }
     })
 
-export const getMatches = () =>
+export const getMatches = (): Promise<Match[]> =>
   axios({
     method: 'get',
     url: `http://localhost:3007/me/matches`,
@@ -42,7 +42,7 @@ export const getMatches = () =>
       }
     })
 
-export const getMatch = (matchId: string) =>
+export const getMatch = (matchId: string): Promise<Match> =>
   axios({
     method: 'get',
     url: `http://localhost:3007/match/${matchId}`,

@@ -1,9 +1,9 @@
+import { Link, useNavigate } from 'react-router-dom'
 import { authUser } from '../../services/user'
-import { Link } from 'react-router-dom'
 
-import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { actions as userActions } from '../../state/user'
+import { useFormik } from 'formik'
 
 import { motion } from 'framer-motion'
 import {
@@ -14,7 +14,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@mui/material'
-import { useFormik } from 'formik'
+import { animationProps } from '../../styles/animation'
 
 export const Login = () => {
   const dispatch = useDispatch()
@@ -41,13 +41,7 @@ export const Login = () => {
   })
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      transition={{ delay: 0.2 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={{ height: 'inherit' }}
-    >
+    <motion.div {...animationProps} style={{ height: 'inherit' }}>
       <Box
         height="inherit"
         display="flex"

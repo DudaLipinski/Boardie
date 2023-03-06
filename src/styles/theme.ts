@@ -70,11 +70,11 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: '#794dfd',
-      darker: '#053e85',
+      darker: '#280987',
     },
     secondary: {
       main: '#eeeeee',
-      darker: '#053e85',
+      darker: '#7c7c7c',
     },
     neutral: {
       main: '#64748B',

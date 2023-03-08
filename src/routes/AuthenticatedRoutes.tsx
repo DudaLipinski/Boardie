@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
-import { MatchList } from '../pages/Match/MatchList'
 import { MatchItem } from '../pages/Match/MatchItem'
 import { Profile } from '../pages/Profile/Profile'
 import { Dashboard } from '../pages/Dashboard/Dashboard'
+import { MatchList } from '../pages/MatchList/MatchList'
 
 export const AuthenticatedRoutes = () => {
   return (

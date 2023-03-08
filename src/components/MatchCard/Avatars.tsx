@@ -3,13 +3,17 @@ import { Participant } from '../../types/Match'
 import { styledAvatar, styledAvatarGroup } from './MatchCard.styles'
 
 export const Avatars = ({ participants }: { participants: Participant[] }) => {
-  const participantsByScore = participants.sort((a, b) => b.score - a.score)
+  const participantsByScore = participants.sort(
+    (a, b) => (b.score ?? 0) - (a.score ?? 0)
+  )
 
   const participant = participantsByScore.map((participant, i) => {
+    const { fullName } = participant.friend
+
     if (participant.isWinner) {
       return (
         <Chip
-          key={`${participant.fullName}-${i}`}
+          key={`${fullName}-${i}`}
           sx={{ marginTop: '2px', marginRight: '2px' }}
           avatar={
             <Badge
@@ -18,16 +22,12 @@ export const Avatars = ({ participants }: { participants: Participant[] }) => {
                 horizontal: 'right',
               }}
             >
-              <Avatar
-                alt={participant.fullName}
-                src=""
-                sx={{ ...styledAvatar }}
-              >
-                {participant.fullName[0]}
+              <Avatar alt={fullName} src="" sx={{ ...styledAvatar }}>
+                {fullName[0]}
               </Avatar>
             </Badge>
           }
-          label={participant.fullName}
+          label={fullName}
           variant="filled"
         />
       )
@@ -35,12 +35,12 @@ export const Avatars = ({ participants }: { participants: Participant[] }) => {
 
     return (
       <Avatar
-        key={`${participant.fullName}-${i}`}
-        alt={participant.fullName}
+        key={`${fullName}-${i}`}
+        alt={fullName}
         src=""
         sx={{ ...styledAvatar }}
       >
-        {participant.fullName[0]}
+        {fullName[0]}
       </Avatar>
     )
   })

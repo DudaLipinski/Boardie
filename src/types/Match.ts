@@ -1,8 +1,8 @@
+import { Friend } from './Friend'
 export interface Participant {
-  userId?: string
-  fullName: string
-  score: number
-  isWinner: boolean
+  score?: number
+  isWinner?: boolean
+  friend: Friend
 }
 export interface Match {
   id: string

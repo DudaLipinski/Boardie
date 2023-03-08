@@ -6,6 +6,10 @@ import { ThemeProvider } from '@mui/material'
 import { theme } from './styles/theme'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(utc)
 
 function App() {
   return (

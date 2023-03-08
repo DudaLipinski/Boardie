@@ -1,8 +1,10 @@
 import { Match } from '../types/Match'
 import { User } from '../types/User'
+import { Friend } from '../types/Friend'
 
 const SET_USER = 'SET_USER'
 const SET_MATCHES = 'SET_MATCHES'
+const SET_FRIENDS = 'SET_FRIENDS'
 
 const INITIAL_STATE = null
 
@@ -18,6 +20,11 @@ export const reducer = (
         ...(typeof state === 'object' ? state : {}),
         matches: action.payload,
       }
+    case SET_FRIENDS:
+      return {
+        ...(typeof state === 'object' ? state : {}),
+        friends: action.payload,
+      }
     default:
       return state
   }
@@ -26,6 +33,10 @@ export const reducer = (
 export const actions = {
   setUser: (user: User) => ({ type: SET_USER, payload: user }),
   setMatches: (matches: Match[]) => ({ type: SET_MATCHES, payload: matches }),
+  setFriends: (friends: Friend[]) => ({
+    type: SET_FRIENDS,
+    payload: friends,
+  }),
 }
 
 export const selectors = {
@@ -33,4 +44,6 @@ export const selectors = {
   getUserId: (state: { user: { id: string } }) => state.user.id,
   getIsLoggedIn: (state: { user: User }) => !!state.user,
   getUserMatches: (state: { user: { matches: Match[] } }) => state.user.matches,
+  getUserFriends: (state: { user: { friends: Friend[] } }) =>
+    state.user.friends,
 }

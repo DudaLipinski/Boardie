@@ -15,7 +15,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfo'
+                $ref: '#/components/schemas/User'
         '401':
           description: Invalid credentials
         '500':
@@ -29,7 +29,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCreationPayload'
+              $ref: '#/components/schemas/UserCreationDTO'
       summary: Creates a user
       tags:
         - auth
@@ -39,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfo'
+                $ref: '#/components/schemas/User'
         '400':
           description: Incorrect user format
           content:
@@ -123,13 +123,7 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/MatchBase'
-              properties:
-                participants:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/MatchParticipantBase'
+              $ref: '#/components/schemas/MatchCreationDTO'
       responses:
         '201':
           description: The match was successfully created
@@ -165,7 +159,7 @@ paths:
                 type: array
                 items:
                   allOf:
-                    - $ref: '#/components/schemas/GenericFriend'
+                    - $ref: '#/components/schemas/HydratedGenericFriend'
         '401':
           description: Invalid credentials
         '500':
@@ -225,7 +219,7 @@ paths:
                 properties:
                   user:
                     allOf:
-                      - $ref: '#/components/schemas/UserInfo'
+                      - $ref: '#/components/schemas/User'
                   token:
                     type: string
                     description: JWT token
@@ -368,7 +362,7 @@ components:
         - age
         - email
       additionalProperties: false
-    UserInfo:
+    User:
       title: User
       description: User information
       type: object
@@ -381,8 +375,8 @@ components:
       required:
         - id
       additionalProperties: false
-    UserCreationPayload:
-      title: UserCreationPayload
+    UserCreationDTO:
+      title: UserCreationDTO
       description: Data to create a user
       type: object
       allOf:
@@ -393,6 +387,19 @@ components:
       required:
         - password
       additionalProperties: false
+    Auth:
+      title: Auth
+      description: Data to authenticate a user
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+      additionalProperties: false
     GenericFriend:
       title: Generic friend data
       description: Data that can represent an anonymous or registered friend
@@ -401,16 +408,30 @@ components:
         id:
           type: number
           example: 123
-        fullName:
-          type: string
-          example: Meeple Catanicus
         # avatar:
         #   type: string
         type:
           type: string
           enum: [ANON_FRIEND, USER]
           description: type of the friend's user registration
+      required:
+        - id
+        - type
+    HydratedGenericFriend:
+      title: Hydrated generic friend
+      description: Data that can represent an anonymous or registered friend, with the full name
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/GenericFriend'
+      properties:
+        fullName:
+          type: string
+          example: Meeple Catanicus
+        # avatar:
+        #   type: string
       additionalProperties: false
+      required:
+        - fullName
     AnonFriendBase:
       title: Anonymous friend base data
       description: Base data for creating an anonymous friend
@@ -439,19 +460,6 @@ components:
         - id
         - type
       additionalProperties: false
-    Auth:
-      title: Auth
-      description: Data to authenticate a user
-      type: object
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-      required:
-        - email
-        - password
-      additionalProperties: false
     MatchBase:
       title: Match base
       description: Match base data
@@ -459,7 +467,7 @@ components:
       properties:
         boardgameName:
           type: string
-          description: (temporary) name of the boardgame
+          description: (temporary) Name of the boardgame
           example: Everdell
         startedAt:
           type: string
@@ -470,11 +478,6 @@ components:
           type: string
           description: Date and time when the match ended, in ISO 8601 and UTC
           example: 2019-11-14T00:55:31.820Z
-          nullable: true
-        duration:
-          type: integer
-          description: The amount of seconds that the match took
-          example: 3600
           nullable: true
         notes:
           type: string
@@ -487,9 +490,22 @@ components:
         #   example: 174430
       required:
         - boardgameName
+    MatchCreationDTO:
+      title: Match creation DTO
+      description: Data used to create a match
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/MatchBase'
+      properties:
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchParticipantBase'
+      required:
+        - participants
     Match:
       title: Match
-      description: Full match data, with its registered id
+      description: Match data, with its registered id
       type: object
       allOf:
         - $ref: '#/components/schemas/MatchBase'
@@ -508,41 +524,39 @@ components:
       properties:
         id:
           type: integer
-          description: id of the user/anon_friend(depending on the participant type) who participated on the match
+          description: id of the participant record
           example: 13803
-        type:
-          type: string
-          enum: [ANON_FRIEND, USER]
-          description: type of the participant registration
+        friend:
+          $ref: '#/components/schemas/GenericFriend'
         score:
           type: number
           description: Score that the user achieved on the match
           example: 50
+        isWinner:
+          type: boolean
+          description: If the user was a winner or not
+          example: true
         # notes:
         #   type: string
         #   description: Further details related to the user's perfomance on the match
         #   example: Maria was able to increase her titanium production in the beginning, which snowballed her Terraforming mars company that was increase each of her titanium worth one more MC
       required:
         - id
-        - type
+        - friend
         - score
-    HydratedMatchParticipant:
-      title: Hydrated match aprticipant
+    MatchParticipant:
+      title: Match participant
       description: Relationship between a match and participant, along with his score and notes on that specific match
       type: object
       allOf:
         - $ref: '#/components/schemas/MatchParticipantBase'
       properties:
-        fullName:
-          type: string
-          description: Full name of the user/anon friend
-          example: Guilherme Tatibana
-        isWinner:
-          type: boolean
-          description: If the user was a winner or not
-          example: true
+        friend:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/HydratedGenericFriend'
       required:
-        - fullName
+        - friend
     MatchWithParticipants:
       title: Match with participnats
       description: The match description, along with its participants
@@ -553,7 +567,7 @@ components:
         participants:
           type: array
           items:
-            $ref: '#/components/schemas/HydratedMatchParticipant'
+            $ref: '#/components/schemas/MatchParticipant'
     Error:
       type: object
       required:
@@ -678,7 +692,7 @@ security:
   #               type: array
   #               items:
   #                 allOf:
-  #                   - $ref: '#/components/schemas/UserInfo'
+  #                   - $ref: '#/components/schemas/User'
   #       '404':
   #         description: No user found with the given id
   #         content:

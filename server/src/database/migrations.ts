@@ -17,7 +17,7 @@ async function getUserVersion() {
   return user_version
 }
 
-const CURRENT_VERSION = 3
+const VERSION = 4
 export const migrations: Record<number, string> = {
   0: `
     ALTER TABLE \`match\` ADD COLUMN \`deletedAt\` TEXT;
@@ -35,12 +35,16 @@ export const migrations: Record<number, string> = {
     ALTER TABLE \`match\` DROP COLUMN \`date\`;
     ALTER TABLE \`match\` ADD COLUMN \`endedAt\` STRING;
   `,
+  3: `
+    ALTER TABLE \`matchParticipant\` ADD COLUMN \`isWinner\` BOOLEAN DEFAULT FALSE;
+    ALTER TABLE \`match\` ADD COLUMN \`location\` STRING;
+  `,
 }
 
 const updateToLatestUserVersion = () =>
-  db.asyncRun(`PRAGMA user_version = ${CURRENT_VERSION}`)
+  db.asyncRun(`PRAGMA user_version = ${VERSION}`)
 const runMigrations = async (currentVersion: number) => {
-  for (let i = currentVersion; i < CURRENT_VERSION; i++) {
+  for (let i = currentVersion; i < VERSION; i++) {
     if (migrations[i]) {
       await db.asyncExec(migrations[i])
     }

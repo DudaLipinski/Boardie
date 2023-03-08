@@ -1,8 +1,9 @@
 import db from '../database'
 import { generateUpdate, prefixKeysWithDollar } from './utils'
 import { CURRENT_DATETIME } from '../utils/sql'
-import { MatchParticipantDTO, getAllByMatchId } from './matchParticipants'
+import { getAllByMatchId } from './matchParticipants'
 import { MatchUpdateDTO } from '../schemas/match'
+import { MatchParticipantDTO } from '../schemas/matchParticipant'
 
 const ISNT_DELETED = 'deletedAt IS NULL'
 
@@ -10,13 +11,13 @@ export interface Match {
   id: number
   authorId: number
   boardgameName: string
+  location?: string | null
   startedAt?: string
   endedAt?: string
-  duration?: number
   notes?: string
 }
 
-interface HydratedMatch extends Match {
+export interface HydratedMatch extends Match {
   participants: MatchParticipantDTO[]
 }
 
@@ -26,14 +27,12 @@ export const create = (match: Omit<Match, 'id'>) => {
     boardgameName,
     startedAt,
     endedAt,
-    duration,
     notes
   ) VALUES (
     $authorId,
     $boardgameName,
     $startedAt,
     $endedAt,
-    $duration,
     $notes
   )`
 
@@ -123,7 +122,7 @@ export const getHydratedByAuthor = (params: { authorId: number }) => {
       boardgameName,
       startedAt,
       endedAt,
-      duration
+      location
     FROM match
     WHERE
       authorId = $authorId

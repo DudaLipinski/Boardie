@@ -1,42 +1,36 @@
 import ajv from './ajv'
 import { JSONSchemaType } from 'ajv'
-import { MatchParticipantDTO } from '../models/matchParticipants'
+import {
+  MatchParticipantCreationPayloadDTO,
+  MatchParticipantDTO,
+} from '../schemas/matchParticipant'
 import { Match } from '../models/matches'
-import { FriendType } from '../models/utils'
+import { participantCreationSchema } from './matchParticipant'
+import pick from 'lodash.pick'
+
+const matchProperties = {
+  authorId: { type: 'number' },
+  boardgameName: { type: 'string' },
+  location: { type: 'string', nullable: true },
+  startedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
+  endedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
+  notes: { type: 'string', nullable: true },
+  participants: {
+    type: 'array',
+    items: participantCreationSchema,
+  },
+} as const
 
 export type MatchCreationParticipantData = Omit<MatchParticipantDTO, 'fullName'>
-export interface MatchCreationDTO extends Omit<Match, 'id'> {
-  participants: MatchCreationParticipantData[]
+export interface MatchCreationPayloadDTO extends Omit<Match, 'id'> {
+  participants: MatchParticipantCreationPayloadDTO[]
 }
-const matchCreationSchema: JSONSchemaType<MatchCreationDTO> = {
-  title: 'Match',
-  description: 'Match data with its participants',
+const matchCreationSchema: JSONSchemaType<MatchCreationPayloadDTO> = {
+  title: 'Match creation payload',
+  description:
+    'Data used to create a match along with its initial participants',
   type: 'object',
-  properties: {
-    authorId: { type: 'number' },
-    boardgameName: { type: 'string' },
-    startedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
-    endedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
-    duration: { type: 'number', nullable: true },
-    notes: { type: 'string', nullable: true },
-    participants: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'number' },
-          type: {
-            type: 'string',
-            enum: [FriendType.USER, FriendType.ANON_FRIEND],
-          },
-          score: { type: 'number' },
-          isWinner: { type: 'boolean', nullable: true },
-        },
-        required: ['id', 'type', 'score'],
-        additionalProperties: false,
-      },
-    },
-  },
+  properties: matchProperties,
   required: ['authorId', 'boardgameName', 'participants'],
   additionalProperties: false,
 }
@@ -47,13 +41,13 @@ const matchUpdateSchema: JSONSchemaType<MatchUpdateDTO> = {
   title: 'Match',
   description: 'Match data with its participants',
   type: 'object',
-  properties: {
-    boardgameName: { type: 'string' },
-    startedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
-    endedAt: { type: 'string', isoUtcDateTime: true, nullable: true },
-    duration: { type: 'number', nullable: true },
-    notes: { type: 'string', nullable: true },
-  },
+  properties: pick(matchProperties, [
+    'boardgameName',
+    'location',
+    'startedAt',
+    'endedAt',
+    'notes',
+  ]),
   required: ['boardgameName'],
   additionalProperties: false,
 }

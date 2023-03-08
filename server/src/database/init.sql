@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS `match` (
   `boardgameName` TEXT NOT NULL,
   `startedAt` STRING,
   `endedAt` STRING,
-  `duration` INTEGER,
   `notes` TEXT,
   `deletedAt` TEXT,
 
@@ -59,7 +58,9 @@ CREATE TABLE IF NOT EXISTS `matchParticipant` (
   `matchId` INTEGER NOT NULL,
   `userId` INTEGER,
   `anonFriendId` INTEGER,
+  `location` STRING,
   `score` INTEGER,
+  `isWinner` BOOLEAN DEFAULT FALSE,
 
   PRIMARY KEY (`matchId`, `userId`, `anonFriendId`),
 

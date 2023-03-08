@@ -41,11 +41,11 @@ export function getAllByUserId(params: { userId: number }) {
         userId = $userId;
     `
 
-  return new Promise<AnonFriend[]>((resolve, reject) => {
+  return new Promise<Omit<AnonFriend, 'userId'>[]>((resolve, reject) => {
     db.all(
       query,
       prefixKeysWithDollar(params),
-      function (error: any, friends: AnonFriend[]) {
+      function (error: any, friends: Omit<AnonFriend, 'userId'>[]) {
         if (error) {
           reject(
             `An error occurred while trying to fetch anon friends by userId: ${error?.message}`

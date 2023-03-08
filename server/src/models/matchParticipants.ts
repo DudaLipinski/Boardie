@@ -1,56 +1,44 @@
+import {
+  MatchParticipantCreationPayloadDTO,
+  MatchParticipantDTO,
+} from '../schemas/matchParticipant'
 import db from '../database'
 import { FriendType, prefixKeysWithDollar } from './utils'
 
 export interface MatchParticipant {
-  id: string
-  matchId: string
-  userId?: number
-  anonFriendId?: number
-  score: number
-  isWinner?: boolean
-}
-
-export interface MatchParticipantDTO {
   id: number
-  type: FriendType
-  fullName: string
+  matchId: string
+  userId?: number | null
+  anonFriendId?: number | null
   score: number
-  isWinner?: boolean
+  isWinner: boolean
+}
+interface HydratedMatchParticipant extends MatchParticipant {
+  friendFullName: string
 }
 
-const getWinnerIndex = (participants: MatchParticipantDTO[]) =>
-  participants.reduce(
-    (result, { score }, index) => {
-      if (score > result.score) {
-        return { index, score }
-      }
-      return result
-    },
-    { index: 0, score: -Infinity } as {
-      index: number
-      score: number
-    }
-  ).index
+const dbParticipantToDtoModel = (
+  participant: HydratedMatchParticipant
+): MatchParticipantDTO => ({
+  id: participant.id,
+  friend: {
+    id: (participant.userId ?? participant.anonFriendId) as number,
+    type: participant.userId ? FriendType.USER : FriendType.ANON_FRIEND,
+    fullName: participant.friendFullName,
+  },
+  score: participant.score,
+  isWinner: participant.isWinner,
+})
 
 export const getAllByMatchId = (params: { matchId: number }) => {
   const query = `
     SELECT
-      mp.score,
-      IIF(
-          mp.userId IS NULL,
-          mp.anonFriendId ,
-          mp.userId
-      ) as id,
-      IIF(
-          mp.userId IS NULL,
-          '${FriendType.ANON_FRIEND}',
-          '${FriendType.USER}'
-      ) as type,
+      mp.*,
       IIF(
           mp.userId IS NULL,
           af.fullName,
           u.firstName || ' ' || u.middleAndSurname
-      ) as fullName
+      ) as friendFullName
     FROM matchParticipant mp
     LEFT JOIN anonFriend af
       ON af.rowId = mp.anonFriendId
@@ -63,30 +51,30 @@ export const getAllByMatchId = (params: { matchId: number }) => {
     db.all(
       query,
       prefixKeysWithDollar(params),
-      function (error: any, participants: MatchParticipantDTO[]) {
+      function (error: any, participants: HydratedMatchParticipant[]) {
         if (error) {
           reject(
             `An error occurred while trying to fetch match participants by matchId: ${error?.message}`
           )
         }
 
-        const winnerIndex = getWinnerIndex(participants)
-        participants[winnerIndex].isWinner = true
-
-        resolve(participants)
+        resolve(participants.map(dbParticipantToDtoModel))
       }
     )
   })
 }
 
-const dtoParticipantToDbModel = (
-  participant: Omit<MatchParticipantDTO, 'fullName'>
+const participantCreationDtoToDbModel = (
+  participant: MatchParticipantCreationPayloadDTO
 ): Omit<MatchParticipant, 'id' | 'matchId'> => ({
   score: participant.score,
   isWinner: participant.isWinner,
   anonFriendId:
-    participant.type === FriendType.ANON_FRIEND ? participant.id : undefined,
-  userId: participant.type === FriendType.USER ? participant.id : undefined,
+    participant.friend.type === FriendType.ANON_FRIEND
+      ? participant.friend.id
+      : null,
+  userId:
+    participant.friend.type === FriendType.USER ? participant.friend.id : null,
 })
 
 // TODO: study splitting the query into multiple ones
@@ -95,9 +83,9 @@ export const createMultiple = ({
   participants,
 }: {
   matchId: number
-  participants: Omit<MatchParticipantDTO, 'fullName'>[]
+  participants: MatchParticipantCreationPayloadDTO[]
 }) => {
-  const digestedParticipants = participants.map(dtoParticipantToDbModel)
+  const digestedParticipants = participants.map(participantCreationDtoToDbModel)
 
   const valuesPlaceholders = participants.map(() => `(?, ?, ?, ?)`).join(', ')
   const query = `INSERT INTO matchParticipant(
@@ -107,7 +95,7 @@ export const createMultiple = ({
     score
   ) VALUES ${valuesPlaceholders}`
 
-  const values: Array<string | number | undefined> = []
+  const values: Array<string | number | undefined | null> = []
   digestedParticipants.forEach(({ userId, anonFriendId, score }) => {
     values.push(matchId)
     values.push(userId)

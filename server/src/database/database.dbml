@@ -22,9 +22,8 @@ Table match {
   authorId INTEGER [not null]
   // boardgameId TEXT // FUTURE
   boardgameName TEXT [not null]
-  startedAt STRING
-  endedAt STRING
-  duration INTEGER [note: 'Match duration in seconds']
+  startedAt STRING [note: 'Match starting datetime in ISO format UTC']
+  endedAt STRING [note: 'Match ending datetime in ISO format UTC']
   notes TEXT
   deleted_at STRING
 
@@ -38,7 +37,9 @@ Table matchParticipant {
   matchId INTEGER [not null]
   userId INTEGER
   anonFriendId INTEGER
+  location STRING
   score INTEGER
+  isWinner BOOLEAN
   // notes TEXT
 
   Indexes {

@@ -29,12 +29,11 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
     return
   }
 
-  const match = omit(matchDTO, ['participants'])
-  const { participants } = matchDTO
-
   try {
+    const match = omit(matchDTO, ['participants'])
     const matchId = await matchesModel.create(match)
 
+    const { participants } = matchDTO
     await matchParticipantModel.createMultiple({ matchId, participants })
 
     const createdMatch = await matchesModel.getHydratedById({

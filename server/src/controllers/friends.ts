@@ -10,10 +10,13 @@ import { getErrorMessage } from '../schemas/utils'
 import { logInternalError } from '../utils/log'
 import { FriendType } from '../models/utils'
 
-interface GenericFriend {
+export interface GenericFriend {
   id: number
-  fullName: string
   type: FriendType
+}
+
+export interface HydratedGenericFriend extends GenericFriend {
+  fullName: string
 }
 
 export const createAnonymousForLoggedUser: RequestHandler = async (
@@ -55,7 +58,7 @@ export const getAllByLoggedUser: RequestHandler = async (req, res) => {
   const { userId } = req
 
   try {
-    const anonFriends: GenericFriend[] = (
+    const anonFriends: HydratedGenericFriend[] = (
       await anonFriendsModel.getAllByUserId({ userId })
     ).map((friend) => ({ ...friend, type: FriendType.ANON_FRIEND }))
 

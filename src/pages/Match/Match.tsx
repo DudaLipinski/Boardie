@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import { motion } from 'framer-motion'
 import dayjs, { Dayjs } from 'dayjs'
 import { useFormik } from 'formik'
@@ -11,27 +12,16 @@ import CheckIcon from '@mui/icons-material/Check'
 
 import { animationProps } from '../../styles/animation'
 import { styledFloatButton } from '../../styles/floatingButton'
+import { useInitialParticipants } from '../../hooks/useInitialParticipants'
 
 export const Match = () => {
-  const loadedParticipants = [
-    {
-      score: 0,
-      isWinner: false,
-      friend: {
-        id: 1,
-        fullName: 'Maria',
-        type: 'ANON_FRIEND',
-      },
-    },
-  ]
-
   const formik = useFormik({
     initialValues: {
       boardgameName: '',
       startedAt: dayjs(),
       endedAt: dayjs(),
       notes: '',
-      participants: loadedParticipants,
+      participants: useInitialParticipants(),
     },
     onSubmit: (values) => {
       const formatedStartedAt = dayjs.utc(values.startedAt).toISOString()
@@ -79,6 +69,9 @@ export const Match = () => {
           <MatchParticipants
             participants={participants}
             handleChange={formik.handleChange}
+            setFieldValue={(fieldName, value) => {
+              formik.setFieldValue(fieldName, value)
+            }}
           />
           <Fab
             color="primary"

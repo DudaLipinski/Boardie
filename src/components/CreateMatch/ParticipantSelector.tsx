@@ -16,10 +16,16 @@ interface ParticipantsOption {
   type?: string
 }
 
+interface Props {
+  index: number
+  value: string
+  setFieldValue: (fieldName: string, value: any) => void
+}
+
 const filter = createFilterOptions<ParticipantsOption>()
 
-export const ParticipantSelector = () => {
-  const [value, setValue] = React.useState<ParticipantsOption | null>(null)
+export const ParticipantSelector = ({ index, value, setFieldValue }: Props) => {
+  // const [value, setValue] = React.useState<ParticipantsOption | null>(null)
 
   const friends: ParticipantsOption[] = useFriends()
 
@@ -40,16 +46,19 @@ export const ParticipantSelector = () => {
     if (newFriendFullName) {
       createAnonymousFriend({ fullName: newFriendFullName })
 
-      setValue({
-        fullName: newFriendFullName,
-      })
+      // setValue({
+      //   fullName: newFriendFullName,
+      // })
+      setFieldValue('fullName', newFriendFullName)
+
       return
     }
 
     if (typeof newValue === 'string') {
       return
     }
-    setValue(newValue)
+    // setValue(newValue)
+    setFieldValue('fullName', newValue)
   }
 
   const filterOptions = (
@@ -93,7 +102,7 @@ export const ParticipantSelector = () => {
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
-        id="free-solo-with-text-demo"
+        id={`participants[${index}].friend.fullName`}
         options={friends}
         getOptionLabel={getOptionLabel}
         renderOption={(props, option) => <li {...props}>{option.fullName}</li>}
@@ -103,6 +112,7 @@ export const ParticipantSelector = () => {
           <TextField
             {...params}
             color="info"
+            size="small"
             label="Add participant"
             placeholder="Select a friend or create one"
           />

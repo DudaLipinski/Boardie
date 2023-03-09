@@ -8,17 +8,13 @@ import { MatchInfo } from './MatchInfo'
 import { styledListItem } from './MatchCard.styles'
 
 export const MatchCard = ({ match }: { match: Match }) => {
-  const { id, boardgameName, date, duration, participants } = match
+  const { id, boardgameName, participants } = match
 
   return (
     <Link to={`/matches/${id}`} style={{ textDecoration: 'none' }}>
       <ListItem sx={{ ...styledListItem }}>
         <Box width="90%" paddingTop="6px">
-          <MatchInfo
-            boardgameName={boardgameName}
-            date={date}
-            duration={duration}
-          />
+          <MatchInfo boardgameName={boardgameName} date={''} duration={10} />
           <Avatars participants={participants} />
         </Box>
         <Box width="10%" paddingLeft="10px">

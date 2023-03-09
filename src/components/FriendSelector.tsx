@@ -5,67 +5,62 @@ import {
   FilterOptionsState,
 } from '@mui/material'
 import React from 'react'
-import { useFriends } from '../../hooks/useFriends'
-import * as friendService from '../../services/friend'
-import { Friend } from '../../types/Friend'
+import { useAnonFriendCreation, useFriends } from '../queries/friends'
+import { Friend } from '../types/Friend'
 
-interface ParticipantsOption {
-  inputValue?: string
-  id?: number
-  fullName: string
-  type?: string
+interface ExistentOrNewFriend extends Friend {
+  newFriendName?: string
 }
 
-const filter = createFilterOptions<ParticipantsOption>()
+interface Props {
+  index: number
+  value: Friend
+  onChange: (friend: Friend | null) => void
+}
 
-export const ParticipantSelector = () => {
-  const [value, setValue] = React.useState<ParticipantsOption | null>(null)
+const filter = createFilterOptions<ExistentOrNewFriend>()
 
-  const friends: ParticipantsOption[] = useFriends()
+export const ParticipantSelector = ({ index, value, onChange }: Props) => {
+  const friends = useFriends()
+  const createAnonymousFriend = useAnonFriendCreation()
 
-  const createAnonymousFriend = (friend: Pick<Friend, 'fullName'>) =>
-    friendService
-      .createAnonymous(friend)
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((error) => alert(error.message))
-
-  const handleChange = (
+  const handleChange = async (
     event: React.SyntheticEvent<Element, Event>,
-    newValue: string | ParticipantsOption | null
+    newValue: string | ExistentOrNewFriend | null
   ) => {
     const newFriendFullName =
-      typeof newValue === 'string' ? newValue : newValue?.inputValue
+      typeof newValue === 'string' ? newValue : newValue?.newFriendName
     if (newFriendFullName) {
-      createAnonymousFriend({ fullName: newFriendFullName })
-
-      setValue({
-        fullName: newFriendFullName,
-      })
+      const newFriend = await createAnonymousFriend.mutateAsync(
+        newFriendFullName
+      )
+      newFriend && onChange(newFriend)
       return
     }
 
     if (typeof newValue === 'string') {
       return
     }
-    setValue(newValue)
+    onChange(newValue)
   }
 
   const filterOptions = (
-    options: ParticipantsOption[],
-    params: FilterOptionsState<ParticipantsOption>
+    options: ExistentOrNewFriend[],
+    params: FilterOptionsState<ExistentOrNewFriend>
   ) => {
     const filtered = filter(options, params)
     const { inputValue } = params
 
-    const isExisting = options.some(
-      (option: { fullName: any }) => inputValue === option.fullName
+    const alreadyExists = options.some(
+      (option: { fullName: any }) =>
+        option.fullName.toLowerCase() === inputValue.toLowerCase()
     )
-    if (inputValue !== '' && !isExisting) {
+    if (inputValue !== '' && !alreadyExists) {
       filtered.push({
-        inputValue,
+        id: 0,
+        newFriendName: inputValue,
         fullName: `Add "${inputValue}"`,
+        type: 'ANON_FRIEND',
       })
     }
 
@@ -93,16 +88,18 @@ export const ParticipantSelector = () => {
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
-        id="free-solo-with-text-demo"
-        options={friends}
+        id={`participants[${index}].friend.fullName`}
+        options={friends.data ?? []}
         getOptionLabel={getOptionLabel}
         renderOption={(props, option) => <li {...props}>{option.fullName}</li>}
         freeSolo
         autoHighlight={true}
+        loading={friends.isLoading || createAnonymousFriend.isLoading}
         renderInput={(params) => (
           <TextField
             {...params}
             color="info"
+            size="small"
             label="Add participant"
             placeholder="Select a friend or create one"
           />

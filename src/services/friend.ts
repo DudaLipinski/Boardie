@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { Friend } from '../types/Friend'
 
-export const createAnonymous = (friend: Pick<Friend, 'fullName'>) =>
-  axios({
+export const createAnonymous = (fullName: string) =>
+  axios<Friend>({
     method: 'post',
     url: 'http://localhost:3007/me/anonfriends',
-    data: friend,
+    data: { fullName },
   })
     .then((response) => {
       return response.data
@@ -22,7 +22,7 @@ export const createAnonymous = (friend: Pick<Friend, 'fullName'>) =>
       }
     })
 
-export const getFriends = (): Promise<Omit<Friend, 'score' | 'isWinner'>[]> =>
+export const getFriends = (): Promise<Friend[]> =>
   axios({
     method: 'get',
     url: `http://localhost:3007/me/friends`,

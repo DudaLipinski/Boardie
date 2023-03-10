@@ -4,7 +4,7 @@ import { useOwnMatches } from '../../hooks/useOwnMatches'
 
 import { motion } from 'framer-motion'
 
-import { Fab, List } from '@mui/material'
+import { Fab, List, Box } from '@mui/material'
 import { MatchCard } from '../../components/MatchCard/MatchCard'
 import AddIcon from '@mui/icons-material/Add'
 import { animationProps } from '../../styles/animation'
@@ -23,8 +23,9 @@ export const MatchList = () => {
       {...animationProps}
       style={{ width: '100%', position: 'relative' }}
     >
-      <List sx={{ width: 'inherit' }}>{matchItems}</List>
-
+      <Box height="100%" overflow="auto">
+        <List sx={{ paddingBottom: '80px' }}>{matchItems}</List>
+      </Box>
       <Fab
         color="primary"
         aria-label="add"

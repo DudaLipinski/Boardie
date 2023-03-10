@@ -28,6 +28,7 @@ export const MatchInfoFields = ({ control }: Props) => {
           control={control}
           render={({ field }) => (
             <TextField
+              required
               id="boardgameName"
               type="text"
               fullWidth

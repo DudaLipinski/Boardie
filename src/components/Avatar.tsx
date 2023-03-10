@@ -7,10 +7,28 @@ interface SizeDef {
   fontSize: number
 }
 
+const placeholderStyle = {
+  background: 'rgba(0,0,0,0.04)',
+  border: '2px dashed rgba(0,0,0,0.12)',
+}
+
 const sizes: Record<Size, SizeDef> = {
   sm: { side: 32, fontSize: 14 },
   md: { side: 62, fontSize: 16 },
   lg: { side: 92, fontSize: 16 },
+}
+
+const getInitials = (fullName?: string) => {
+  if (!fullName) {
+    return ''
+  }
+
+  const splitFullName = fullName.split(' ')
+  const firstName = splitFullName[0] ?? ''
+  const lastName =
+    splitFullName.length > 1 ? splitFullName[splitFullName.length - 1] : ''
+
+  return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`
 }
 
 export const Avatar = ({
@@ -18,25 +36,29 @@ export const Avatar = ({
   size,
   sx,
 }: {
-  user: GenericUser
+  user: GenericUser | null
   size: Size
   sx?: Omit<SxProps, 'width' | 'height' | 'fontSize'>
 }) => {
-  const fullName = user?.fullName ?? ''
-  const splitFullName = fullName.split(' ')
-  const firstName = splitFullName[0] ?? ''
-  const lastName =
-    splitFullName.length > 1 ? splitFullName[splitFullName.length - 1] : ''
   const sizeDef = sizes[size]
+
+  const sizeSx = {
+    width: sizeDef.side,
+    height: sizeDef.side,
+    textTransform: 'uppercase',
+    boxSizing: 'border-box',
+  }
+  const avatarSx = user?.fullName
+    ? { ...sizeSx, ...sx }
+    : { ...sizeSx, ...placeholderStyle }
 
   return (
     <MuiAvatar
-      alt={fullName}
+      alt={user?.fullName || 'Avatar placeholder'}
       src=""
-      sx={{ width: sizeDef.side, height: sizeDef.side, ...sx }}
+      sx={avatarSx}
     >
-      {firstName[0]?.toUpperCase()}
-      {lastName[0]?.toUpperCase()}
+      {getInitials(user?.fullName)}
     </MuiAvatar>
   )
 }

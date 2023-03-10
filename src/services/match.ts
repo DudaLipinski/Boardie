@@ -12,10 +12,10 @@ export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
     })
     .catch((err) => {
       if (err.status === 400) {
-        throw new Error('Incorrect match format')
+        throw new Error(err.getErrorMessage)
       }
       if (err.status === 500) {
-        throw new Error('Unexpected internal error')
+        throw new Error(err.getErrorMessage)
       }
       if (err.status !== 200) {
         throw new Error('An error occurred')
@@ -32,10 +32,10 @@ export const getMatches = (): Promise<Match[]> =>
     })
     .catch((err) => {
       if (err.status === 401) {
-        throw new Error('Unauthorized')
+        throw new Error(err.getErrorMessage)
       }
       if (err.status === 404) {
-        throw new Error('No user found with the given id')
+        throw new Error(err.getErrorMessage)
       }
       if (err.status !== 200) {
         throw new Error('An error occurred')
@@ -52,10 +52,10 @@ export const getMatch = (matchId: string): Promise<Match> =>
     })
     .catch((err) => {
       if (err.status === 401) {
-        throw new Error('Unauthorized')
+        throw new Error(err.getErrorMessage)
       }
       if (err.status === 404) {
-        throw new Error('No user found with the given id')
+        throw new Error(err.getErrorMessage)
       }
       if (err.status !== 200) {
         throw new Error('An error occurred')

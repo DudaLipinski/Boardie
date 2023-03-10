@@ -1,20 +1,20 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
 
 import { MatchParticipants } from '../../components/CreateMatch/MatchParticipants'
 import { MatchInfoFields } from '../../components/CreateMatch/MatchInfoFields'
-import { Box, Stack, Fab, Typography } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
+import { Box, Stack } from '@mui/material'
 
 import { animationProps } from '../../styles/animation'
-import { styledFloatButton } from '../../styles/floatingButton'
 import { useInitialParticipants } from '../../hooks/useInitialParticipants'
 import { Match as MatchType } from '../../types/Match'
+import { useMatchCreation } from '../../queries/match'
+import { FabSubmit } from '../../components/FabSubmit'
 
 export const Match = () => {
+  const createMatch = useMatchCreation()
+
   const { handleSubmit, control } = useForm<MatchType>({
     defaultValues: {
       boardgameName: '',
@@ -23,25 +23,21 @@ export const Match = () => {
       notes: '',
       participants: useInitialParticipants(),
     },
-    // onSubmit: (values) => {
-    //   const formatedStartedAt = dayjs.utc(values.startedAt).toISOString()
-    //   const formatedEndedAt = dayjs.utc(values.endedAt).toISOString()
-
-    //   const match = {
-    //     ...values,
-    //     startedAt: formatedStartedAt,
-    //     endedAt: formatedEndedAt,
-    //   }
-
-    //   // createMatch(match)
-    //   //   .then((res) => {
-    //   //     console.log(res)
-    //   //   })
-    //   //   .catch((error) => alert(error.message))
-    // },
   })
 
-  const onSubmit = (bla: any) => console.log(bla)
+  const onSubmit = (value: MatchType) => {
+    const formatedStartedAt = dayjs.utc(value.startedAt).toISOString()
+    const formatedEndedAt = dayjs.utc(value.endedAt).toISOString()
+
+    const match = {
+      ...value,
+      startedAt: formatedStartedAt,
+      endedAt: formatedEndedAt,
+    }
+
+    createMatch.mutate(match)
+    return
+  }
 
   return (
     <motion.div {...animationProps}>
@@ -52,27 +48,11 @@ export const Match = () => {
         position="relative"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Stack spacing={2}>
+        <Stack spacing={2} overflow="hidden auto" height="inherit">
           <MatchInfoFields control={control} />
           <MatchParticipants control={control} />
-          <Fab
-            color="primary"
-            variant="extended"
-            aria-label="add"
-            sx={{ ...styledFloatButton }}
-            type="submit"
-          >
-            <CheckIcon sx={{ mr: 0.5 }} />
-            <Typography
-              variant="button"
-              fontSize={14}
-              component={'h2'}
-              sx={{ mr: 0.5 }}
-            >
-              Confirm
-            </Typography>
-          </Fab>
         </Stack>
+        <FabSubmit isLoading={createMatch.isLoading} />
       </Box>
     </motion.div>
   )

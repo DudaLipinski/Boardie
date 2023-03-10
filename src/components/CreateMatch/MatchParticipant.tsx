@@ -12,14 +12,29 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import { Controller, Control } from 'react-hook-form'
 import { ParticipantSelector } from '../FriendSelector'
 
+const parseEventValueToInt = (
+  event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => ({
+  ...event,
+  target: {
+    ...event.target,
+    value: event.target.value ? parseInt(event.target.value) : null,
+  },
+})
+
 interface Props {
   index: number
-  fullName: string
   control: Control<Match>
   onRemove: (index: number) => void
+  isUniqueParticipant: boolean
 }
 
-export const MatchParticipant = ({ index, control, onRemove }: Props) => {
+export const MatchParticipant = ({
+  index,
+  control,
+  onRemove,
+  isUniqueParticipant,
+}: Props) => {
   return (
     <Box
       bgcolor="background.paper"
@@ -50,13 +65,12 @@ export const MatchParticipant = ({ index, control, onRemove }: Props) => {
             />
           )}
         />
-
-        <Grid key={index} container gap="16px">
-          <Grid item xs={6} sx={{ marginTop: '8px' }}>
+        <Grid container gap="16px" sx={{ marginTop: '14px' }}>
+          <Grid item xs={6}>
             <Controller
               name={`participants.${index}.score`}
               control={control}
-              render={({ field }) => (
+              render={({ field: { onChange, value } }) => (
                 <TextField
                   size="small"
                   type="number"
@@ -65,7 +79,8 @@ export const MatchParticipant = ({ index, control, onRemove }: Props) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  {...field}
+                  value={value}
+                  onChange={(event) => onChange(parseEventValueToInt(event))}
                 />
               )}
             />
@@ -76,7 +91,6 @@ export const MatchParticipant = ({ index, control, onRemove }: Props) => {
               sx={{
                 color: '#7e7e7e',
                 fontSize: '12px',
-                marginTop: '4px',
               }}
               labelPlacement="end"
               control={
@@ -94,12 +108,17 @@ export const MatchParticipant = ({ index, control, onRemove }: Props) => {
         </Grid>
       </Box>
       <Box>
-        <IconButton
-          aria-label="remove participant"
-          onClick={() => onRemove(index)}
-        >
-          <RemoveCircleOutlineIcon />
-        </IconButton>
+        {!isUniqueParticipant ? (
+          <IconButton
+            sx={{ padding: '5px 0' }}
+            aria-label="remove participant"
+            onClick={() => onRemove(index)}
+          >
+            <RemoveCircleOutlineIcon />
+          </IconButton>
+        ) : (
+          <Box width="24px" />
+        )}
       </Box>
     </Box>
   )

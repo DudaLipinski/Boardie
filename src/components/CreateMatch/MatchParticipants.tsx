@@ -29,6 +29,8 @@ export const MatchParticipants = ({ control }: Props) => {
     })
   }, [append])
 
+  const isUniqueParticipant = participants.length === 1
+
   return (
     <>
       <Box display="flex" justifyContent={'space-between'}>
@@ -44,11 +46,11 @@ export const MatchParticipants = ({ control }: Props) => {
           Add new +
         </Button>
       </Box>
-      <Stack spacing={2}>
+      <Stack spacing={2} paddingBottom="90px">
         {participants.map((participant, index) => (
           <MatchParticipant
+            isUniqueParticipant={isUniqueParticipant}
             key={participant.id}
-            fullName={participant.friend.fullName}
             index={index}
             onRemove={remove}
             control={control}

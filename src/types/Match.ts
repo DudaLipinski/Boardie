@@ -10,7 +10,7 @@ export interface Match {
   authorId: string
   boardgameName: string
   startedAt: Dayjs | string
-  endedAt: Dayjs | string
+  endedAt: Dayjs | string | null
   notes: string
   participants: Participant[]
 }

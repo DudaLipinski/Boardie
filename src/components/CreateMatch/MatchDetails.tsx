@@ -9,7 +9,7 @@ interface Props {
   control: Control<Match>
 }
 
-export const MatchInfoFields = ({ control }: Props) => {
+export const MatchDetails = ({ control }: Props) => {
   const renderDateInput = useCallback(
     (params: any) => <TextField {...params} />,
     []
@@ -39,7 +39,6 @@ export const MatchInfoFields = ({ control }: Props) => {
             />
           )}
         />
-
         <Grid container>
           <Grid item xs={6} sx={{ paddingRight: '7px' }}>
             <Controller
@@ -60,9 +59,10 @@ export const MatchInfoFields = ({ control }: Props) => {
               control={control}
               render={({ field }) => (
                 <MobileDateTimePicker
+                  {...field}
+                  value={field.value || null}
                   label="Ended at"
                   renderInput={renderDateInput}
-                  {...field}
                 />
               )}
             />

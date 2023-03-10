@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { User } from '../types/User'
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
   axios
-    .post<User>('http://localhost:3007/me', createUserPayload)
+    .post<User>(`${SERVER_URL}/me`, createUserPayload)
     .then((response) => {
       const token = response.data.token
       localStorage.setItem('token', token)
@@ -25,10 +26,7 @@ export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
 
 export const authUser = (loginPayload: { email: string; password: string }) =>
   axios
-    .post<{ user: User; token: string }>(
-      'http://localhost:3007/auth',
-      loginPayload
-    )
+    .post<{ user: User; token: string }>(`${SERVER_URL}/auth`, loginPayload)
     .then((response) => {
       const token = response.data.token
       localStorage.setItem('token', token)

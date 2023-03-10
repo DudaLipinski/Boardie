@@ -3,15 +3,22 @@ import { Match } from '../pages/Match/Match'
 import { Profile } from '../pages/Profile/Profile'
 import { Dashboard } from '../pages/Dashboard/Dashboard'
 import { MatchList } from '../pages/MatchList/MatchList'
+import {
+  CREATE_MATCH,
+  DASHBOARD,
+  MATCHES,
+  PROFILE,
+  MATCH_DETAILS,
+} from './routeSpecs'
 
 export const AuthenticatedRoutes = () => {
   return (
     <Routes>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/matches" element={<MatchList />} />
-      <Route path="/match/id" element={<Match />} />
-      <Route path="/create-match" element={<Match />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path={DASHBOARD} element={<Dashboard />} />
+      <Route path={MATCHES} element={<MatchList />} />
+      <Route path={MATCH_DETAILS} element={<Match />} />
+      <Route path={CREATE_MATCH} element={<Match />} />
+      <Route path={PROFILE} element={<Profile />} />
       <Route path="*" element={<Dashboard />} />
     </Routes>
   )

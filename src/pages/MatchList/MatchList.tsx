@@ -9,6 +9,7 @@ import { MatchCard } from '../../components/MatchCard/MatchCard'
 import AddIcon from '@mui/icons-material/Add'
 import { animationProps } from '../../styles/animation'
 import { styledFloatButton } from '../../styles/floatingButton'
+import { CREATE_MATCH } from '../../routes/routeSpecs'
 
 export const MatchList = () => {
   const navigate = useNavigate()
@@ -30,7 +31,7 @@ export const MatchList = () => {
         color="primary"
         aria-label="add"
         sx={{ ...styledFloatButton }}
-        onClick={() => navigate('/create-match')}
+        onClick={() => navigate(CREATE_MATCH)}
       >
         <AddIcon />
       </Fab>

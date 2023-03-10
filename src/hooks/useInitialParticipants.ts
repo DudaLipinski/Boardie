@@ -11,7 +11,7 @@ export const useInitialParticipants = () => {
       friend: {
         id: +author.id,
         fullName: `${author.firstName} ${author.middleAndSurname}`,
-        type: 'USER',
+        type: 'USER' as const,
       },
     },
     {
@@ -20,7 +20,7 @@ export const useInitialParticipants = () => {
       friend: {
         id: 0,
         fullName: '',
-        type: '',
+        type: 'ANON_FRIEND' as const,
       },
     },
   ]

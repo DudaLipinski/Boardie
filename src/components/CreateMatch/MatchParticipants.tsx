@@ -1,39 +1,33 @@
 import { Box, Typography, Button, Stack } from '@mui/material'
-import { ChangeEventHandler, useCallback } from 'react'
-import { Participant } from '../../types/Match'
+import { useCallback } from 'react'
+import { Control, useFieldArray } from 'react-hook-form'
+import { Match } from '../../types/Match'
 import { MatchParticipant } from './MatchParticipant'
 
 interface Props {
-  participants: Participant[]
-  handleChange: ChangeEventHandler<HTMLInputElement>
-  setFieldValue: (fieldName: string, value: any) => void
+  control: Control<Match>
 }
+export const MatchParticipants = ({ control }: Props) => {
+  const {
+    fields: participants,
+    append,
+    remove,
+  } = useFieldArray({
+    name: 'participants',
+    control,
+  })
 
-export const MatchParticipants = ({
-  participants,
-  handleChange,
-  setFieldValue,
-}: Props) => {
   const addParticipant = useCallback(() => {
-    participants.push({
+    append({
       score: 0,
       isWinner: false,
       friend: {
         id: 0,
         fullName: '',
-        type: '',
+        type: 'ANON_FRIEND',
       },
     })
-    setFieldValue('participants', participants)
-  }, [participants, setFieldValue])
-
-  const removeParticipant = useCallback(
-    (index: number) => {
-      participants.splice(index, 1)
-      setFieldValue('participants', participants)
-    },
-    [participants, setFieldValue]
-  )
+  }, [append])
 
   return (
     <>
@@ -53,12 +47,11 @@ export const MatchParticipants = ({
       <Stack spacing={2}>
         {participants.map((participant, index) => (
           <MatchParticipant
-            key={index}
-            participant={participant}
+            key={participant.id}
+            fullName={participant.friend.fullName}
             index={index}
-            handleChange={handleChange}
-            setFieldValue={setFieldValue}
-            removeParticipant={removeParticipant}
+            onRemove={remove}
+            control={control}
           />
         ))}
       </Stack>

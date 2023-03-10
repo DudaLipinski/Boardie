@@ -1,25 +1,15 @@
 import { Stack, TextField, Grid, Box } from '@mui/material'
 import { MobileDateTimePicker } from '@mui/x-date-pickers'
-import { Dayjs } from 'dayjs'
-import { ChangeEventHandler, useCallback } from 'react'
+import { useCallback } from 'react'
+import { Control } from 'react-hook-form'
+import { Match } from '../../types/Match'
+import { Controller } from 'react-hook-form'
 
 interface Props {
-  handleDateChange: (fieldName: string) => (value: Dayjs | null) => void
-  handleChange: ChangeEventHandler<HTMLInputElement>
-  boardgameName: string
-  startedAt: Dayjs
-  endedAt: Dayjs
-  notes: string
+  control: Control<Match>
 }
 
-export const MatchInfoFields = ({
-  handleDateChange,
-  handleChange,
-  boardgameName,
-  startedAt,
-  endedAt,
-  notes,
-}: Props) => {
+export const MatchInfoFields = ({ control }: Props) => {
   const renderDateInput = useCallback(
     (params: any) => <TextField {...params} />,
     []
@@ -33,42 +23,63 @@ export const MatchInfoFields = ({
       borderRadius="8px"
     >
       <Stack spacing={2}>
-        <TextField
-          type="text"
-          fullWidth
-          variant="outlined"
-          margin="dense"
-          id="boardgameName"
-          label="Board game"
-          value={boardgameName}
-          onChange={handleChange}
+        <Controller
+          name="boardgameName"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              id="boardgameName"
+              type="text"
+              fullWidth
+              variant="outlined"
+              margin="dense"
+              label="Boardgame"
+              {...field}
+            />
+          )}
         />
+
         <Grid container>
           <Grid item xs={6} sx={{ paddingRight: '7px' }}>
-            <MobileDateTimePicker
-              label="Started at"
-              value={startedAt}
-              onChange={handleDateChange('startedAt')}
-              renderInput={renderDateInput}
+            <Controller
+              name="startedAt"
+              control={control}
+              render={({ field }) => (
+                <MobileDateTimePicker
+                  label="Started at"
+                  renderInput={renderDateInput}
+                  {...field}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={6} sx={{ paddingLeft: '7px', fontSize: '12px' }}>
-            <MobileDateTimePicker
-              label="Ended at"
-              value={endedAt}
-              onChange={handleDateChange('endedAt')}
-              renderInput={renderDateInput}
+            <Controller
+              name="endedAt"
+              control={control}
+              render={({ field }) => (
+                <MobileDateTimePicker
+                  label="Ended at"
+                  renderInput={renderDateInput}
+                  {...field}
+                />
+              )}
             />
           </Grid>
         </Grid>
-        <TextField
-          multiline
-          variant="outlined"
-          rows={4}
-          id="notes"
-          label="Notes"
-          value={notes}
-          onChange={handleChange}
+        <Controller
+          name="notes"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              multiline
+              variant="outlined"
+              rows={4}
+              id="notes"
+              label="Notes"
+              {...field}
+            />
+          )}
         />
       </Stack>
     </Box>

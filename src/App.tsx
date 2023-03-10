@@ -8,17 +8,24 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 dayjs.extend(utc)
+
+const queryClient = new QueryClient()
 
 function App() {
   return (
     <Provider store={state}>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+              <AppRoutes />
+              <ReactQueryDevtools />
+            </BrowserRouter>
+          </QueryClientProvider>
         </LocalizationProvider>
       </ThemeProvider>
     </Provider>

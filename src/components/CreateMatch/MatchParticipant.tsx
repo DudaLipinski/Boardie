@@ -1,5 +1,4 @@
-import { ChangeEventHandler } from 'react'
-import { Participant } from '../../types/Match'
+import { Match } from '../../types/Match'
 import {
   TextField,
   FormControlLabel,
@@ -10,25 +9,17 @@ import {
   Box,
 } from '@mui/material'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
-import { ParticipantSelector } from './ParticipantSelector'
+import { Controller, Control } from 'react-hook-form'
+import { ParticipantSelector } from '../FriendSelector'
 
 interface Props {
-  participant: Participant
   index: number
-  handleChange: ChangeEventHandler<HTMLInputElement>
-  setFieldValue: (fieldName: string, value: any) => void
-  removeParticipant: (index: number) => void
+  fullName: string
+  control: Control<Match>
+  onRemove: (index: number) => void
 }
 
-export const MatchParticipant = ({
-  participant,
-  index,
-  handleChange,
-  setFieldValue,
-  removeParticipant,
-}: Props) => {
-  const { fullName } = participant.friend
-
+export const MatchParticipant = ({ index, control, onRemove }: Props) => {
   return (
     <Box
       bgcolor="background.paper"
@@ -39,47 +30,60 @@ export const MatchParticipant = ({
       gap="12px"
     >
       <Box>
-        <Avatar
-          alt={fullName}
-          src=""
-          sx={{ width: 60, height: 60, margin: '5px 5px 0 0' }}
-        >
-          {fullName[0]}
-        </Avatar>
+        <Controller
+          name={`participants.${index}.friend`}
+          control={control}
+          render={({ field: { value: friend } }) => {
+            const fullName = friend?.fullName ?? ''
+            const splitFullName = fullName.split(' ')
+            const [firstName] = splitFullName
+            const lastName =
+              splitFullName.length > 1
+                ? splitFullName[splitFullName.length - 1]
+                : ''
+
+            return (
+              <Avatar
+                alt={fullName}
+                src=""
+                sx={{ width: 60, height: 60, margin: '5px 5px 0 0' }}
+              >
+                {firstName[0]?.toUpperCase()} {lastName[0]?.toUpperCase()}
+              </Avatar>
+            )
+          }}
+        />
       </Box>
       <Box>
-        <TextField
-          fullWidth
-          size="small"
-          type="text"
-          variant="outlined"
-          margin="dense"
-          sx={{ marginBottom: '12px' }}
-          id={`participants[${index}].friend.fullName`}
-          name={`participants[${index}].friend.fullName`}
-          label="Participant"
-          value={fullName}
-          onChange={handleChange}
+        <Controller
+          name={`participants.${index}.friend`}
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <ParticipantSelector
+              index={index}
+              onChange={onChange}
+              value={value}
+            />
+          )}
         />
-        {/* <ParticipantSelector
-          index={index}
-          value={fullName}
-          setFieldValue={setFieldValue}
-        /> */}
+
         <Grid key={index} container gap="16px">
           <Grid item xs={6} sx={{ marginTop: '8px' }}>
-            <TextField
-              size="small"
-              type="number"
-              variant="outlined"
-              id={`participants[${index}].score`}
-              name={`participants[${index}].score`}
-              label="Score"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={participant.score}
-              onChange={handleChange}
+            <Controller
+              name={`participants.${index}.score`}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  size="small"
+                  type="number"
+                  variant="outlined"
+                  label="Score"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  {...field}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={1}>
@@ -92,12 +96,12 @@ export const MatchParticipant = ({
               }}
               labelPlacement="end"
               control={
-                <Checkbox
-                  checked={participant.isWinner}
-                  value={participant.isWinner}
-                  id={`participants[${index}].isWinner`}
-                  name={`participants[${index}].isWinner`}
-                  onChange={handleChange}
+                <Controller
+                  name={`participants.${index}.isWinner`}
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox checked={field.value} {...field} />
+                  )}
                 />
               }
               label="Winner"
@@ -108,7 +112,7 @@ export const MatchParticipant = ({
       <Box>
         <IconButton
           aria-label="remove participant"
-          onClick={() => removeParticipant(index)}
+          onClick={() => onRemove(index)}
         >
           <RemoveCircleOutlineIcon />
         </IconButton>

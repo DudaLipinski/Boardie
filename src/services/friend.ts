@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { Friend } from '../types/Friend'
+import { GenericUser } from '../types/GenericUser'
 
 export const createAnonymous = (fullName: string) =>
-  axios<Friend>({
+  axios<GenericUser>({
     method: 'post',
     url: 'http://localhost:3007/me/anonfriends',
     data: { fullName },
@@ -22,7 +22,7 @@ export const createAnonymous = (fullName: string) =>
       }
     })
 
-export const getFriends = (): Promise<Friend[]> =>
+export const getFriends = (): Promise<GenericUser[]> =>
   axios({
     method: 'get',
     url: `http://localhost:3007/me/friends`,

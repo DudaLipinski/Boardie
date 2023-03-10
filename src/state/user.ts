@@ -1,6 +1,6 @@
 import { Match } from '../types/Match'
 import { User } from '../types/User'
-import { Friend } from '../types/Friend'
+import { GenericUser } from '../types/GenericUser'
 
 const SET_USER = 'SET_USER'
 const SET_MATCHES = 'SET_MATCHES'
@@ -33,7 +33,7 @@ export const reducer = (
 export const actions = {
   setUser: (user: User) => ({ type: SET_USER, payload: user }),
   setMatches: (matches: Match[]) => ({ type: SET_MATCHES, payload: matches }),
-  setFriends: (friends: Friend[]) => ({
+  setFriends: (friends: GenericUser[]) => ({
     type: SET_FRIENDS,
     payload: friends,
   }),
@@ -44,6 +44,6 @@ export const selectors = {
   getUserId: (state: { user: { id: string } }) => state.user.id,
   getIsLoggedIn: (state: { user: User }) => !!state.user,
   getUserMatches: (state: { user: { matches: Match[] } }) => state.user.matches,
-  getUserFriends: (state: { user: { friends: Friend[] } }) =>
+  getUserFriends: (state: { user: { friends: GenericUser[] } }) =>
     state.user.friends,
 }

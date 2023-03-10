@@ -1,9 +1,9 @@
 import { Dayjs } from 'dayjs'
-import { Friend } from './Friend'
+import { GenericUser } from './GenericUser'
 export interface Participant {
   score?: number
   isWinner?: boolean
-  friend: Friend
+  friend: GenericUser
 }
 export interface Match {
   id: string

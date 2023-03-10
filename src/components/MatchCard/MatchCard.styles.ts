@@ -31,9 +31,3 @@ export const styledAvatarGroup = {
     marginTop: '-4px',
   },
 }
-
-export const styledAvatar = {
-  width: 32,
-  height: 32,
-  fontSize: '16px',
-}

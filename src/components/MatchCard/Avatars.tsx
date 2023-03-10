@@ -1,6 +1,7 @@
-import { AvatarGroup, Chip, Avatar, Badge } from '@mui/material'
+import { AvatarGroup, Chip, Badge } from '@mui/material'
+import { Avatar } from '../Avatar'
 import { Participant } from '../../types/Match'
-import { styledAvatar, styledAvatarGroup } from './MatchCard.styles'
+import { styledAvatarGroup } from './MatchCard.styles'
 
 export const Avatars = ({ participants }: { participants: Participant[] }) => {
   const participantsByScore = participants.sort(
@@ -22,9 +23,7 @@ export const Avatars = ({ participants }: { participants: Participant[] }) => {
                 horizontal: 'right',
               }}
             >
-              <Avatar alt={fullName} src="" sx={{ ...styledAvatar }}>
-                {fullName[0]}
-              </Avatar>
+              <Avatar user={participant.friend} size="sm" />
             </Badge>
           }
           label={fullName}
@@ -33,16 +32,7 @@ export const Avatars = ({ participants }: { participants: Participant[] }) => {
       )
     }
 
-    return (
-      <Avatar
-        key={`${fullName}-${i}`}
-        alt={fullName}
-        src=""
-        sx={{ ...styledAvatar }}
-      >
-        {fullName[0]}
-      </Avatar>
-    )
+    return <Avatar user={participant.friend} size="sm" />
   })
 
   return (

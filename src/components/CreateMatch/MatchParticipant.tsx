@@ -3,11 +3,11 @@ import {
   TextField,
   FormControlLabel,
   IconButton,
-  Avatar,
   Grid,
   Checkbox,
   Box,
 } from '@mui/material'
+import { Avatar } from '../Avatar'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import { Controller, Control } from 'react-hook-form'
 import { ParticipantSelector } from '../FriendSelector'
@@ -33,25 +33,9 @@ export const MatchParticipant = ({ index, control, onRemove }: Props) => {
         <Controller
           name={`participants.${index}.friend`}
           control={control}
-          render={({ field: { value: friend } }) => {
-            const fullName = friend?.fullName ?? ''
-            const splitFullName = fullName.split(' ')
-            const [firstName] = splitFullName
-            const lastName =
-              splitFullName.length > 1
-                ? splitFullName[splitFullName.length - 1]
-                : ''
-
-            return (
-              <Avatar
-                alt={fullName}
-                src=""
-                sx={{ width: 60, height: 60, margin: '5px 5px 0 0' }}
-              >
-                {firstName[0]?.toUpperCase()} {lastName[0]?.toUpperCase()}
-              </Avatar>
-            )
-          }}
+          render={({ field: { value: friend } }) => (
+            <Avatar user={friend} size="md" />
+          )}
         />
       </Box>
       <Box>

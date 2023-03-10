@@ -6,16 +6,16 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { useAnonFriendCreation, useFriends } from '../queries/friends'
-import { Friend } from '../types/Friend'
+import { GenericUser } from '../types/GenericUser'
 
-interface ExistentOrNewFriend extends Friend {
+interface ExistentOrNewFriend extends GenericUser {
   newFriendName?: string
 }
 
 interface Props {
   index: number
-  value: Friend
-  onChange: (friend: Friend | null) => void
+  value: GenericUser
+  onChange: (friend: GenericUser | null) => void
 }
 
 const filter = createFilterOptions<ExistentOrNewFriend>()

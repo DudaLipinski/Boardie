@@ -19,7 +19,7 @@ export const Match = () => {
     defaultValues: {
       boardgameName: '',
       startedAt: dayjs(),
-      endedAt: dayjs(),
+      endedAt: null,
       notes: '',
       participants: useInitialParticipants(),
     },
@@ -27,7 +27,9 @@ export const Match = () => {
 
   const onSubmit = (value: MatchType) => {
     const formatedStartedAt = dayjs.utc(value.startedAt).toISOString()
-    const formatedEndedAt = dayjs.utc(value.endedAt).toISOString()
+    const formatedEndedAt = value.endedAt
+      ? dayjs.utc(value.endedAt).toISOString()
+      : value.endedAt
 
     const match = {
       ...value,

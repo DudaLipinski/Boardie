@@ -33,19 +33,19 @@ export function create(anonFriend: Omit<AnonFriend, 'id'>) {
 
 export function getAllByUserId(params: { userId: number }) {
   const query = `
-      SELECT
-        rowId as id,
-        fullName
-      FROM anonFriend
-      WHERE
-        userId = $userId;
-    `
+    SELECT
+      rowId as id,
+      fullName
+    FROM anonFriend
+    WHERE
+      userId = $userId;
+  `
 
   return new Promise<Omit<AnonFriend, 'userId'>[]>((resolve, reject) => {
     db.all(
       query,
       prefixKeysWithDollar(params),
-      function (error: any, friends: Omit<AnonFriend, 'userId'>[]) {
+      function (error: Error, friends: Omit<AnonFriend, 'userId'>[]) {
         if (error) {
           reject(
             `An error occurred while trying to fetch anon friends by userId: ${error?.message}`
@@ -55,5 +55,33 @@ export function getAllByUserId(params: { userId: number }) {
         resolve(friends)
       }
     )
+  })
+}
+
+export const checkFriendshipExists = async (params: {
+  userId: number
+  id: number
+}) => {
+  const query = `
+    SELECT EXISTS(
+      SELECT 1 FROM anonFriend
+      WHERE
+        rowId = $id
+        AND userId = $userId
+      LIMIT 1
+    );
+  `
+
+  return new Promise<boolean>((resolve, reject) => {
+    db.get(query, prefixKeysWithDollar(params), function (error, result) {
+      if (error) {
+        reject(
+          `An error occurred while trying to check if an anon friendship exists: ${error?.message}`
+        )
+      }
+
+      const isFriend = Object.values(result)[0] === 1
+      resolve(isFriend)
+    })
   })
 }

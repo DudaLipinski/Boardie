@@ -216,3 +216,33 @@ export const deleteById = (params: { id: number }) => {
     })
   })
 }
+
+export const checkUpdatePermission = ({
+  id,
+  userId,
+}: {
+  id: number
+  userId: number
+}) => {
+  const query = `
+    SELECT authorId FROM match
+    WHERE
+      rowId = $id
+      AND ${ISNT_DELETED}
+    LIMIT 1
+  `
+
+  return new Promise<boolean | undefined>((resolve, reject) => {
+    db.get(query, prefixKeysWithDollar({ id }), function (error, match) {
+      if (error) {
+        return reject(
+          `An error occurred while trying to check if a match exists: ${error?.message}`
+        )
+      }
+
+      resolve(match ? match.authorId === userId : undefined)
+    })
+  })
+}
+
+export const checkDeletePermission = checkUpdatePermission

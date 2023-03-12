@@ -4,7 +4,7 @@ import * as matchesModel from '../models/matches'
 import * as matchParticipantModel from '../models/matchParticipants'
 
 import {
-  validateMatchCreationSchema,
+  validateMatchCreationData,
   validateMatchUpdateSchema,
 } from '../schemas/match'
 import { getErrorMessage } from '../schemas/utils'
@@ -22,9 +22,9 @@ export const createForLoggedUser: RequestHandler = async (req, res) => {
     authorId,
   }
 
-  const validMatch = validateMatchCreationSchema(matchDTO)
+  const validMatch = validateMatchCreationData(matchDTO)
   if (!validMatch) {
-    const errorMessage = getErrorMessage(validateMatchCreationSchema)
+    const errorMessage = getErrorMessage(validateMatchCreationData)
     res.status(400).send({ message: errorMessage })
     return
   }

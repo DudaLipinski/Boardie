@@ -1,51 +1,53 @@
 import ajv from './ajv'
 import { JSONSchemaType } from 'ajv'
-import { FriendType } from '../models/utils'
 import { GenericFriend, HydratedGenericFriend } from '../controllers/friends'
-import pick from 'lodash.pick'
+import { genericFriend, hydratedGenericFriend } from '../schemas/genericFriend'
+import omit from 'lodash.omit'
 
-export interface MatchParticipantCreationPayloadDTO {
-  friend: GenericFriend
-  score: number
-  isWinner: boolean
-}
-export interface MatchParticipantDTO {
+interface MatchParticipantBase {
   id: number
-  friend: HydratedGenericFriend
   score: number
   isWinner: boolean
+  friend: GenericFriend | HydratedGenericFriend
+}
+export interface MatchParticipantCreationData
+  extends Omit<MatchParticipantBase, 'id'> {
+  friend: GenericFriend
+}
+export interface MatchParticipantDTO extends MatchParticipantBase {
+  friend: HydratedGenericFriend
 }
 
-const matchParticipantProperties = {
-  id: { type: 'number' },
-  friend: {
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-      type: {
-        type: 'string',
-        enum: [FriendType.USER, FriendType.ANON_FRIEND],
-      },
-    },
-    required: ['id', 'type'],
-  },
-  score: { type: 'number' },
-  isWinner: { type: 'boolean' },
-} as const
+const matchParticipantProperties: JSONSchemaType<MatchParticipantBase>['properties'] =
+  {
+    id: { type: 'number' },
+    friend: hydratedGenericFriend,
+    score: { type: 'number' },
+    isWinner: { type: 'boolean' },
+  }
+export const matchParticipant: JSONSchemaType<MatchParticipantDTO> = {
+  title: 'Match participant',
+  description: 'Data that represents an existent match participant',
+  type: 'object',
+  properties: matchParticipantProperties,
+  required: ['id', 'friend', 'score', 'isWinner'],
+  additionalProperties: false,
+}
 
-export const participantCreationSchema: JSONSchemaType<MatchParticipantCreationPayloadDTO> =
+const matchParticipantCreationProperties: JSONSchemaType<MatchParticipantCreationData>['properties'] =
+  {
+    ...omit(matchParticipantProperties, ['id']),
+    friend: genericFriend,
+  }
+export const matchParticipantCreationSchema: JSONSchemaType<MatchParticipantCreationData> =
   {
     title: 'Match participant creation data',
     description: 'Data used to create a match participant',
     type: 'object',
-    properties: pick(matchParticipantProperties, [
-      'friend',
-      'score',
-      'isWinner',
-    ]),
+    properties: matchParticipantCreationProperties,
     required: ['friend', 'score', 'isWinner'],
     additionalProperties: false,
   }
-export const validateParticipantCreationSchema = ajv.compile(
-  participantCreationSchema
+export const validateMatchParticipantCreationData = ajv.compile(
+  matchParticipantCreationSchema
 )

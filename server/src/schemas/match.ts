@@ -1,14 +1,16 @@
 import ajv from './ajv'
 import { JSONSchemaType } from 'ajv'
 import {
-  MatchParticipantCreationPayloadDTO,
+  matchParticipant,
+  MatchParticipantCreationData,
   MatchParticipantDTO,
 } from '../schemas/matchParticipant'
-import { Match } from '../models/matches'
-import { participantCreationSchema } from './matchParticipant'
+import { HydratedMatch, Match } from '../models/matches'
+import { matchParticipantCreationSchema } from './matchParticipant'
 import pick from 'lodash.pick'
 
 const matchProperties = {
+  id: { type: 'number' },
   authorId: { type: 'number' },
   boardgameName: { type: 'string' },
   location: { type: 'string', nullable: true },
@@ -17,15 +19,15 @@ const matchProperties = {
   notes: { type: 'string', nullable: true },
   participants: {
     type: 'array',
-    items: participantCreationSchema,
+    items: matchParticipantCreationSchema,
   },
 } as const
 
 export type MatchCreationParticipantData = Omit<MatchParticipantDTO, 'fullName'>
-export interface MatchCreationPayloadDTO extends Omit<Match, 'id'> {
-  participants: MatchParticipantCreationPayloadDTO[]
+export interface MatchCreationData extends Omit<Match, 'id'> {
+  participants: MatchParticipantCreationData[]
 }
-const matchCreationSchema: JSONSchemaType<MatchCreationPayloadDTO> = {
+const matchCreationDataSchema: JSONSchemaType<MatchCreationData> = {
   title: 'Match creation payload',
   description:
     'Data used to create a match along with its initial participants',
@@ -34,7 +36,22 @@ const matchCreationSchema: JSONSchemaType<MatchCreationPayloadDTO> = {
   required: ['authorId', 'boardgameName', 'participants'],
   additionalProperties: false,
 }
-export const validateMatchCreationSchema = ajv.compile(matchCreationSchema)
+export const validateMatchCreationData = ajv.compile(matchCreationDataSchema)
+
+export const matchCreationResultSchema: JSONSchemaType<HydratedMatch> = {
+  title: 'Match creation result',
+  description: 'Match data with its participants',
+  type: 'object',
+  properties: {
+    ...matchProperties,
+    participants: {
+      type: 'array',
+      items: matchParticipant,
+    },
+  },
+  required: ['authorId', 'boardgameName', 'participants'],
+  additionalProperties: false,
+}
 
 export type MatchUpdateDTO = Omit<Match, 'id' | 'authorId'>
 const matchUpdateSchema: JSONSchemaType<MatchUpdateDTO> = {

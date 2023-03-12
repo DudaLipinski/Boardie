@@ -1,5 +1,5 @@
 import {
-  MatchParticipantCreationPayloadDTO,
+  MatchParticipantCreationData,
   MatchParticipantDTO,
 } from '../schemas/matchParticipant'
 import db from '../database'
@@ -30,9 +30,9 @@ const dbParticipantToDtoModel = (
   isWinner: participant.isWinner,
 })
 
-export const getAllByMatchId = (params: { matchId: number }) => {
-  const query = `
-    SELECT
+const QUERY_HYDRATED = `
+  SELECT
+      mp.rowId as id,
       mp.*,
       IIF(
           mp.userId IS NULL,
@@ -44,6 +44,34 @@ export const getAllByMatchId = (params: { matchId: number }) => {
       ON af.rowId = mp.anonFriendId
     LEFT JOIN user u
       ON u.rowId = mp.userId
+`
+
+export const getById = (params: { id: number }) => {
+  const query = `
+    ${QUERY_HYDRATED}
+    WHERE mp.rowId = $id
+  `
+
+  return new Promise<MatchParticipantDTO>((resolve, reject) => {
+    db.get(
+      query,
+      prefixKeysWithDollar(params),
+      function (error: any, participant: HydratedMatchParticipant) {
+        if (error) {
+          reject(
+            `An error occurred while trying to fetch match participants by matchId: ${error?.message}`
+          )
+        }
+
+        resolve(dbParticipantToDtoModel(participant))
+      }
+    )
+  })
+}
+
+export const getAllByMatchId = (params: { matchId: number }) => {
+  const query = `
+    ${QUERY_HYDRATED}
     WHERE mp.matchId = $matchId
   `
 
@@ -65,7 +93,7 @@ export const getAllByMatchId = (params: { matchId: number }) => {
 }
 
 const participantCreationDtoToDbModel = (
-  participant: MatchParticipantCreationPayloadDTO
+  participant: MatchParticipantCreationData
 ): Omit<MatchParticipant, 'id' | 'matchId'> => ({
   score: participant.score,
   isWinner: participant.isWinner,
@@ -83,7 +111,7 @@ export const createMultiple = ({
   participants,
 }: {
   matchId: number
-  participants: MatchParticipantCreationPayloadDTO[]
+  participants: MatchParticipantCreationData[]
 }) => {
   const digestedParticipants = participants.map(participantCreationDtoToDbModel)
 
@@ -113,5 +141,42 @@ export const createMultiple = ({
     })
 
     resolve()
+  })
+}
+
+export const create = ({
+  matchId,
+  participant,
+}: {
+  matchId: number
+  participant: MatchParticipantCreationData
+}) => {
+  const digestedParticipant = participantCreationDtoToDbModel(participant)
+  const creationData = { matchId, ...digestedParticipant }
+
+  const query = `INSERT INTO matchParticipant(
+    matchId,
+    userId,
+    anonFriendId,
+    score,
+    isWinner
+  ) VALUES (
+    $matchId,
+    $userId,
+    $anonFriendId,
+    $score,
+    $isWinner
+  )`
+
+  return new Promise<MatchParticipantDTO>((resolve, reject) => {
+    db.run(query, prefixKeysWithDollar(creationData), function (error) {
+      if (error) {
+        return reject(
+          `An error occurred while creating a match participant: ${error?.message}`
+        )
+      }
+
+      return getById({ id: this.lastID }).then(resolve)
+    })
   })
 }

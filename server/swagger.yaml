@@ -279,7 +279,7 @@ paths:
             type: integer
           required: true
           description: id of the match to update
-      summary: Update an existing match
+      summary: Update some match's details
       requestBody:
         content:
           application/json:
@@ -325,6 +325,88 @@ paths:
           description: You don't have the needed permissions to delete the match
         '404':
           description: No match was found with the provided id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+  /matches/{matchId}/participants:
+    get:
+      summary: Get all the match participants related to a given match
+      tags:
+        - matches
+      parameters:
+        - in: path
+          name: matchId
+          schema:
+            type: integer
+          required: true
+          description: id of the match to get the participants from
+      responses:
+        '200':
+          description: The participants for the given match were successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchParticipant'
+        '401':
+          description: Invalid credentials
+        '404':
+          description: No match was found with the provided id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+    post:
+      summary: Create a match participant
+      tags:
+        - matches
+      parameters:
+        - in: path
+          name: matchId
+          schema:
+            type: integer
+          required: true
+          description: id of the match with which the participant will be related
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchParticipantBase'
+      responses:
+        '200':
+          description: The create participant's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchParticipant'
+        '401':
+          description: Provided credentials doesn't match any valid user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the match participant trying to be created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No match was found with the given id
           content:
             application/json:
               schema:
@@ -522,10 +604,6 @@ components:
       description: Relationship between a match and participant, along with his score and notes on that specific match
       type: object
       properties:
-        id:
-          type: integer
-          description: id of the participant record
-          example: 13803
         friend:
           $ref: '#/components/schemas/GenericFriend'
         score:
@@ -551,6 +629,10 @@ components:
       allOf:
         - $ref: '#/components/schemas/MatchParticipantBase'
       properties:
+        id:
+          type: integer
+          description: id of the participant record
+          example: 13803
         friend:
           type: object
           allOf:

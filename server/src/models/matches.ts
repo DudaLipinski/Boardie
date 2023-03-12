@@ -27,21 +27,21 @@ export const create = (match: Omit<Match, 'id'>) => {
     boardgameName,
     startedAt,
     endedAt,
+    location,
     notes
   ) VALUES (
     $authorId,
     $boardgameName,
     $startedAt,
     $endedAt,
+    $location,
     $notes
   )`
 
   return new Promise<number>((resolve, reject) => {
     db.run(query, prefixKeysWithDollar(match), function (error) {
       if (error) {
-        reject(
-          `An error occurred while creating multiple match participants: ${error?.message}`
-        )
+        reject(`An error occurred while creating a match: ${error?.message}`)
       }
 
       resolve(this.lastID)

@@ -20,6 +20,7 @@ const matchProperties = {
   participants: {
     type: 'array',
     items: matchParticipantCreationSchema,
+    minItems: 1,
   },
 } as const
 

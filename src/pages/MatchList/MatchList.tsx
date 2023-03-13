@@ -15,7 +15,7 @@ export const MatchList = () => {
   const navigate = useNavigate()
   const loadedMatches = useOwnMatches()
 
-  const matchItems = loadedMatches?.map((match: Match) => {
+  const matches = loadedMatches?.map((match: Match) => {
     return <MatchCard key={match.id} match={match} />
   })
 
@@ -25,7 +25,7 @@ export const MatchList = () => {
       style={{ width: '100%', position: 'relative' }}
     >
       <Box height="100%" overflow="auto">
-        <List sx={{ paddingBottom: '80px' }}>{matchItems}</List>
+        <List sx={{ paddingBottom: '80px' }}>{matches}</List>
       </Box>
       <Fab
         color="primary"

@@ -3,34 +3,30 @@ import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
 import { Match as MatchType } from '../../types/Match'
 import { useMatchCreation } from '../../queries/match'
-import { useInitialParticipants } from '../../hooks/useInitialParticipants'
+import { useSelector } from 'react-redux'
+import { selectors as userSelectors } from '../../state/user'
 
 import { MatchParticipants } from '../../components/CreateMatch/MatchParticipants'
 import { MatchDetails } from '../../components/CreateMatch/MatchDetails'
-import { Box, Fab, Stack, Typography } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
-import CachedIcon from '@mui/icons-material/Cached'
+import { Box, Stack } from '@mui/material'
 
 import { animationProps } from '../../styles/animation'
-import { styledFloatButton } from '../../styles/floatingButton'
 import { Alert } from '../../components/Alert'
-
-const fabProps = {
-  color: 'primary' as const,
-  variant: 'extended' as const,
-  sx: { ...styledFloatButton },
-  type: 'submit' as const,
-}
-
-const fabTextProps = {
-  variant: 'button' as const,
-  fontSize: 14,
-  component: 'h2' as const,
-  sx: { mr: 0.5 },
-}
+import { userToGenericFriend } from '../../utils/userToGenericFriend'
+import { FabSubmit } from '../../components/FabSubmit'
 
 export const Match = () => {
   const { mutate, isLoading, isError, error } = useMatchCreation()
+  const user = useSelector(userSelectors.getUser)
+  const emptyParticipant = {
+    score: 0,
+    isWinner: false,
+    friend: {
+      id: 0,
+      fullName: '',
+      type: 'ANON_FRIEND' as const,
+    },
+  }
 
   const { handleSubmit, control } = useForm<MatchType>({
     defaultValues: {
@@ -38,24 +34,23 @@ export const Match = () => {
       startedAt: dayjs(),
       endedAt: null,
       notes: '',
-      participants: useInitialParticipants(),
+      participants: [userToGenericFriend(user), emptyParticipant],
     },
   })
 
   const onSubmit = (value: MatchType) => {
-    const formatedStartedAt = dayjs.utc(value.startedAt).toISOString()
-    const formatedEndedAt = value.endedAt
+    const formattedStartedAt = dayjs.utc(value.startedAt).toISOString()
+    const formattedEndedAt = value.endedAt
       ? dayjs.utc(value.endedAt).toISOString()
       : value.endedAt
 
     const match = {
       ...value,
-      startedAt: formatedStartedAt,
-      endedAt: formatedEndedAt,
+      startedAt: formattedStartedAt,
+      endedAt: formattedEndedAt,
     }
 
     mutate(match)
-
     return
   }
 
@@ -75,12 +70,7 @@ export const Match = () => {
           <MatchDetails control={control} />
           <MatchParticipants control={control} />
         </Stack>
-        <Fab disabled={isLoading} {...fabProps}>
-          {isLoading ? <CachedIcon /> : <CheckIcon />}
-          <Typography {...fabTextProps}>
-            {isLoading ? 'Creating' : 'Confirm'}
-          </Typography>
-        </Fab>
+        <FabSubmit isLoading={isLoading} />
       </Box>
     </motion.div>
   )

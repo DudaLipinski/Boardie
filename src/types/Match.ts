@@ -1,15 +1,16 @@
+import { Dayjs } from 'dayjs'
+import { GenericUser } from './GenericUser'
 export interface Participant {
-  userId: string
-  fullName: string
-  score: number
-  isWinner: boolean
+  score?: number
+  isWinner?: boolean
+  friend: GenericUser
 }
 export interface Match {
   id: string
   authorId: string
   boardgameName: string
-  date: string
-  duration: number
+  startedAt: Dayjs | string
+  endedAt: Dayjs | string | null
   notes: string
   participants: Participant[]
 }

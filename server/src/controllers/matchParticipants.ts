@@ -10,7 +10,7 @@ import {
 import { getErrorMessage } from '../schemas/utils'
 import { ErrorBody } from '../types/errors'
 import { logInternalError } from '../utils/log'
-import { forbiddenError } from '../utils/errors'
+import { FORBIDDEN_ERROR } from '../utils/errors'
 
 export const getAllByMatchId: RequestHandler<
   { matchId: string },
@@ -65,7 +65,7 @@ export const create: RequestHandler<
       return res.status(404).send({ message: 'Match does not exist' })
     }
     if (!canUpdate) {
-      return res.status(403).send(forbiddenError)
+      return res.status(403).send(FORBIDDEN_ERROR)
     }
 
     const friendshipExists = await friendsModel.checkFriendshipExists({
@@ -73,7 +73,7 @@ export const create: RequestHandler<
       friend: participant.friend,
     })
     if (!friendshipExists) {
-      return res.status(403).send(forbiddenError)
+      return res.status(403).send(FORBIDDEN_ERROR)
     }
 
     const createdParticipant = await matchParticipantsModel.create({
@@ -82,6 +82,47 @@ export const create: RequestHandler<
     })
 
     res.status(200).send(createdParticipant)
+  } catch (e) {
+    logInternalError(e)
+    res.sendStatus(500)
+  }
+}
+
+export const deleteById: RequestHandler<
+  { matchId: string; participantId: string },
+  void | ErrorBody,
+  never
+> = async (req, res) => {
+  if (!req.params.matchId || !req.params.participantId) {
+    return res.sendStatus(400)
+  }
+  const matchId = parseInt(req.params.matchId)
+  const participantId = parseInt(req.params.participantId)
+  const userId = req.userId
+
+  try {
+    const canUpdateMatch = await matchesModel.checkUpdatePermission({
+      id: matchId,
+      userId,
+    })
+    if (canUpdateMatch === undefined) {
+      return res.status(404).send({ message: 'Match does not exist' })
+    }
+    if (!canUpdateMatch) {
+      return res.status(403).send(FORBIDDEN_ERROR)
+    }
+
+    const deleted = await matchParticipantsModel.deleteById({
+      id: participantId,
+      matchId,
+    })
+    if (!deleted) {
+      return res
+        .status(404)
+        .send({ message: 'Match participant does not exist' })
+    }
+
+    return res.sendStatus(200)
   } catch (e) {
     logInternalError(e)
     res.sendStatus(500)

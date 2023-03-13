@@ -417,6 +417,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalError'
+  /matches/{matchId}/participants/{participantId}:
+    delete:
+      summary: Permanently deletes a match participant
+      tags:
+        - matches
+      parameters:
+        - in: path
+          name: participantId
+          schema:
+            type: integer
+          required: true
+          description: id of the match participant to be deleted
+      responses:
+        '200':
+          description: The participant was successfully deleted
+        '400':
+          description: Invalid request
+        '403':
+          description: The user doesn't have permissions to update the match
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No match or match participant was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
 components:
   securitySchemes:
     BearerAuth:

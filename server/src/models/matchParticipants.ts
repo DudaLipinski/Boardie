@@ -180,3 +180,24 @@ export const create = ({
     })
   })
 }
+
+export const deleteById = (params: { id: number; matchId: number }) => {
+  const query = `
+    DELETE FROM matchParticipant
+      WHERE
+        rowId = $id
+        AND matchId = $matchId
+  `
+
+  return new Promise<boolean>((resolve, reject) => {
+    db.run(query, prefixKeysWithDollar(params), function (error) {
+      if (error) {
+        return reject(
+          `An error occurred while deleting a match participant: ${error?.message}`
+        )
+      }
+
+      resolve(this.changes === 1)
+    })
+  })
+}

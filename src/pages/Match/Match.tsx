@@ -12,7 +12,7 @@ import { Box, Stack } from '@mui/material'
 
 import { animationProps } from '../../styles/animation'
 import { Alert } from '../../components/Alert'
-import { userToGenericFriend } from '../../utils/userToGenericFriend'
+import { userToParticipant } from '../../utils/friends'
 import { FabSubmit } from '../../components/FabSubmit'
 
 export const Match = () => {
@@ -34,7 +34,7 @@ export const Match = () => {
       startedAt: dayjs(),
       endedAt: null,
       notes: '',
-      participants: [userToGenericFriend(user), emptyParticipant],
+      participants: [userToParticipant(user), emptyParticipant],
     },
   })
 

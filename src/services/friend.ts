@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { GenericUser } from '../types/GenericUser'
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
+import { SERVER_URL } from '../constants'
 
 export const createAnonymous = (fullName: string) =>
   axios<GenericUser>({

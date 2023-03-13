@@ -2,17 +2,26 @@ import { IconButton, Collapse, Alert as MuiAlert } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { useEffect, useState } from 'react'
 
-interface Props {
+export interface AlertDefinition {
   severity: 'error' | 'info' | 'success' | 'warning'
   message: string
 }
+interface Props extends AlertDefinition {
+  onClose?: () => void
+}
 
-export const Alert = ({ severity, message }: Props) => {
+export const Alert = ({ severity, message, onClose }: Props) => {
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
     setTimeout(() => setOpen(false), 3000)
   }, [])
+
+  useEffect(() => {
+    if (!open) {
+      onClose?.()
+    }
+  }, [open, onClose])
 
   return (
     <Collapse in={open}>

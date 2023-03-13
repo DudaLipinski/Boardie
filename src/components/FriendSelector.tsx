@@ -3,10 +3,14 @@ import {
   Autocomplete,
   TextField,
   FilterOptionsState,
+  Chip,
 } from '@mui/material'
-import React from 'react'
+import React, { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { useAnonFriendCreation, useFriends } from '../queries/friends'
 import { GenericUser } from '../types/GenericUser'
+import { selectors as userSelectors } from '../state/user'
+import { userToGeneric } from '../utils/friends'
 
 interface ExistentOrNewFriend extends GenericUser {
   newFriendName?: string
@@ -15,14 +19,24 @@ interface ExistentOrNewFriend extends GenericUser {
 interface Props {
   index: number
   value: GenericUser
+  includeLoggedUser?: boolean
   onChange: (friend: GenericUser | null) => void
 }
 
 const filter = createFilterOptions<ExistentOrNewFriend>()
 
-export const ParticipantSelector = ({ index, value, onChange }: Props) => {
+export const FriendSelector = ({
+  index,
+  value,
+  includeLoggedUser = true,
+  onChange,
+}: Props) => {
   const friends = useFriends()
+  const loggedUser = useSelector(userSelectors.getUser)
   const createAnonymousFriend = useAnonFriendCreation()
+
+  const isLoggedUser = (user: GenericUser) =>
+    user.type === 'USER' && loggedUser.id === user.id
 
   const handleChange = async (
     event: React.SyntheticEvent<Element, Event>,
@@ -79,6 +93,16 @@ export const ParticipantSelector = ({ index, value, onChange }: Props) => {
     return option.fullName
   }
 
+  const options = useMemo(() => {
+    const result = friends.data ? [...friends.data] : []
+
+    if (includeLoggedUser) {
+      result.push(userToGeneric(loggedUser))
+    }
+
+    return result
+  }, [friends.data, loggedUser, includeLoggedUser])
+
   return (
     <>
       <Autocomplete
@@ -89,9 +113,22 @@ export const ParticipantSelector = ({ index, value, onChange }: Props) => {
         clearOnBlur
         handleHomeEndKeys
         id={`participants[${index}].friend.fullName`}
-        options={friends.data ?? []}
+        options={options}
         getOptionLabel={getOptionLabel}
-        renderOption={(props, option) => <li {...props}>{option.fullName}</li>}
+        renderOption={(props, option) => (
+          <li {...props}>
+            {option.fullName}
+
+            {isLoggedUser(option) ? (
+              <Chip
+                label="You"
+                size="small"
+                color="info"
+                sx={{ marginLeft: 'auto' }}
+              />
+            ) : null}
+          </li>
+        )}
         freeSolo
         autoHighlight={true}
         loading={friends.isLoading || createAnonymousFriend.isLoading}

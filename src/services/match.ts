@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Match } from '../types/Match'
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
+import { SERVER_URL } from '../constants'
 
 export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
   axios({

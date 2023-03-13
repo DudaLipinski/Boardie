@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { User } from '../types/User'
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
+import { SERVER_URL } from '../constants'
 
 export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
   axios

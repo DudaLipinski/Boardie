@@ -10,7 +10,7 @@ import {
 import { Avatar } from '../Avatar'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import { Controller, Control } from 'react-hook-form'
-import { ParticipantSelector } from '../FriendSelector'
+import { FriendSelector } from '../FriendSelector'
 
 const parseEventValueToInt = (
   event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,11 +58,7 @@ export const MatchParticipant = ({
           name={`participants.${index}.friend`}
           control={control}
           render={({ field: { onChange, value } }) => (
-            <ParticipantSelector
-              index={index}
-              onChange={onChange}
-              value={value}
-            />
+            <FriendSelector index={index} onChange={onChange} value={value} />
           )}
         />
         <Grid container gap="16px" sx={{ marginTop: '14px' }}>

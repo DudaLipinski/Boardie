@@ -18,6 +18,10 @@ export function set(app: Express) {
     `/${matchPath}/:matchId/${participantsPath}`,
     matchParticipantsController.create
   )
+  app.put(
+    `/${matchPath}/:matchId/${participantsPath}/:participantId`,
+    matchParticipantsController.update
+  )
   app.delete(
     `/${matchPath}/:matchId/${participantsPath}/:participantId`,
     matchParticipantsController.deleteById

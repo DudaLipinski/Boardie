@@ -14,6 +14,7 @@ export interface MatchParticipantCreationData
   extends Omit<MatchParticipantBase, 'id'> {
   friend: GenericFriend
 }
+export type MatchParticipantUpdateData = MatchParticipantCreationData
 export interface MatchParticipantDTO extends MatchParticipantBase {
   friend: HydratedGenericFriend
 }
@@ -50,4 +51,10 @@ export const matchParticipantCreationSchema: JSONSchemaType<MatchParticipantCrea
   }
 export const validateMatchParticipantCreationData = ajv.compile(
   matchParticipantCreationSchema
+)
+
+export const matchParticipantUpdateSchema: JSONSchemaType<MatchParticipantUpdateData> =
+  matchParticipantCreationSchema
+export const validateMatchParticipantUpdateData = ajv.compile(
+  matchParticipantUpdateSchema
 )

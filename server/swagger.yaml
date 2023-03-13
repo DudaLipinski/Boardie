@@ -418,11 +418,70 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalError'
   /matches/{matchId}/participants/{participantId}:
+    put:
+      summary: Update a match participant
+      tags:
+        - matches
+      parameters:
+        - in: path
+          name: matchId
+          schema:
+            type: integer
+          required: true
+          description: id of the match that contains the participant
+        - in: path
+          name: participantId
+          schema:
+            type: integer
+          required: true
+          description: id of the match participant to be updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchParticipantBase'
+      responses:
+        '200':
+          description: The updated participant's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchParticipant'
+        '401':
+          description: Provided credentials doesn't match any valid user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the match participant trying to be inserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No match was found with the given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
     delete:
       summary: Permanently deletes a match participant
       tags:
         - matches
       parameters:
+        - in: path
+          name: matchId
+          schema:
+            type: integer
+          required: true
+          description: id of the match that contains the participant to be deleted
         - in: path
           name: participantId
           schema:

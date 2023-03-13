@@ -1,6 +1,7 @@
 import {
   MatchParticipantCreationData,
   MatchParticipantDTO,
+  MatchParticipantUpdateData,
 } from '../schemas/matchParticipant'
 import db from '../database'
 import { FriendType, prefixKeysWithDollar } from './utils'
@@ -178,6 +179,42 @@ export const create = ({
 
       return getById({ id: this.lastID }).then(resolve)
     })
+  })
+}
+
+export const update = ({
+  id,
+  participant,
+}: {
+  id: number
+  participant: MatchParticipantUpdateData
+}) => {
+  const digestedParticipant = participantCreationDtoToDbModel(participant)
+
+  const query = `
+    UPDATE matchParticipant
+    SET
+      userId = $userId,
+      anonFriendId = $anonFriendId,
+      score = $score,
+      isWinner = $isWinner
+    WHERE rowId = $id
+  `
+
+  return new Promise<MatchParticipantDTO>((resolve, reject) => {
+    db.run(
+      query,
+      prefixKeysWithDollar({ id, ...digestedParticipant }),
+      function (error) {
+        if (error) {
+          return reject(
+            `An error occurred while updating a match participant: ${error?.message}`
+          )
+        }
+
+        return getById({ id }).then(resolve)
+      }
+    )
   })
 }
 

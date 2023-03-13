@@ -5,7 +5,9 @@ import * as friendsModel from '../models/friends'
 import {
   MatchParticipantCreationData,
   MatchParticipantDTO,
+  MatchParticipantUpdateData,
   validateMatchParticipantCreationData,
+  validateMatchParticipantUpdateData,
 } from '../schemas/matchParticipant'
 import { getErrorMessage } from '../schemas/utils'
 import { ErrorBody } from '../types/errors'
@@ -78,6 +80,58 @@ export const create: RequestHandler<
 
     const createdParticipant = await matchParticipantsModel.create({
       matchId,
+      participant,
+    })
+
+    res.status(200).send(createdParticipant)
+  } catch (e) {
+    logInternalError(e)
+    res.sendStatus(500)
+  }
+}
+
+export const update: RequestHandler<
+  { matchId: string; participantId: string },
+  MatchParticipantDTO | ErrorBody,
+  MatchParticipantUpdateData
+> = async (req, res) => {
+  if (!req.params.matchId || !req.params.participantId) {
+    return res.sendStatus(400)
+  }
+  const matchId = parseInt(req.params.matchId)
+  const participantId = parseInt(req.params.participantId)
+  const userId = req.userId
+
+  const participant = req.body
+  const validMatchParticipant = validateMatchParticipantUpdateData(participant)
+  if (!validMatchParticipant) {
+    const errorMessage = getErrorMessage(validateMatchParticipantUpdateData)
+    res.status(400).send({ message: errorMessage })
+    return
+  }
+
+  try {
+    const canUpdate = await matchesModel.checkUpdatePermission({
+      id: matchId,
+      userId,
+    })
+    if (canUpdate === undefined) {
+      return res.status(404).send({ message: 'Match does not exist' })
+    }
+    if (!canUpdate) {
+      return res.status(403).send(FORBIDDEN_ERROR)
+    }
+
+    const friendshipExists = await friendsModel.checkFriendshipExists({
+      userId,
+      friend: participant.friend,
+    })
+    if (!friendshipExists) {
+      return res.status(403).send(FORBIDDEN_ERROR)
+    }
+
+    const createdParticipant = await matchParticipantsModel.update({
+      id: participantId,
       participant,
     })
 

@@ -15,6 +15,7 @@ import {
   FormControlLabel,
 } from '@mui/material'
 import { animationProps } from '../../styles/animation'
+import { CREATE_ACCOUNT, DASHBOARD } from '../../routes/routeSpecs'
 
 export const Login = () => {
   const dispatch = useDispatch()
@@ -32,11 +33,9 @@ export const Login = () => {
             throw new Error('Internal error')
           }
           dispatch(userActions.setUser(response.user))
-          navigate('/dashboard')
+          navigate(DASHBOARD)
         })
         .catch((error: any) => alert(error.message))
-
-      navigate('/dashboard')
     },
   })
 
@@ -103,7 +102,7 @@ export const Login = () => {
           gap="12px"
         >
           <Link to="#">Forgot password</Link>
-          <Link to="/create-account">Register now!</Link>
+          <Link to={CREATE_ACCOUNT}>Register now!</Link>
         </Box>
       </Box>
     </motion.div>

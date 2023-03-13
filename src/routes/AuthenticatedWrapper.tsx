@@ -7,7 +7,13 @@ export const AuthenticatedWrapper = () => {
   return (
     <Box height="100vh" display="flex" flexDirection="column" width="inherit">
       <Navbar />
-      <Box display="flex" flex="1" height="inherit" overflow="hidden auto">
+      <Box
+        display="flex"
+        flex="1"
+        height="inherit"
+        overflow="hidden auto"
+        component="main"
+      >
         <AuthenticatedRoutes />
       </Box>
       <TabBar />

@@ -1,0 +1,147 @@
+import {
+  createFilterOptions,
+  Autocomplete,
+  TextField,
+  FilterOptionsState,
+  Chip,
+} from '@mui/material'
+import React, { useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import { useAnonFriendCreation, useFriends } from '../queries/friends'
+import { GenericUser } from '../types/GenericUser'
+import { selectors as userSelectors } from '../state/user'
+import { userToGeneric } from '../utils/friends'
+
+interface ExistentOrNewFriend extends GenericUser {
+  newFriendName?: string
+}
+
+interface Props {
+  index: number
+  value: GenericUser
+  includeLoggedUser?: boolean
+  onChange: (friend: GenericUser | null) => void
+}
+
+const filter = createFilterOptions<ExistentOrNewFriend>()
+
+export const FriendSelector = ({
+  index,
+  value,
+  includeLoggedUser = true,
+  onChange,
+}: Props) => {
+  const friends = useFriends()
+  const loggedUser = useSelector(userSelectors.getUser)
+  const createAnonymousFriend = useAnonFriendCreation()
+
+  const isLoggedUser = (user: GenericUser) =>
+    user.type === 'USER' && loggedUser.id === user.id
+
+  const handleChange = async (
+    event: React.SyntheticEvent<Element, Event>,
+    newValue: string | ExistentOrNewFriend | null
+  ) => {
+    const newFriendFullName =
+      typeof newValue === 'string' ? newValue : newValue?.newFriendName
+    if (newFriendFullName) {
+      const newFriend = await createAnonymousFriend.mutateAsync(
+        newFriendFullName
+      )
+      newFriend && onChange(newFriend)
+      return
+    }
+
+    if (typeof newValue === 'string') {
+      return
+    }
+    onChange(newValue)
+  }
+
+  const filterOptions = (
+    options: ExistentOrNewFriend[],
+    params: FilterOptionsState<ExistentOrNewFriend>
+  ) => {
+    const filtered = filter(options, params)
+    const { inputValue } = params
+
+    const alreadyExists = options.some(
+      (option: { fullName: any }) =>
+        option.fullName.toLowerCase() === inputValue.toLowerCase()
+    )
+    if (inputValue !== '' && !alreadyExists) {
+      filtered.push({
+        id: 0,
+        newFriendName: inputValue,
+        fullName: `Add "${inputValue}"`,
+        type: 'ANON_FRIEND',
+      })
+    }
+
+    return filtered
+  }
+
+  const getOptionLabel = (option: any) => {
+    if (typeof option === 'string') {
+      return option
+    }
+
+    if (option.inputValue) {
+      return option.inputValue
+    }
+
+    return option.fullName
+  }
+
+  const options = useMemo(() => {
+    const result = friends.data ? [...friends.data] : []
+
+    if (includeLoggedUser) {
+      result.push(userToGeneric(loggedUser))
+    }
+
+    return result
+  }, [friends.data, loggedUser, includeLoggedUser])
+
+  return (
+    <>
+      <Autocomplete
+        value={value}
+        onChange={handleChange}
+        filterOptions={filterOptions}
+        selectOnFocus
+        clearOnBlur
+        handleHomeEndKeys
+        id={`participants[${index}].friend.fullName`}
+        options={options}
+        getOptionLabel={getOptionLabel}
+        renderOption={(props, option) => (
+          <li {...props}>
+            {option.fullName}
+
+            {isLoggedUser(option) ? (
+              <Chip
+                label="You"
+                size="small"
+                color="info"
+                sx={{ marginLeft: 'auto' }}
+              />
+            ) : null}
+          </li>
+        )}
+        freeSolo
+        autoHighlight={true}
+        loading={friends.isLoading || createAnonymousFriend.isLoading}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            color="info"
+            size="small"
+            label="Add participant"
+            placeholder="Select a friend or create one"
+          />
+        )}
+      />
+    </>
+  )
+}

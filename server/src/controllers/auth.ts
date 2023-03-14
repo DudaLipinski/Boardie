@@ -2,7 +2,7 @@ import { RequestHandler } from 'express'
 import { validateAuthSchema } from '../schemas/auth'
 
 import * as userModel from '../models/user'
-import { generateAccessToken } from '../auth'
+import { generateAccessToken } from '../utils/auth'
 import { getErrorMessage } from '../schemas/utils'
 import { logInternalError } from '../utils/log'
 

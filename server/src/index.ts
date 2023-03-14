@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import ipfilter from 'express-ipfilter'
 import express from 'express'
-import pino from 'express-pino-logger'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
 import yaml from 'yamljs'
@@ -10,7 +9,7 @@ const swaggerDocument = yaml.load('./swagger.yaml')
 
 import db from './database'
 import { setRoutes } from './routes'
-import { authenticateToken } from './auth'
+import { authenticateToken } from './utils/auth'
 
 dotenv.config({ path: '.env.local' })
 

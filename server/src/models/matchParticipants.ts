@@ -28,7 +28,7 @@ const dbParticipantToDtoModel = (
     fullName: participant.friendFullName,
   },
   score: participant.score,
-  isWinner: participant.isWinner,
+  isWinner: !!participant.isWinner,
 })
 
 const QUERY_HYDRATED = `
@@ -116,20 +116,24 @@ export const createMultiple = ({
 }) => {
   const digestedParticipants = participants.map(participantCreationDtoToDbModel)
 
-  const valuesPlaceholders = participants.map(() => `(?, ?, ?, ?)`).join(', ')
+  const valuesPlaceholders = participants
+    .map(() => `(?, ?, ?, ?, ?)`)
+    .join(', ')
   const query = `INSERT INTO matchParticipant(
     matchId,
     userId,
     anonFriendId,
-    score
+    score,
+    isWinner
   ) VALUES ${valuesPlaceholders}`
 
-  const values: Array<string | number | undefined | null> = []
-  digestedParticipants.forEach(({ userId, anonFriendId, score }) => {
+  const values: Array<string | number | boolean | undefined | null> = []
+  digestedParticipants.forEach(({ userId, anonFriendId, score, isWinner }) => {
     values.push(matchId)
     values.push(userId)
     values.push(anonFriendId)
     values.push(score)
+    values.push(isWinner)
   })
 
   return new Promise<void>((resolve, reject) => {

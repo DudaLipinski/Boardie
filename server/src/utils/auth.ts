@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
-import { JWT_TOKEN_SECRET_KEY } from './constants'
+import { JWT_TOKEN_SECRET_KEY } from '../constants'
 
 export function generateAccessToken(userId: string | number) {
   if (!process.env[JWT_TOKEN_SECRET_KEY]) {

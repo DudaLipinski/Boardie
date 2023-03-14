@@ -2,6 +2,7 @@ import { Express } from 'express'
 import * as userController from '../controllers/user'
 import * as matchesController from '../controllers/matches'
 import * as friendsController from '../controllers/friends'
+import * as anonFriendsController from '../controllers/anonFriends'
 
 const meEndpoint = '/me'
 
@@ -14,8 +15,13 @@ export function set(app: Express) {
   app.get(`${meEndpoint}/matches`, matchesController.getAllByLoggedUser)
 
   app.get(`${meEndpoint}/friends`, friendsController.getAllByLoggedUser)
+
   app.post(
     `${meEndpoint}/anonfriends`,
-    friendsController.createAnonymousForLoggedUser
+    anonFriendsController.createForLoggedUser
+  )
+  app.put(
+    `${meEndpoint}/anonfriends/:anonFriendId`,
+    anonFriendsController.update
   )
 }

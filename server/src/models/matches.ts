@@ -236,7 +236,7 @@ export const checkUpdatePermission = ({
     db.get(query, prefixKeysWithDollar({ id }), function (error, match) {
       if (error) {
         return reject(
-          `An error occurred while trying to check if a match exists: ${error?.message}`
+          `An error occurred while trying to check if a user can update a match: ${error?.message}`
         )
       }
 

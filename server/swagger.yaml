@@ -181,7 +181,7 @@ paths:
                 - $ref: '#/components/schemas/AnonFriendBase'
       responses:
         '201':
-          description: The anonymous friend was successfully created
+          description: The created anonymous friend's data
           content:
             application/json:
               schema:
@@ -194,6 +194,49 @@ paths:
                 $ref: '#/components/schemas/Error'
         '401':
           description: Invalid credentials
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+  /me/anonfriends/{anonFriendId}:
+    put:
+      summary: Updates an anonymous friend
+      tags:
+        - friends
+      parameters:
+        - in: path
+          name: anonFriendId
+          schema:
+            type: integer
+          required: true
+          description: id of the anon friend to update
+      responses:
+        '200':
+          description: The updated anonymous friend's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnonFriendBase'
+        '401':
+          description: Provided credentials doesn't match any valid user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: The user doesn't have permissions to update the anonymous friend
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No anonymous friend was found with the given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Unexpected internal error
           content:
@@ -339,7 +382,7 @@ paths:
     get:
       summary: Get all the match participants related to a given match
       tags:
-        - matches
+        - matches/participants
       parameters:
         - in: path
           name: matchId
@@ -373,7 +416,7 @@ paths:
     post:
       summary: Create a match participant
       tags:
-        - matches
+        - matches/participants
       parameters:
         - in: path
           name: matchId
@@ -421,7 +464,7 @@ paths:
     put:
       summary: Update a match participant
       tags:
-        - matches
+        - matches/participants
       parameters:
         - in: path
           name: matchId
@@ -474,7 +517,7 @@ paths:
     delete:
       summary: Permanently deletes a match participant
       tags:
-        - matches
+        - matches/participants
       parameters:
         - in: path
           name: matchId

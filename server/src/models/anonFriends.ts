@@ -18,7 +18,7 @@ export function create(anonFriend: Omit<AnonFriend, 'id'>) {
     )
   `
 
-  return new Promise((resolve, reject) => {
+  return new Promise<number>((resolve, reject) => {
     db.run(query, prefixKeysWithDollar(anonFriend), function (error) {
       if (error) {
         reject(
@@ -27,6 +27,58 @@ export function create(anonFriend: Omit<AnonFriend, 'id'>) {
       }
 
       resolve(this.lastID)
+    })
+  })
+}
+
+export const checkUpdatePermission = ({
+  id,
+  userId,
+}: {
+  id: number
+  userId: number
+}) => {
+  const query = `
+    SELECT userId FROM anonFriend
+    WHERE
+      rowId = $id
+    LIMIT 1
+  `
+
+  return new Promise<boolean | undefined>((resolve, reject) => {
+    db.get(query, prefixKeysWithDollar({ id }), function (error, anonFriend) {
+      if (error) {
+        return reject(
+          `An error occurred while checking update permission for an anon friend: ${error?.message}`
+        )
+      }
+
+      resolve(anonFriend ? anonFriend.userId === userId : undefined)
+    })
+  })
+}
+
+export function update(
+  id: AnonFriend['id'],
+  params: { fullName: AnonFriend['fullName'] }
+) {
+  const query = `
+    UPDATE anonFriend
+    SET
+      fullName = $fullName
+    WHERE
+      rowId = $id
+  `
+
+  return new Promise<void>((resolve, reject) => {
+    db.run(query, prefixKeysWithDollar({ id, ...params }), function (error) {
+      if (error) {
+        reject(
+          `An error occurred while updating an anon friend: ${error?.message}`
+        )
+      }
+
+      resolve()
     })
   })
 }

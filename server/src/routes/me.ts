@@ -24,4 +24,8 @@ export function set(app: Express) {
     `${meEndpoint}/anonfriends/:anonFriendId`,
     anonFriendsController.update
   )
+  app.delete(
+    `${meEndpoint}/anonfriends/:anonFriendId`,
+    anonFriendsController.deleteById
+  )
 }

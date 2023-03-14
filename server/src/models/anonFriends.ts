@@ -57,6 +57,7 @@ export const checkUpdatePermission = ({
     })
   })
 }
+export const checkDeletePermission = checkUpdatePermission
 
 export function update(
   id: AnonFriend['id'],
@@ -79,6 +80,26 @@ export function update(
       }
 
       resolve()
+    })
+  })
+}
+
+export function deleteById(id: AnonFriend['id']) {
+  const query = `
+    DELETE FROM anonFriend
+    WHERE
+      rowId = $id
+  `
+
+  return new Promise<boolean>((resolve, reject) => {
+    db.run(query, prefixKeysWithDollar({ id }), function (error) {
+      if (error) {
+        reject(
+          `An error occurred while deleting an anon friend: ${error?.message}`
+        )
+      }
+
+      resolve(this.changes === 1)
     })
   })
 }

@@ -93,3 +93,38 @@ export const update: RequestHandler<
     res.sendStatus(500)
   }
 }
+
+export const deleteById: RequestHandler<
+  { anonFriendId: string },
+  never | ErrorBody,
+  never
+> = async (req, res) => {
+  const anonFriendId =
+    req.params.anonFriendId && parseInt(req.params.anonFriendId, 10)
+  if (!anonFriendId) {
+    return res.sendStatus(400)
+  }
+
+  try {
+    const canDeleteAnonFriend = await anonFriendsModel.checkDeletePermission({
+      id: anonFriendId,
+      userId: req.userId,
+    })
+    if (canDeleteAnonFriend === undefined) {
+      return res.sendStatus(404)
+    }
+    if (!canDeleteAnonFriend) {
+      return res.status(403).send(FORBIDDEN_ERROR)
+    }
+
+    const deleted = await anonFriendsModel.deleteById(anonFriendId)
+    if (!deleted) {
+      return res.sendStatus(404)
+    }
+
+    res.sendStatus(200)
+  } catch (e) {
+    logInternalError(e)
+    res.sendStatus(500)
+  }
+}

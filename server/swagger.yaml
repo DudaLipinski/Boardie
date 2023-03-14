@@ -243,6 +243,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalError'
+    delete:
+      summary: PERMANENTLY deletes an anonymous friend
+      tags:
+        - friends
+      parameters:
+        - in: path
+          name: anonFriendId
+          schema:
+            type: integer
+          required: true
+          description: id of the anon friend to be deleted
+      responses:
+        '200':
+          description: Anonymous friend deleted successfully
+        '401':
+          description: Provided credentials doesn't match any valid user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: The user doesn't have permissions to delete the anonymous friend
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No anonymous friend was found with the given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Unexpected internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
   /auth:
     post:
       summary: Log in with user
@@ -515,7 +553,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalError'
     delete:
-      summary: Permanently deletes a match participant
+      summary: PERMANENTLY deletes a match participant
       tags:
         - matches/participants
       parameters:

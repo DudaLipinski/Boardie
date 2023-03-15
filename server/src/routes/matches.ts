@@ -8,7 +8,7 @@ const participantsPath = 'participants'
 export function set(app: Express) {
   app.get(`/${matchPath}/:matchId`, matchesController.getById)
   app.put(`/${matchPath}/:matchId`, matchesController.update)
-  app.delete(`${matchPath}/:matchId`, matchesController.deleteById)
+  app.delete(`/${matchPath}/:matchId`, matchesController.deleteById)
 
   app.get(
     `/${matchPath}/:matchId/${participantsPath}`,

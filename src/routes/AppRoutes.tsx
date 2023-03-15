@@ -18,10 +18,12 @@ const AppRoutes = () => {
     <Container
       maxWidth="xs"
       sx={{
-        height: '100vh',
+        height: 'calc(100vh - 40px)',
         backgroundColor: 'var(--adm-color-background)',
-        margin: '0 auto',
+        margin: '20px auto',
         display: 'block',
+        boxShadow: '0px 5px 20px 5px rgba(36, 35, 33, 0.17)',
+        borderRadius: '20px',
       }}
     >
       {Routes}

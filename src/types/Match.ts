@@ -6,7 +6,7 @@ export interface Participant {
   friend: GenericUser
 }
 export interface Match {
-  id: string
+  id: number
   authorId: string
   boardgameName: string
   startedAt: Dayjs | string

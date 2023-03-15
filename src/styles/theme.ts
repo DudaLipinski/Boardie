@@ -1,18 +1,14 @@
 import { createTheme } from '@mui/material'
 
 declare module '@mui/material/styles' {
-  interface Theme {
-    status: {
-      danger: React.CSSProperties['color']
-    }
-  }
-
   interface Palette {
     neutral: Palette['primary']
+    gold: Palette['primary']
   }
 
   interface PaletteOptions {
     neutral: PaletteOptions['primary']
+    gold: PaletteOptions['primary']
   }
 
   interface PaletteColor {
@@ -79,6 +75,9 @@ export const theme = createTheme({
     neutral: {
       main: '#64748B',
       contrastText: '#fff',
+    },
+    gold: {
+      main: '#ffd700',
     },
   },
 })

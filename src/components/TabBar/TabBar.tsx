@@ -18,7 +18,12 @@ export const TabBar = () => {
     <Bottom>
       <Tab activeKey={pathname} onChange={(value) => navigate(value)}>
         {tabItems.map((item) => (
-          <Tab.Item key={item.key} icon={item.icon} title={item.title} />
+          <Tab.Item
+            key={item.key}
+            icon={item.icon}
+            title={item.title}
+            style={{ padding: '10px 8px' }}
+          />
         ))}
       </Tab>
     </Bottom>

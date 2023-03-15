@@ -5,7 +5,7 @@ import { Box } from '@mui/material'
 
 export const AuthenticatedWrapper = () => {
   return (
-    <Box height="100vh" display="flex" flexDirection="column" width="inherit">
+    <Box height="inherit" display="flex" flexDirection="column" width="inherit">
       <Navbar />
       <Box
         display="flex"

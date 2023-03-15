@@ -1,17 +1,19 @@
 export const styledListItem = {
-  bgcolor: 'background.paper',
-  marginBottom: '10px',
-  borderRadius: '8px',
   display: 'flex',
   flexDirection: 'row',
-  alignItems: 'center',
   justifyContent: 'space-between',
+  alignItems: 'start',
+  width: '96%',
+  margin: '0 auto 16px',
+  bgcolor: 'background.paper',
+  boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
+  borderRadius: '8px',
 }
 
 export const styledAvatarGroup = {
-  margin: '18px 0 8px 7px',
+  justifyContent: 'flex-end',
+  margin: '16px 0 8px 0',
   gap: '8px',
-  float: 'left',
   '& .MuiBadge-badge': {
     padding: '0',
     bottom: '0px',
@@ -20,14 +22,9 @@ export const styledAvatarGroup = {
   '& .MuiAvatar-root': {
     width: '32px',
     height: '32px',
-    fontSize: '16px',
+    fontSize: '14px',
   },
-  ' .MuiChip-avatar': {
-    marginLeft: '0!important',
-    width: '32px!important',
-    height: '32px!important',
-    color: 'white!important',
-    fontSize: '16px!important',
-    marginTop: '-4px',
+  '.MuiBadge-root:last-child': {
+    marginLeft: '8px',
   },
 }

@@ -27,7 +27,7 @@ export const MatchList = () => {
   )
 
   const listItems = data?.length ? (
-    <List sx={{ paddingBottom: '80px' }}>{matches}</List>
+    <List>{matches}</List>
   ) : (
     <Typography align="center">Start creating your first match! :)</Typography>
   )

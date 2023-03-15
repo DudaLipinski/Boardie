@@ -10,6 +10,13 @@ declare module '@mui/material/styles' {
     neutral: PaletteOptions['primary']
     gold: PaletteOptions['primary']
   }
+  interface Palette {
+    gold: Palette['primary']
+  }
+
+  interface PaletteOptions {
+    gold: PaletteOptions['primary']
+  }
 
   interface PaletteColor {
     darker?: string

@@ -74,7 +74,7 @@ export const theme = createTheme({
       darker: '#280987',
     },
     secondary: {
-      main: '#eeeeee',
+      main: '#f8f8f8',
       darker: '#7c7c7c',
     },
     neutral: {

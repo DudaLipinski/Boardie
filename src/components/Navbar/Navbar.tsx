@@ -1,4 +1,5 @@
 import { NavBar as Nav } from 'antd-mobile'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 const Top = styled.nav`
@@ -7,9 +8,11 @@ const Top = styled.nav`
 `
 
 export const Navbar = () => {
+  const navigate = useNavigate()
+
   return (
     <Top>
-      <Nav style={{ padding: '4px 0 2px' }}></Nav>
+      <Nav onBack={() => navigate(-1)} style={{ padding: '4px 0 2px' }}></Nav>
     </Top>
   )
 }

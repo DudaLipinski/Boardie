@@ -1,20 +1,14 @@
 import { Typography, Box } from '@mui/material'
 import dayjs, { Dayjs } from 'dayjs'
-import { Participant } from '../../types/Match'
 
 interface Props {
   boardgameName: string
   date: string | Dayjs
-  participantByHighestScore: Participant
+  highestScore: number | null
 }
 
-export const MatchInfo = ({
-  boardgameName,
-  date,
-  participantByHighestScore,
-}: Props) => {
+export const MatchInfo = ({ boardgameName, date, highestScore }: Props) => {
   const [weekDay, month, day] = dayjs(date).format('ddd MMM D').split(' ')
-  const { score } = participantByHighestScore
 
   return (
     <Box
@@ -76,9 +70,9 @@ export const MatchInfo = ({
           fontWeight="400"
           color="secondary.darker"
         >
-          {score
-            ? score > 0
-              ? `Highest score: ${score}pts `
+          {highestScore
+            ? highestScore > 0
+              ? `Highest score: ${highestScore}pts `
               : null
             : 'Match without score'}
         </Typography>

@@ -25,7 +25,7 @@ export const MatchCard = ({ match }: { match: Match }) => {
   const highestScore = participantsByScore?.[0]?.score ?? null
 
   const handleDeleteMatch = () => {
-    mutate(123)
+    mutate(id)
     setIsDeleteDialogOpen(!isDeleteDialogOpen)
   }
 
@@ -33,23 +33,8 @@ export const MatchCard = ({ match }: { match: Match }) => {
 
   return (
     <>
-      {isError && (
-        <Alert
-          severity={'error'}
-          message={message}
-          sx={{
-            position: 'relative',
-            marginBottom: '0',
-            borderRadius: '4px 4px 0 0',
-          }}
-        />
-      )}
-      <ListItem
-        sx={{
-          ...styledListItem,
-          borderRadius: isError ? '0 0 4px 4px' : '4px',
-        }}
-      >
+      {isError && <Alert severity={'error'} message={message} />}
+      <ListItem sx={{ ...styledListItem }}>
         <Box width="92%" paddingTop="6px">
           <Link
             to={`${MATCH_DETAILS.replace(':id', id.toString())}`}

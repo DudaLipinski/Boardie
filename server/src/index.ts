@@ -3,9 +3,7 @@ import ipfilter from 'express-ipfilter'
 import express from 'express'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
-import yaml from 'yamljs'
-
-const swaggerDocument = yaml.load('./swagger.yaml')
+import openApiDocument from './openapi.json'
 
 import db from './database'
 import { setRoutes } from './routes'
@@ -24,7 +22,7 @@ app.use(ipfilter.IpFilter(['127.0.0.1']))
 
 // app.use(pino())
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument))
 
 app.use(authenticateToken)
 

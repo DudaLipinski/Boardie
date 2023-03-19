@@ -1,0 +1,1943 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Boardie",
+    "description": "API to serve the Boardie application"
+  },
+  "paths": {
+    "/me": {
+      "post": {
+        "summary": "Creates a new user",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "User",
+                "description": "Data used to create a new user",
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "middleAndSurname": {
+                    "type": "string"
+                  },
+                  "age": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 120
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "middleAndSurname",
+                  "age",
+                  "email",
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "User",
+                  "description": "User data",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "middleAndSurname": {
+                      "type": "string"
+                    },
+                    "age": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 120
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "firstName",
+                    "middleAndSurname",
+                    "age",
+                    "email"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "There's already a user registered with this email"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets the logged user",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "The logged user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "User",
+                  "description": "User data",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "middleAndSurname": {
+                      "type": "string"
+                    },
+                    "age": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 120
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "firstName",
+                    "middleAndSurname",
+                    "age",
+                    "email"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The logged user was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/unregister": {
+      "post": {
+        "summary": "Unregisters the logged user",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "auth",
+                "description": "Contact and auth information about a user",
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The logged user was unregistered"
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth": {
+      "post": {
+        "summary": "Authenticates a user",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "auth",
+                "description": "Auth information about a user",
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The logged in user's data along with the generated JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "title": "User",
+                      "description": "User data",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "middleAndSurname": {
+                          "type": "string"
+                        },
+                        "age": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 120
+                        },
+                        "email": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "firstName",
+                        "middleAndSurname",
+                        "age",
+                        "email"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "token": {
+                      "description": "A JWT token",
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjUyMTc4MCwiZXhwIjoxNjY2NTQzMzgwfQ.MDwMf43KJDUspoelvhst3FrzWdxaFzmowZ80alZERVQ"
+                    }
+                  },
+                  "required": [
+                    "user",
+                    "token"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Provided credentials doesn't match any valid user"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/matches": {
+      "post": {
+        "summary": "Creates a match for the logged user",
+        "tags": [
+          "matches"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Match creation payload",
+                "description": "Data used to create a match along with its initial participants",
+                "type": "object",
+                "properties": {
+                  "boardgameName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "startedAt": {
+                    "type": "string",
+                    "isoUtcDateTime": true,
+                    "nullable": true
+                  },
+                  "endedAt": {
+                    "type": "string",
+                    "isoUtcDateTime": true,
+                    "nullable": true
+                  },
+                  "notes": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "participants": {
+                    "type": "array",
+                    "items": {
+                      "title": "Match participant creation data",
+                      "description": "Data used to create a match participant",
+                      "type": "object",
+                      "properties": {
+                        "friend": {
+                          "title": "Generic friend data",
+                          "description": "Generic friend data",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "USER",
+                                "ANON_FRIEND"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "type"
+                          ]
+                        },
+                        "score": {
+                          "type": "number"
+                        },
+                        "isWinner": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "friend",
+                        "score",
+                        "isWinner"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "boardgameName",
+                  "participants"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created match",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Match creation result",
+                  "description": "Match data with its participants",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "authorId": {
+                      "type": "number"
+                    },
+                    "boardgameName": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "startedAt": {
+                      "type": "string",
+                      "isoUtcDateTime": true,
+                      "nullable": true
+                    },
+                    "endedAt": {
+                      "type": "string",
+                      "isoUtcDateTime": true,
+                      "nullable": true
+                    },
+                    "notes": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "participants": {
+                      "type": "array",
+                      "items": {
+                        "title": "Match participant",
+                        "description": "Data that represents an existent match participant",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "friend": {
+                            "title": "Hydrated generic friend",
+                            "description": "Friend data with its full name",
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "USER",
+                                  "ANON_FRIEND"
+                                ]
+                              },
+                              "fullName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "fullName"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "score": {
+                            "type": "number"
+                          },
+                          "isWinner": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "friend",
+                          "score",
+                          "isWinner"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "authorId",
+                    "boardgameName",
+                    "participants"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all the matches for the logged user",
+        "tags": [
+          "matches"
+        ],
+        "responses": {
+          "200": {
+            "description": "The matches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "title": "Match creation result",
+                    "description": "Match data with its participants",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "authorId": {
+                        "type": "number"
+                      },
+                      "boardgameName": {
+                        "type": "string"
+                      },
+                      "location": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "startedAt": {
+                        "type": "string",
+                        "isoUtcDateTime": true,
+                        "nullable": true
+                      },
+                      "endedAt": {
+                        "type": "string",
+                        "isoUtcDateTime": true,
+                        "nullable": true
+                      },
+                      "notes": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "participants": {
+                        "type": "array",
+                        "items": {
+                          "title": "Match participant",
+                          "description": "Data that represents an existent match participant",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "friend": {
+                              "title": "Hydrated generic friend",
+                              "description": "Friend data with its full name",
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "USER",
+                                    "ANON_FRIEND"
+                                  ]
+                                },
+                                "fullName": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type",
+                                "fullName"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "score": {
+                              "type": "number"
+                            },
+                            "isWinner": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "friend",
+                            "score",
+                            "isWinner"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "authorId",
+                      "boardgameName",
+                      "participants"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches/:matchId": {
+      "delete": {
+        "summary": "Deletes a match",
+        "tags": [
+          "matches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matchId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The match was deleted"
+          },
+          "403": {
+            "description": "The logged user is not the author of the match"
+          },
+          "404": {
+            "description": "The match was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets a match by id",
+        "tags": [
+          "matches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matchId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The match",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Match creation result",
+                  "description": "Match data with its participants",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "authorId": {
+                      "type": "number"
+                    },
+                    "boardgameName": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "startedAt": {
+                      "type": "string",
+                      "isoUtcDateTime": true,
+                      "nullable": true
+                    },
+                    "endedAt": {
+                      "type": "string",
+                      "isoUtcDateTime": true,
+                      "nullable": true
+                    },
+                    "notes": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "participants": {
+                      "type": "array",
+                      "items": {
+                        "title": "Match participant",
+                        "description": "Data that represents an existent match participant",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "friend": {
+                            "title": "Hydrated generic friend",
+                            "description": "Friend data with its full name",
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "USER",
+                                  "ANON_FRIEND"
+                                ]
+                              },
+                              "fullName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "fullName"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "score": {
+                            "type": "number"
+                          },
+                          "isWinner": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "friend",
+                          "score",
+                          "isWinner"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "authorId",
+                    "boardgameName",
+                    "participants"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The match was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates a match",
+        "tags": [
+          "matches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matchId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Match",
+                "description": "Match data with its participants",
+                "type": "object",
+                "properties": {
+                  "boardgameName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "startedAt": {
+                    "type": "string",
+                    "isoUtcDateTime": true,
+                    "nullable": true
+                  },
+                  "endedAt": {
+                    "type": "string",
+                    "isoUtcDateTime": true,
+                    "nullable": true
+                  },
+                  "notes": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "boardgameName"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The match was updated"
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The logged user is not the author of the match"
+          },
+          "404": {
+            "description": "The match was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/friends": {
+      "get": {
+        "summary": "Gets all friends for the logged user",
+        "tags": [
+          "friends"
+        ],
+        "responses": {
+          "200": {
+            "description": "The logged user's friends",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "title": "Hydrated generic friend",
+                    "description": "Friend data with its full name",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "USER",
+                          "ANON_FRIEND"
+                        ]
+                      },
+                      "fullName": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "type",
+                      "fullName"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/anonfriends": {
+      "post": {
+        "summary": "Creates an anonymous friend for the logged user",
+        "tags": [
+          "friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Anonymous friend creation data",
+                "description": "Data used to create an anonymous friend",
+                "type": "object",
+                "properties": {
+                  "fullName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "fullName"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created anonymous friend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Anonymous friend",
+                  "description": "Data that represents an anonymous friend",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "fullName": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "ANON_FRIEND"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "fullName",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/anonfriends/:anonFriendId": {
+      "delete": {
+        "summary": "Deletes an anonymous friend for the logged user",
+        "tags": [
+          "friends"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "anonFriendId",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The anonymous friend was deleted"
+          },
+          "403": {
+            "description": "The logged user is not allowed to delete the friend"
+          },
+          "404": {
+            "description": "The friend does not exist"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates an anonymous friend for the logged user",
+        "tags": [
+          "friends"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "anonFriendId",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Anonymous friend update data",
+                "description": "Data used to update an anonymous friend",
+                "type": "object",
+                "properties": {
+                  "fullName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "fullName"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated anonymous friend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Anonymous friend",
+                  "description": "Data that represents an anonymous friend",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "fullName": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "ANON_FRIEND"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "fullName",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The logged user is not allowed to update the friend"
+          },
+          "404": {
+            "description": "The friend does not exist"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches/:matchId/participants": {
+      "post": {
+        "summary": "Creates a match participant",
+        "tags": [
+          "matches/participants"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matchId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Match participant creation data",
+                "description": "Data used to create a match participant",
+                "type": "object",
+                "properties": {
+                  "friend": {
+                    "title": "Generic friend data",
+                    "description": "Generic friend data",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "USER",
+                          "ANON_FRIEND"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "type"
+                    ]
+                  },
+                  "score": {
+                    "type": "number"
+                  },
+                  "isWinner": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "friend",
+                  "score",
+                  "isWinner"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created match participant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Match participant",
+                  "description": "Data that represents an existent match participant",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "friend": {
+                      "title": "Hydrated generic friend",
+                      "description": "Friend data with its full name",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "USER",
+                            "ANON_FRIEND"
+                          ]
+                        },
+                        "fullName": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type",
+                        "fullName"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "score": {
+                      "type": "number"
+                    },
+                    "isWinner": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "friend",
+                    "score",
+                    "isWinner"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the match participant trying to be created"
+          },
+          "404": {
+            "description": "The match was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all match participants by match id",
+        "tags": [
+          "matches/participants"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matchId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The match participants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "title": "Match participant",
+                    "description": "Data that represents an existent match participant",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "friend": {
+                        "title": "Hydrated generic friend",
+                        "description": "Friend data with its full name",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "USER",
+                              "ANON_FRIEND"
+                            ]
+                          },
+                          "fullName": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "type",
+                          "fullName"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "score": {
+                        "type": "number"
+                      },
+                      "isWinner": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "friend",
+                      "score",
+                      "isWinner"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The match was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches/:matchId/participants/:participantId": {
+      "delete": {
+        "summary": "Deletes a match participant by id",
+        "tags": [
+          "matches/participants"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matchId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participantId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The match participant was deleted"
+          },
+          "403": {
+            "description": "The user doesn't have permissions to update the match"
+          },
+          "404": {
+            "description": "The match or match participant was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates a match participant",
+        "tags": [
+          "matches/participants"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matchId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participantId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Match participant creation data",
+                "description": "Data used to create a match participant",
+                "type": "object",
+                "properties": {
+                  "friend": {
+                    "title": "Generic friend data",
+                    "description": "Generic friend data",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "USER",
+                          "ANON_FRIEND"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "type"
+                    ]
+                  },
+                  "score": {
+                    "type": "number"
+                  },
+                  "isWinner": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "friend",
+                  "score",
+                  "isWinner"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated match participant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Match participant",
+                  "description": "Data that represents an existent match participant",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "friend": {
+                      "title": "Hydrated generic friend",
+                      "description": "Friend data with its full name",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "USER",
+                            "ANON_FRIEND"
+                          ]
+                        },
+                        "fullName": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type",
+                        "fullName"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "score": {
+                      "type": "number"
+                    },
+                    "isWinner": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "friend",
+                    "score",
+                    "isWinner"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Invalid request body",
+                  "description": "The request body is invalid",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An informative error message informing the issue with the request body"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the match participant trying to be updated"
+          },
+          "404": {
+            "description": "The match or match participant was not found"
+          },
+          "500": {
+            "description": "Unexpected internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Internal error",
+                  "description": "An unexpected internal error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -78,7 +78,7 @@ type PathMethodConstructor = (
  * It contains all the information needed to generate the OpenAPI spec.
  * It also contains the logic to validate the request and response.
  */
-class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
+export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
   private path: string
   private method: HttpMethod
   private summary: string
@@ -156,8 +156,7 @@ class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
 
         if (!validBody) {
           const errorMessage = getErrorMessage(this.validateBody)
-          statusCheckedRes.status(400).send({ message: errorMessage })
-          return
+          return statusCheckedRes.status(400).send({ message: errorMessage })
         }
       }
 

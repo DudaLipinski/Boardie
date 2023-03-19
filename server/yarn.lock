@@ -306,11 +306,6 @@
     "@types/express" "*"
     "@types/serve-static" "*"
 
-"@types/yamljs@^0.2.31":
-  version "0.2.31"
-  resolved "https://registry.npmjs.org/@types/yamljs/-/yamljs-0.2.31.tgz"
-  integrity sha512-QcJ5ZczaXAqbVD3o8mw/mEBhRvO5UAdTtbvgwL/OgoWubvNBh6/MxLBAigtcgIFaq3shon9m3POIxQaLQt4fxQ==
-
 "@typescript-eslint/eslint-plugin@^5.40.0":
   version "5.40.1"
   resolved "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.40.1.tgz"
@@ -510,13 +505,6 @@ arg@^4.1.0:
   version "4.1.3"
   resolved "https://registry.npmjs.org/arg/-/arg-4.1.3.tgz"
   integrity sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==
-
-argparse@^1.0.7:
-  version "1.0.10"
-  resolved "https://registry.npmjs.org/argparse/-/argparse-1.0.10.tgz"
-  integrity sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==
-  dependencies:
-    sprintf-js "~1.0.2"
 
 argparse@^2.0.1:
   version "2.0.1"
@@ -1429,7 +1417,7 @@ glob-parent@^6.0.1:
   dependencies:
     is-glob "^4.0.3"
 
-glob@^7.0.5, glob@^7.1.3, glob@^7.1.4:
+glob@^7.1.3, glob@^7.1.4:
   version "7.2.3"
   resolved "https://registry.npmjs.org/glob/-/glob-7.2.3.tgz"
   integrity sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==
@@ -1817,7 +1805,7 @@ js-sdsl@^4.1.4:
 
 js-yaml@^4.1.0:
   version "4.1.0"
-  resolved "https://registry.npmjs.org/js-yaml/-/js-yaml-4.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
   integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
   dependencies:
     argparse "^2.0.1"
@@ -2721,11 +2709,6 @@ split2@^4.0.0:
   resolved "https://registry.npmjs.org/split2/-/split2-4.1.0.tgz"
   integrity sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==
 
-sprintf-js@~1.0.2:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
-  integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
-
 sqlite3@^5.1.2:
   version "5.1.2"
   resolved "https://registry.npmjs.org/sqlite3/-/sqlite3-5.1.2.tgz"
@@ -3093,14 +3076,6 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
-
-yamljs@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/yamljs/-/yamljs-0.3.0.tgz"
-  integrity sha512-C/FsVVhht4iPQYXOInoxUM/1ELSf9EsgKH34FofQOp6hwCPrW4vG4w5++TED3xRUo8gD7l0P1J1dLlDYzODsTQ==
-  dependencies:
-    argparse "^1.0.7"
-    glob "^7.0.5"
 
 yn@3.1.1:
   version "3.1.1"

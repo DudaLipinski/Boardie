@@ -1,6 +1,6 @@
-import dotenv from 'dotenv'
 import crypto from 'crypto'
 import fs from 'fs'
+import dotenv from 'dotenv'
 
 import { JWT_TOKEN_SECRET_KEY } from '../src/constants'
 

@@ -31,8 +31,6 @@ export const MatchCard = ({ match }: { match: Match }) => {
 
   const message = getErrorMessage(error)
 
-  const score = participantsByScore[0].score
-
   return (
     <>
       {isError && <Alert severity={'error'} message={message} />}

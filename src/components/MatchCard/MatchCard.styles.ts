@@ -3,11 +3,11 @@ export const styledListItem = {
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'start',
-  width: '96%',
+  width: 'inherit',
   margin: '0 auto 16px',
   bgcolor: 'background.paper',
   boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-  borderRadius: '8px',
+  borderRadius: '4px',
 }
 
 export const styledAvatarGroup = {
@@ -18,6 +18,10 @@ export const styledAvatarGroup = {
     padding: '0',
     bottom: '0px',
     right: '6px',
+    marginTop: '6px',
+    border: '2.5px solid white',
+    boxSizing: 'content-box',
+    borderRadius: '8px',
   },
   '& .MuiAvatar-root': {
     width: '32px',

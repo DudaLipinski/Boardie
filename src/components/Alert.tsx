@@ -1,8 +1,9 @@
-import { IconButton, Collapse, Alert as MuiAlert } from '@mui/material'
+import { IconButton, Collapse, Alert as MuiAlert, SxProps } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { useEffect, useState } from 'react'
 
 export interface AlertDefinition {
+  sx?: SxProps
   severity: 'error' | 'info' | 'success' | 'warning'
   message: string
 }
@@ -10,7 +11,7 @@ interface Props extends AlertDefinition {
   onClose?: () => void
 }
 
-export const Alert = ({ severity, message, onClose }: Props) => {
+export const Alert = ({ severity, message, sx, onClose }: Props) => {
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
@@ -25,7 +26,19 @@ export const Alert = ({ severity, message, onClose }: Props) => {
   }, [open, onClose])
 
   return (
-    <Collapse in={open} sx={{ position: 'absolute', zIndex: 2 }}>
+    <Collapse
+      in={open}
+      sx={{
+        zIndex: 2,
+        marginBottom: '14px',
+        boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
+        borderRadius: '4px',
+        ...sx,
+        '.MuiCollapse-wrapper, .MuiCollapse-wrapperInner, .MuiPaper-root': {
+          borderRadius: 'inherit',
+        },
+      }}
+    >
       <MuiAlert
         severity={severity}
         action={
@@ -40,7 +53,6 @@ export const Alert = ({ severity, message, onClose }: Props) => {
             <CloseIcon fontSize="inherit" />
           </IconButton>
         }
-        sx={{ mb: 2 }}
       >
         {message}
       </MuiAlert>

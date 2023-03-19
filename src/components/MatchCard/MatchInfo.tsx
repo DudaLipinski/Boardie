@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from 'dayjs'
 interface Props {
   boardgameName: string
   date: string | Dayjs
-  highestScore: number
+  highestScore: number | null
 }
 
 export const MatchInfo = ({ boardgameName, date, highestScore }: Props) => {
@@ -70,8 +70,10 @@ export const MatchInfo = ({ boardgameName, date, highestScore }: Props) => {
           fontWeight="400"
           color="secondary.darker"
         >
-          {highestScore > 0
-            ? `Highest score: ${highestScore}pts`
+          {highestScore
+            ? highestScore > 0
+              ? `Highest score: ${highestScore}pts `
+              : null
             : 'Match without score'}
         </Typography>
       </Box>

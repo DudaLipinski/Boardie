@@ -1,17 +1,7 @@
-import {
-  AppOutline,
-  MessageOutline,
-  SmileOutline,
-  UserOutline,
-} from 'antd-mobile-icons'
-import { DASHBOARD, PROFILE, MATCHES, FRIENDS } from '../../routes/routeSpecs'
+import { MessageOutline, SmileOutline, UserOutline } from 'antd-mobile-icons'
+import { PROFILE, MATCHES, FRIENDS } from '../../routes/routeSpecs'
 
 export const tabItems = [
-  {
-    key: DASHBOARD,
-    title: 'Dashboard',
-    icon: <AppOutline />,
-  },
   {
     key: MATCHES,
     title: 'Matches',

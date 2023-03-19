@@ -1,85 +1,69 @@
-import { RequestHandler } from 'express'
-import {
+import type {
   AnonFriendCreationData,
   AnonFriendDTO,
   AnonFriendUpdateData,
-  validateAnonFriendCreationSchema,
-  validateAnonFriendUpdateSchema,
+} from '../schemas/anonFriend'
+import {
+  anonFriendCreationData,
+  anonFriendDTO,
+  anonFriendUpdateData,
 } from '../schemas/anonFriend'
 import * as anonFriendsModel from '../models/anonFriends'
 
-import { getErrorMessage } from '../schemas/utils'
-import { logInternalError } from '../utils/log'
 import { FriendType } from '../models/utils'
-import { ErrorBody } from '../types/errors'
-import { FORBIDDEN_ERROR } from '../utils/errors'
+import { endpoint } from '../utils/endpoint'
 
-export const createForLoggedUser: RequestHandler<
-  never,
-  AnonFriendDTO | ErrorBody,
-  AnonFriendCreationData
-> = async (req, res) => {
-  const anonFriendCreationData = req.body
-  if (!anonFriendCreationData) {
-    return res.sendStatus(400)
-  }
+const ANON_FRIENDS_ENDPOINT = '/me/anonfriends'
 
-  const validAnonFriend = validateAnonFriendCreationSchema(
-    anonFriendCreationData
-  )
-  if (!validAnonFriend) {
-    const errorMessage = getErrorMessage(validateAnonFriendCreationSchema)
-
-    res.status(400).send({ message: errorMessage })
-    return
-  }
-
-  try {
+export const createForLoggedUser = endpoint.POST(ANON_FRIENDS_ENDPOINT)<
+  void,
+  AnonFriendCreationData,
+  AnonFriendDTO
+>(
+  async (req, res) => {
     const id = await anonFriendsModel.create({
-      ...anonFriendCreationData,
+      ...req.body,
       userId: req.userId,
     })
+
     res.status(201).send({
       id,
-      fullName: anonFriendCreationData.fullName,
+      fullName: req.body.fullName,
       type: FriendType.ANON_FRIEND,
     })
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Creates an anonymous friend for the logged user',
+    tags: ['friends'],
+    params: null,
+    body: anonFriendCreationData,
+    responses: {
+      201: {
+        description: 'The created anonymous friend',
+        schema: anonFriendDTO,
+      },
+    },
   }
-}
+)
 
-export const update: RequestHandler<
+export const update = endpoint.PUT(`${ANON_FRIENDS_ENDPOINT}/:anonFriendId`)<
   { anonFriendId: string },
-  AnonFriendDTO | ErrorBody,
-  AnonFriendUpdateData
-> = async (req, res) => {
-  const anonFriendUpdateData = req.body
-  const anonFriendId =
-    req.params.anonFriendId && parseInt(req.params.anonFriendId, 10)
-  if (!anonFriendUpdateData || !anonFriendId) {
-    return res.sendStatus(400)
-  }
+  AnonFriendUpdateData,
+  AnonFriendDTO
+>(
+  async (req, res) => {
+    const anonFriendUpdateData = req.body
+    const anonFriendId = parseInt(req.params.anonFriendId, 10)
 
-  const validAnonFriend = validateAnonFriendUpdateSchema(anonFriendUpdateData)
-  if (!validAnonFriend) {
-    const errorMessage = getErrorMessage(validateAnonFriendUpdateSchema)
-
-    res.status(400).send({ message: errorMessage })
-    return
-  }
-
-  try {
     const canUpdateAnonFriend = await anonFriendsModel.checkUpdatePermission({
       id: anonFriendId,
       userId: req.userId,
     })
     if (canUpdateAnonFriend === undefined) {
-      return res.status(404).send({ message: 'Anon friend not found' })
+      return res.sendStatus(404)
     }
     if (!canUpdateAnonFriend) {
-      return res.status(403).send(FORBIDDEN_ERROR)
+      return res.sendStatus(403)
     }
 
     await anonFriendsModel.update(anonFriendId, anonFriendUpdateData)
@@ -88,24 +72,38 @@ export const update: RequestHandler<
       fullName: anonFriendUpdateData.fullName,
       type: FriendType.ANON_FRIEND,
     })
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Updates an anonymous friend for the logged user',
+    tags: ['friends'],
+    params: {
+      anonFriendId: {
+        type: 'number',
+        description: 'The id of the anonymous friend to update',
+      },
+    },
+    body: anonFriendUpdateData,
+    responses: {
+      200: {
+        description: 'The updated anonymous friend',
+        schema: anonFriendDTO,
+      },
+      403: {
+        description: 'The logged user is not allowed to update the friend',
+      },
+      404: {
+        description: 'The friend does not exist',
+      },
+    },
   }
-}
+)
 
-export const deleteById: RequestHandler<
-  { anonFriendId: string },
-  never | ErrorBody,
-  never
-> = async (req, res) => {
-  const anonFriendId =
-    req.params.anonFriendId && parseInt(req.params.anonFriendId, 10)
-  if (!anonFriendId) {
-    return res.sendStatus(400)
-  }
+export const deleteById = endpoint.DELETE(
+  `${ANON_FRIENDS_ENDPOINT}/:anonFriendId`
+)<{ anonFriendId: string }, void, void>(
+  async (req, res) => {
+    const anonFriendId = parseInt(req.params.anonFriendId, 10)
 
-  try {
     const canDeleteAnonFriend = await anonFriendsModel.checkDeletePermission({
       id: anonFriendId,
       userId: req.userId,
@@ -114,7 +112,7 @@ export const deleteById: RequestHandler<
       return res.sendStatus(404)
     }
     if (!canDeleteAnonFriend) {
-      return res.status(403).send(FORBIDDEN_ERROR)
+      return res.sendStatus(403)
     }
 
     const deleted = await anonFriendsModel.deleteById(anonFriendId)
@@ -123,8 +121,27 @@ export const deleteById: RequestHandler<
     }
 
     res.sendStatus(200)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Deletes an anonymous friend for the logged user',
+    tags: ['friends'],
+    params: {
+      anonFriendId: {
+        type: 'number',
+        description: 'The id of the anonymous friend to delete',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The anonymous friend was deleted',
+      },
+      403: {
+        description: 'The logged user is not allowed to delete the friend',
+      },
+      404: {
+        description: 'The friend does not exist',
+      },
+    },
   }
-}
+)

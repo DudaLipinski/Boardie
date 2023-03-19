@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import type { Express } from 'express'
 
 import * as meRoutes from './me'
 import * as authRoutes from './auth'

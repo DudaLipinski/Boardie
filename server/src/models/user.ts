@@ -1,10 +1,11 @@
 import db from '../database'
+import type { UserDTO } from '../schemas/user'
 import { CURRENT_DATETIME } from '../utils/sql'
 
 const HASNT_UNREGISTERED = 'unregisteredAt IS NULL'
 
 export interface User {
-  id: string
+  id: number
   firstName: string
   middleAndSurname: string
   age: number
@@ -21,7 +22,7 @@ export const create = (user: Omit<User, 'id'>) => {
     password
   ) VALUES (?,?,?,?,?)`
 
-  return new Promise((resolve, reject) => {
+  return new Promise<number>((resolve, reject) => {
     db.run(
       query,
       [
@@ -92,7 +93,7 @@ export const getById = (id: number) => {
     LIMIT 1
   `
 
-  return new Promise((resolve, reject) => {
+  return new Promise<UserDTO>((resolve, reject) => {
     db.get(
       query,
       {
@@ -139,7 +140,13 @@ export const getByEmail = (email: string) => {
 }
 
 export const auth = (auth: Pick<User, 'email' | 'password'>) => {
-  const query = `SELECT rowId id, firstName, middleAndSurname, age, email
+  const query = `
+    SELECT
+      rowId as id,
+      firstName,
+      middleAndSurname,
+      age,
+      email
     FROM user
     WHERE
       email = $email
@@ -148,7 +155,7 @@ export const auth = (auth: Pick<User, 'email' | 'password'>) => {
     LIMIT 1
   `
 
-  return new Promise<User>((resolve, reject) => {
+  return new Promise<Omit<User, 'password'>>((resolve, reject) => {
     db.get(
       query,
       {

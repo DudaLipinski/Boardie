@@ -1,32 +1,19 @@
-import { RequestHandler } from 'express'
 import omit from 'lodash.omit'
 
-import { validateUserCreationSchema } from '../schemas/user'
-import { validateAuthSchema } from '../schemas/auth'
+import type { UserCreationData, UserDTO } from '../schemas/user'
+import { userCreationData, userDTO } from '../schemas/user'
+import type { AuthData } from '../schemas/auth'
+import { authData } from '../schemas/auth'
 import * as userModel from '../models/user'
-import { getErrorMessage } from '../schemas/utils'
-import { logInternalError } from '../utils/log'
+import { endpoint } from '../utils/endpoint'
 
-export const create: RequestHandler = async (req, res) => {
-  const user = req.body
-  if (!user) {
-    return res.status(400).send('bla')
-  }
+export const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
+  async (req, res) => {
+    const user = req.body
 
-  const validUser = validateUserCreationSchema(user)
-  if (!validUser) {
-    const errorMessage = getErrorMessage(validateUserCreationSchema)
-
-    res.status(400).send({ message: errorMessage })
-    return
-  }
-
-  try {
     const userWithSameEmail = await userModel.getByEmail(user.email)
     if (userWithSameEmail) {
-      return res
-        .status(409)
-        .send("There's already a user registered with this email")
+      return res.sendStatus(409)
     }
 
     const id = await userModel.create(user)
@@ -34,25 +21,52 @@ export const create: RequestHandler = async (req, res) => {
       id,
       ...omit(user, 'password'),
     })
-  } catch (e) {
-    logInternalError(e)
-    res.status(500).send('Internal error')
+  },
+  {
+    summary: 'Creates a new user',
+    tags: ['auth'],
+    params: null,
+    body: userCreationData,
+    responses: {
+      201: {
+        description: 'The created user',
+        schema: userDTO,
+      },
+      400: {
+        description: 'The user data is invalid',
+      },
+      409: {
+        description: "There's already a user registered with this email",
+      },
+    },
   }
-}
+)
 
-export const getLoggedUser: RequestHandler = async (req, res) => {
-  try {
+export const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
+  async (req, res) => {
     const user = await userModel.getById(req.userId)
     if (!user) {
       return res.sendStatus(404)
     }
 
     res.status(200).send(user)
-  } catch (e) {
-    logInternalError(e)
-    res.status(500).send('Internal error')
+  },
+  {
+    summary: 'Gets the logged user',
+    tags: ['auth'],
+    params: null,
+    body: null,
+    responses: {
+      200: {
+        description: 'The logged user',
+        schema: userDTO,
+      },
+      404: {
+        description: 'The logged user was not found',
+      },
+    },
   }
-}
+)
 
 /**
  * The ideal solution here would be to send an "unregistering confirmal" email
@@ -65,31 +79,31 @@ export const getLoggedUser: RequestHandler = async (req, res) => {
  * The front-end will then have to have a specific route to handle that, that
  * will basically call a "confirm unregistering" endpoint passing the token
  */
-export const unregisterLoggedUser: RequestHandler = async (req, res) => {
-  const auth = req.body
-  if (!auth) {
-    return res
-      .status(400)
-      .send({ message: "You should provide user's email and password" })
-  }
-
-  const validAuth = validateAuthSchema(auth)
-  if (!validAuth) {
-    const errorMessage = getErrorMessage(validateAuthSchema)
-
-    res.status(400).send({ message: errorMessage })
-    return
-  }
-
-  try {
-    const unregistered = await userModel.unregister(req.userId, auth)
+export const unregisterLoggedUser = endpoint.POST('/me/unregister')<
+  void,
+  AuthData,
+  void
+>(
+  async (req, res) => {
+    const unregistered = await userModel.unregister(req.userId, req.body)
     if (!unregistered) {
       return res.sendStatus(401)
     }
 
     res.sendStatus(200)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Unregisters the logged user',
+    tags: ['auth'],
+    params: null,
+    body: authData,
+    responses: {
+      200: {
+        description: 'The logged user was unregistered',
+      },
+      401: {
+        description: 'Invalid credentials',
+      },
+    },
   }
-}
+)

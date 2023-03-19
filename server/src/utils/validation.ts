@@ -1,4 +1,4 @@
-import { ValidateFunction } from 'ajv'
+import type { ValidateFunction } from 'ajv'
 
 const DEFAULT_ERROR_MESSAGE = 'Invalid format'
 export const getErrorMessage = (validationResult: ValidateFunction) => {

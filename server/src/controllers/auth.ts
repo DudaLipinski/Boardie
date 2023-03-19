@@ -1,26 +1,23 @@
-import { RequestHandler } from 'express'
-import { validateAuthSchema } from '../schemas/auth'
-
 import * as userModel from '../models/user'
-import { generateAccessToken } from '../utils/auth'
-import { getErrorMessage } from '../schemas/utils'
-import { logInternalError } from '../utils/log'
+import { generateAccessToken, jwtTokenSchema } from '../utils/auth'
+import type { User } from '../models/user'
+import { endpoint } from '../utils/endpoint'
+import type { AuthData } from '../schemas/auth'
+import { userAuthDTO } from '../schemas/auth'
+import { userDTO } from '../schemas/user'
 
-export const auth: RequestHandler = async (req, res) => {
-  const auth = req.body
-  if (!auth) {
-    return res.status(400).send('You must provide an email and password')
+const AUTH_ENDPOINT = '/auth'
+
+export const auth = endpoint.POST(AUTH_ENDPOINT)<
+  void,
+  AuthData,
+  {
+    user: Omit<User, 'password'>
+    token: string
   }
-
-  const validAuth = validateAuthSchema(auth)
-  if (!validAuth) {
-    const errorMessage = getErrorMessage(validateAuthSchema)
-    res.status(400).send(errorMessage)
-    return
-  }
-
-  try {
-    const loggedUser = await userModel.auth(auth)
+>(
+  async (req, res) => {
+    const loggedUser = await userModel.auth(req.body)
     if (!loggedUser) {
       return res.sendStatus(401)
     }
@@ -31,8 +28,28 @@ export const auth: RequestHandler = async (req, res) => {
       user: loggedUser,
       token,
     })
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Authenticates a user',
+    tags: ['auth'],
+    params: null,
+    body: userAuthDTO,
+    responses: {
+      200: {
+        description:
+          "The logged in user's data along with the generated JWT token",
+        schema: {
+          type: 'object',
+          properties: {
+            user: userDTO,
+            token: jwtTokenSchema,
+          },
+          required: ['user', 'token'],
+        },
+      },
+      401: {
+        description: "Provided credentials doesn't match any valid user",
+      },
+    },
   }
-}
+)

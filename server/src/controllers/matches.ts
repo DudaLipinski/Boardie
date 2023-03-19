@@ -1,94 +1,128 @@
-import { RequestHandler } from 'express'
 import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
 import * as matchParticipantModel from '../models/matchParticipants'
 
-import {
-  validateMatchCreationData,
-  validateMatchUpdateSchema,
+import type {
+  MatchCreationData,
+  MatchDTO,
+  MatchUpdateData,
 } from '../schemas/match'
-import { getErrorMessage } from '../schemas/utils'
-import { logInternalError } from '../utils/log'
+import { matchUpdateData, matchCreationData, matchDTO } from '../schemas/match'
+import { endpoint } from '../utils/endpoint'
 
-export const createForLoggedUser: RequestHandler = async (req, res) => {
-  const matchData = req.body
-  if (!matchData) {
-    return res.sendStatus(400)
-  }
+export const createForLoggedUser = endpoint.POST('/me/matches')<
+  void,
+  MatchCreationData,
+  MatchDTO
+>(
+  async (req, res) => {
+    const matchCreationData = req.body
 
-  const authorId = req.userId
-  const matchDTO = {
-    ...matchData,
-    authorId,
-  }
-
-  const validMatch = validateMatchCreationData(matchDTO)
-  if (!validMatch) {
-    const errorMessage = getErrorMessage(validateMatchCreationData)
-    res.status(400).send({ message: errorMessage })
-    return
-  }
-
-  try {
-    const match = omit(matchDTO, ['participants'])
+    const match = {
+      ...omit(matchCreationData, ['participants']),
+      authorId: req.userId,
+    }
     const matchId = await matchesModel.create(match)
 
-    const { participants } = matchDTO
+    const { participants } = matchCreationData
     await matchParticipantModel.createMultiple({ matchId, participants })
 
     const createdMatch = await matchesModel.getHydratedById({
       id: matchId,
     })
-    res.send(omit(createdMatch, ['authorId'])).status(201)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+    if (!createdMatch) {
+      return res.sendStatus(500)
+    }
+
+    res.status(201).send(createdMatch)
+  },
+  {
+    summary: 'Creates a match for the logged user',
+    tags: ['matches'],
+    params: null,
+    body: matchCreationData,
+    responses: {
+      201: {
+        description: 'The created match',
+        schema: matchDTO,
+      },
+    },
   }
-}
+)
 
-export const getAllByLoggedUser: RequestHandler = async (req, res) => {
-  const { userId } = req
-
-  try {
-    const matches = await matchesModel.getHydratedByAuthor({ authorId: userId })
+export const getAllByLoggedUser = endpoint.GET('/me/matches')<
+  void,
+  void,
+  MatchDTO[]
+>(
+  async (req, res) => {
+    const matches = await matchesModel.getHydratedByAuthor({
+      authorId: req.userId,
+    })
     res.status(200).send(matches)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Gets all the matches for the logged user',
+    tags: ['matches'],
+    params: null,
+    body: null,
+    responses: {
+      200: {
+        description: 'The matches',
+        schema: {
+          type: 'array',
+          items: matchDTO,
+        },
+      },
+    },
   }
-}
+)
 
-export const getById: RequestHandler = async (req, res) => {
-  const { matchId } = req.params
-  if (!matchId) {
-    return res.sendStatus(400)
-  }
-
-  try {
+// TODO: implement access logic
+export const getById = endpoint.GET('/matches/:matchId')<
+  { matchId: string },
+  void,
+  MatchDTO
+>(
+  async (req, res) => {
+    const { matchId } = req.params
     const match = await matchesModel.getHydratedById({ id: parseInt(matchId) })
     if (!match) {
       return res.sendStatus(404)
     }
 
     res.status(200).send(match)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Gets a match by id',
+    tags: ['matches'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The match',
+        schema: matchDTO,
+      },
+      404: {
+        description: 'The match was not found',
+      },
+    },
   }
-}
+)
 
-export const update: RequestHandler = async (req, res) => {
-  if (!req.params.matchId) {
-    return res.sendStatus(400)
-  }
-  const matchId = parseInt(req.params.matchId, 10)
+export const update = endpoint.PUT('/matches/:matchId')<
+  { matchId: string },
+  MatchUpdateData,
+  void
+>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId, 10)
 
-  const matchUpdateDTO = req.body
-  if (!matchUpdateDTO) {
-    return res.sendStatus(400)
-  }
-
-  try {
     const match = await matchesModel.getById({ id: matchId })
     if (!match) {
       return res.sendStatus(404)
@@ -99,31 +133,45 @@ export const update: RequestHandler = async (req, res) => {
       return res.sendStatus(403)
     }
 
-    const validMatch = validateMatchUpdateSchema(matchUpdateDTO)
-    if (!validMatch) {
-      const errorMessage = getErrorMessage(validateMatchUpdateSchema)
-      return res.status(400).send({ message: errorMessage })
-    }
-
-    const matchUpdated = await matchesModel.update(matchId, matchUpdateDTO)
+    const matchUpdated = await matchesModel.update(matchId, req.body)
     if (!matchUpdated) {
       return res.sendStatus(404)
     }
 
     return res.sendStatus(200)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Updates a match',
+    tags: ['matches'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match',
+      },
+    },
+    body: matchUpdateData,
+    responses: {
+      200: {
+        description: 'The match was updated',
+      },
+      403: {
+        description: 'The logged user is not the author of the match',
+      },
+      404: {
+        description: 'The match was not found',
+      },
+    },
   }
-}
+)
 
-export const deleteById: RequestHandler = async (req, res) => {
-  if (!req.params.matchId) {
-    return res.sendStatus(400)
-  }
-  const matchId = parseInt(req.params.matchId, 10)
+export const deleteById = endpoint.DELETE('/matches/:matchId')<
+  { matchId: string },
+  void,
+  void
+>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId, 10)
 
-  try {
     const match = await matchesModel.getById({ id: matchId })
     if (!match) {
       return res.sendStatus(404)
@@ -140,8 +188,27 @@ export const deleteById: RequestHandler = async (req, res) => {
     }
 
     res.sendStatus(200)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Deletes a match',
+    tags: ['matches'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The match was deleted',
+      },
+      403: {
+        description: 'The logged user is not the author of the match',
+      },
+      404: {
+        description: 'The match was not found',
+      },
+    },
   }
-}
+)

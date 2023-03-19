@@ -1,9 +1,9 @@
 import db from '../database'
-import { generateUpdate, prefixKeysWithDollar } from './utils'
 import { CURRENT_DATETIME } from '../utils/sql'
+import type { MatchUpdateData } from '../schemas/match'
+import type { MatchParticipantDTO } from '../schemas/matchParticipant'
 import { getAllByMatchId } from './matchParticipants'
-import { MatchUpdateDTO } from '../schemas/match'
-import { MatchParticipantDTO } from '../schemas/matchParticipant'
+import { generateUpdate, prefixKeysWithDollar } from './utils'
 
 const ISNT_DELETED = 'deletedAt IS NULL'
 
@@ -49,7 +49,7 @@ export const create = (match: Omit<Match, 'id'>) => {
   })
 }
 
-export const update = (matchId: number, match: MatchUpdateDTO) => {
+export const update = (matchId: number, match: MatchUpdateData) => {
   const { fieldAssignments, params } = generateUpdate(match)
   const query = `
     UPDATE match
@@ -92,7 +92,7 @@ export const getHydratedById = ({ id }: { id: number }) => {
 
   return new Promise<HydratedMatch | null>((resolve, reject) => {
     db.get(query, { $id: id }, async function (error, match: Match) {
-      if (!match.id) {
+      if (!match?.id) {
         return resolve(null)
       }
 
@@ -213,6 +213,31 @@ export const deleteById = (params: { id: number }) => {
       }
 
       resolve(!!this.changes && this.changes > 0)
+    })
+  })
+}
+
+export const checkIfExists = async (params: { id: number }) => {
+  const query = `
+    SELECT EXISTS(
+      SELECT 1 FROM match
+      WHERE
+        rowId = $id
+        AND ${ISNT_DELETED}
+      LIMIT 1
+    );
+  `
+
+  return new Promise<boolean>((resolve, reject) => {
+    db.get(query, prefixKeysWithDollar(params), function (error, result) {
+      if (error) {
+        return reject(
+          `An error occurred while trying to check if a match exists: ${error?.message}`
+        )
+      }
+
+      const exists = Object.values(result)[0] === 1
+      resolve(exists)
     })
   })
 }

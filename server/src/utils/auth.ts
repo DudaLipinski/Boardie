@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import type { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 import { JWT_TOKEN_SECRET_KEY } from '../constants'
 
@@ -46,3 +46,10 @@ export const authenticateToken: RequestHandler = (req, res, next) => {
     }
   )
 }
+
+export const jwtTokenSchema = {
+  description: 'A JWT token',
+  type: 'string',
+  example:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjUyMTc4MCwiZXhwIjoxNjY2NTQzMzgwfQ.MDwMf43KJDUspoelvhst3FrzWdxaFzmowZ80alZERVQ',
+} as const

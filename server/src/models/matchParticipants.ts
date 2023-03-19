@@ -1,4 +1,4 @@
-import {
+import type {
   MatchParticipantCreationData,
   MatchParticipantDTO,
   MatchParticipantUpdateData,
@@ -57,7 +57,7 @@ export const getById = (params: { id: number }) => {
     db.get(
       query,
       prefixKeysWithDollar(params),
-      function (error: any, participant: HydratedMatchParticipant) {
+      function (error: Error, participant: HydratedMatchParticipant) {
         if (error) {
           reject(
             `An error occurred while trying to fetch match participants by matchId: ${error?.message}`
@@ -80,7 +80,7 @@ export const getAllByMatchId = (params: { matchId: number }) => {
     db.all(
       query,
       prefixKeysWithDollar(params),
-      function (error: any, participants: HydratedMatchParticipant[]) {
+      function (error: Error, participants: HydratedMatchParticipant[]) {
         if (error) {
           reject(
             `An error occurred while trying to fetch match participants by matchId: ${error?.message}`
@@ -239,6 +239,30 @@ export const deleteById = (params: { id: number; matchId: number }) => {
       }
 
       resolve(this.changes === 1)
+    })
+  })
+}
+
+export const checkIfExists = async (params: { id: number }) => {
+  const query = `
+    SELECT EXISTS(
+      SELECT 1 FROM matchParticipant
+      WHERE
+        rowId = $id
+      LIMIT 1
+    );
+  `
+
+  return new Promise<boolean>((resolve, reject) => {
+    db.get(query, prefixKeysWithDollar(params), function (error, result) {
+      if (error) {
+        return reject(
+          `An error occurred while checking if a match participant exists: ${error?.message}`
+        )
+      }
+
+      const exists = Object.values(result)[0] === 1
+      resolve(exists)
     })
   })
 }

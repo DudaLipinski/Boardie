@@ -1,13 +1,6 @@
-import ajv from './ajv'
-import { JSONSchemaType } from 'ajv'
-import { AnonFriend } from '../models/anonFriends'
+import type { JSONSchemaType } from 'ajv'
 import pick from 'lodash.pick'
-
-export interface AnonFriendDTO {
-  id: AnonFriend['id']
-  fullName: AnonFriend['fullName']
-  type: 'ANON_FRIEND'
-}
+import type { AnonFriend } from '../models/anonFriends'
 
 const anonFriendProperties = {
   id: { type: 'number' },
@@ -15,8 +8,22 @@ const anonFriendProperties = {
   type: { type: 'string', enum: ['ANON_FRIEND'] },
 } as const
 
+export interface AnonFriendDTO {
+  id: AnonFriend['id']
+  fullName: AnonFriend['fullName']
+  type: 'ANON_FRIEND'
+}
+export const anonFriendDTO: JSONSchemaType<AnonFriendDTO> = {
+  title: 'Anonymous friend',
+  description: 'Data that represents an anonymous friend',
+  type: 'object',
+  properties: anonFriendProperties,
+  required: ['id', 'fullName', 'type'],
+  additionalProperties: false,
+}
+
 export type AnonFriendCreationData = Omit<AnonFriendDTO, 'id' | 'type'>
-const anonFriendCreationSchema: JSONSchemaType<AnonFriendCreationData> = {
+export const anonFriendCreationData: JSONSchemaType<AnonFriendCreationData> = {
   title: 'Anonymous friend creation data',
   description: 'Data used to create an anonymous friend',
   type: 'object',
@@ -24,12 +31,9 @@ const anonFriendCreationSchema: JSONSchemaType<AnonFriendCreationData> = {
   required: ['fullName'],
   additionalProperties: false,
 }
-export const validateAnonFriendCreationSchema = ajv.compile(
-  anonFriendCreationSchema
-)
 
 export type AnonFriendUpdateData = AnonFriendCreationData
-const anonFriendUpdateSchema: JSONSchemaType<AnonFriendUpdateData> = {
+export const anonFriendUpdateData: JSONSchemaType<AnonFriendUpdateData> = {
   title: 'Anonymous friend update data',
   description: 'Data used to update an anonymous friend',
   type: 'object',
@@ -37,6 +41,3 @@ const anonFriendUpdateSchema: JSONSchemaType<AnonFriendUpdateData> = {
   required: ['fullName'],
   additionalProperties: false,
 }
-export const validateAnonFriendUpdateSchema = ajv.compile(
-  anonFriendUpdateSchema
-)

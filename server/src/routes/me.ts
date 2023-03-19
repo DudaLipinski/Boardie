@@ -1,31 +1,20 @@
-import { Express } from 'express'
+import type { Express } from 'express'
 import * as userController from '../controllers/user'
 import * as matchesController from '../controllers/matches'
 import * as friendsController from '../controllers/friends'
 import * as anonFriendsController from '../controllers/anonFriends'
 
-const meEndpoint = '/me'
-
 export function set(app: Express) {
-  app.get(meEndpoint, userController.getLoggedUser)
-  app.post(meEndpoint, userController.create)
-  app.post(`${meEndpoint}/unregister`, userController.unregisterLoggedUser)
+  userController.getLoggedUser.setRouter(app) // GET /me
+  userController.create.setRouter(app) // POST /me
+  userController.unregisterLoggedUser.setRouter(app) // DELETE /me
 
-  app.post(`${meEndpoint}/matches`, matchesController.createForLoggedUser)
-  app.get(`${meEndpoint}/matches`, matchesController.getAllByLoggedUser)
+  matchesController.createForLoggedUser.setRouter(app) // POST /me/matches
+  matchesController.getAllByLoggedUser.setRouter(app) // GET /me/matches
 
-  app.get(`${meEndpoint}/friends`, friendsController.getAllByLoggedUser)
+  friendsController.getAllByLoggedUser.setRouter(app) // GET /me/friends
 
-  app.post(
-    `${meEndpoint}/anonfriends`,
-    anonFriendsController.createForLoggedUser
-  )
-  app.put(
-    `${meEndpoint}/anonfriends/:anonFriendId`,
-    anonFriendsController.update
-  )
-  app.delete(
-    `${meEndpoint}/anonfriends/:anonFriendId`,
-    anonFriendsController.deleteById
-  )
+  anonFriendsController.createForLoggedUser.setRouter(app) // POST /me/anon-friends
+  anonFriendsController.update.setRouter(app) // PUT /me/anon-friends/:anonFriendId
+  anonFriendsController.deleteById.setRouter(app) // DELETE /me/anon-friends/:anonFriendId
 }

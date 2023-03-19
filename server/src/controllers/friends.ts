@@ -1,8 +1,8 @@
-import { RequestHandler } from 'express'
 import * as anonFriendsModel from '../models/anonFriends'
 
-import { logInternalError } from '../utils/log'
 import { FriendType } from '../models/utils'
+import { endpoint } from '../utils/endpoint'
+import { genericFriendDTO } from '../schemas/genericFriend'
 
 export interface GenericFriend {
   id: number
@@ -13,17 +13,31 @@ export interface HydratedGenericFriend extends GenericFriend {
   fullName: string
 }
 
-export const getAllByLoggedUser: RequestHandler = async (req, res) => {
-  const { userId } = req
-
-  try {
+export const getAllByLoggedUser = endpoint.GET('/me/friends')<
+  void,
+  void,
+  HydratedGenericFriend[]
+>(
+  async (req, res) => {
     const anonFriends: HydratedGenericFriend[] = (
-      await anonFriendsModel.getAllByUserId({ userId })
+      await anonFriendsModel.getAllByUserId({ userId: req.userId })
     ).map((friend) => ({ ...friend, type: FriendType.ANON_FRIEND }))
 
     res.status(200).send(anonFriends)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Gets all friends for the logged user',
+    tags: ['friends'],
+    params: null,
+    body: null,
+    responses: {
+      200: {
+        description: "The logged user's friends",
+        schema: {
+          type: 'array',
+          items: genericFriendDTO,
+        },
+      },
+    },
   }
-}
+)

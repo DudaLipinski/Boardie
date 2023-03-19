@@ -1,5 +1,8 @@
-import { JSONSchemaType } from 'ajv'
-import { GenericFriend, HydratedGenericFriend } from '../controllers/friends'
+import type { JSONSchemaType } from 'ajv'
+import type {
+  GenericFriend,
+  HydratedGenericFriend,
+} from '../controllers/friends'
 import { FriendType } from '../models/utils'
 
 const genericFriendProperties: JSONSchemaType<GenericFriend>['properties'] = {
@@ -17,7 +20,7 @@ export const genericFriend: JSONSchemaType<GenericFriend> = {
   required: ['id', 'type'],
 }
 
-export const hydratedGenericFriend: JSONSchemaType<HydratedGenericFriend> = {
+export const genericFriendDTO: JSONSchemaType<HydratedGenericFriend> = {
   title: 'Hydrated generic friend',
   description: 'Friend data with its full name',
   type: 'object',

@@ -1,29 +1,14 @@
-import { Express } from 'express'
+import type { Express } from 'express'
 import * as matchesController from '../controllers/matches'
 import * as matchParticipantsController from '../controllers/matchParticipants'
 
-const matchPath = 'matches'
-const participantsPath = 'participants'
-
 export function set(app: Express) {
-  app.get(`/${matchPath}/:matchId`, matchesController.getById)
-  app.put(`/${matchPath}/:matchId`, matchesController.update)
-  app.delete(`/${matchPath}/:matchId`, matchesController.deleteById)
+  matchesController.getById.setRouter(app) // GET /matches/:matchId
+  matchesController.update.setRouter(app) // PUT /matches/:matchId
+  matchesController.deleteById.setRouter(app) // DELETE /matches/:matchId
 
-  app.get(
-    `/${matchPath}/:matchId/${participantsPath}`,
-    matchParticipantsController.getAllByMatchId
-  )
-  app.post(
-    `/${matchPath}/:matchId/${participantsPath}`,
-    matchParticipantsController.create
-  )
-  app.put(
-    `/${matchPath}/:matchId/${participantsPath}/:participantId`,
-    matchParticipantsController.update
-  )
-  app.delete(
-    `/${matchPath}/:matchId/${participantsPath}/:participantId`,
-    matchParticipantsController.deleteById
-  )
+  matchParticipantsController.getAllByMatchId.setRouter(app) // GET /matches/:matchId/participants
+  matchParticipantsController.create.setRouter(app) // POST /matches/:matchId/participants
+  matchParticipantsController.update.setRouter(app) // PUT /matches/:matchId/participants/:participantId
+  matchParticipantsController.deleteById.setRouter(app) // DELETE /matches/:matchId/participants/:participantId
 }

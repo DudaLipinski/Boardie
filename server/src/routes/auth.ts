@@ -1,8 +1,6 @@
-import { Express } from 'express'
+import type { Express } from 'express'
 import * as authController from '../controllers/auth'
 
-const authEndpoint = '/auth'
-
 export function set(app: Express) {
-  app.post(authEndpoint, authController.auth)
+  authController.auth.setRouter(app) // POST /auth
 }

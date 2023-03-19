@@ -1,81 +1,91 @@
-import { RequestHandler } from 'express'
 import * as matchesModel from '../models/matches'
 import * as matchParticipantsModel from '../models/matchParticipants'
 import * as friendsModel from '../models/friends'
-import {
+import type {
   MatchParticipantCreationData,
   MatchParticipantDTO,
   MatchParticipantUpdateData,
-  validateMatchParticipantCreationData,
-  validateMatchParticipantUpdateData,
 } from '../schemas/matchParticipant'
-import { getErrorMessage } from '../schemas/utils'
-import { ErrorBody } from '../types/errors'
-import { logInternalError } from '../utils/log'
-import { FORBIDDEN_ERROR } from '../utils/errors'
+import {
+  matchParticipantDTO,
+  matchParticipantCreationData,
+  matchParticipantUpdateData,
+} from '../schemas/matchParticipant'
+import { endpoint } from '../utils/endpoint'
 
-export const getAllByMatchId: RequestHandler<
+// TODO: implement access logic
+export const getAllByMatchId = endpoint.GET('/matches/:matchId/participants')<
   { matchId: string },
+  void,
   MatchParticipantDTO[]
-> = async (req, res) => {
-  const { matchId } = req.params
-  if (!matchId) {
-    return res.sendStatus(400)
-  }
+>(
+  async (req, res) => {
+    const { matchId } = req.params
 
-  try {
-    const matchParticipants = await matchParticipantsModel.getAllByMatchId({
-      matchId: parseInt(matchId),
+    const matchExists = await matchesModel.checkIfExists({
+      id: parseInt(matchId),
     })
-    if (!matchParticipants) {
+    if (!matchExists) {
       return res.sendStatus(404)
     }
 
+    const matchParticipants = await matchParticipantsModel.getAllByMatchId({
+      matchId: parseInt(matchId),
+    })
     res.status(200).send(matchParticipants)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Gets all match participants by match id',
+    tags: ['matches/participants'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The match participants',
+        schema: {
+          type: 'array',
+          items: matchParticipantDTO,
+        },
+      },
+      404: {
+        description: 'The match was not found',
+      },
+    },
   }
-}
+)
 
-export const create: RequestHandler<
+export const create = endpoint.POST('/matches/:matchId/participants')<
   { matchId: string },
-  MatchParticipantDTO | ErrorBody,
-  MatchParticipantCreationData
-> = async (req, res) => {
-  if (!req.params.matchId) {
-    return res.sendStatus(400)
-  }
-  const matchId = parseInt(req.params.matchId)
-  const userId = req.userId
+  MatchParticipantCreationData,
+  MatchParticipantDTO
+>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId)
+    const userId = req.userId
+    const participant = req.body
 
-  const participant = req.body
-  const validMatchParticipant =
-    validateMatchParticipantCreationData(participant)
-  if (!validMatchParticipant) {
-    const errorMessage = getErrorMessage(validateMatchParticipantCreationData)
-    res.status(400).send({ message: errorMessage })
-    return
-  }
-
-  try {
     const canUpdate = await matchesModel.checkUpdatePermission({
       id: matchId,
       userId,
     })
     if (canUpdate === undefined) {
-      return res.status(404).send({ message: 'Match does not exist' })
+      return res.status(404).send({ message: 'Match not found' })
     }
     if (!canUpdate) {
-      return res.status(403).send(FORBIDDEN_ERROR)
+      return res.sendStatus(403)
     }
 
     const friendshipExists = await friendsModel.checkFriendshipExists({
-      userId: req.userId,
+      userId,
       friend: participant.friend,
     })
     if (!friendshipExists) {
-      return res.status(403).send(FORBIDDEN_ERROR)
+      return res.sendStatus(403)
     }
 
     const createdParticipant = await matchParticipantsModel.create({
@@ -84,42 +94,64 @@ export const create: RequestHandler<
     })
 
     res.status(200).send(createdParticipant)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Creates a match participant',
+    tags: ['matches/participants'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match',
+      },
+    },
+    body: matchParticipantCreationData,
+    responses: {
+      200: {
+        description: 'The created match participant',
+        schema: matchParticipantDTO,
+      },
+      403: {
+        description:
+          "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the match participant trying to be created",
+      },
+      404: {
+        description: 'The match was not found',
+      },
+    },
   }
-}
+)
 
-export const update: RequestHandler<
+export const update = endpoint.PUT(
+  '/matches/:matchId/participants/:participantId'
+)<
   { matchId: string; participantId: string },
-  MatchParticipantDTO | ErrorBody,
-  MatchParticipantUpdateData
-> = async (req, res) => {
-  if (!req.params.matchId || !req.params.participantId) {
-    return res.sendStatus(400)
-  }
-  const matchId = parseInt(req.params.matchId)
-  const participantId = parseInt(req.params.participantId)
-  const userId = req.userId
+  MatchParticipantUpdateData,
+  MatchParticipantDTO
+>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId)
+    const participantId = parseInt(req.params.participantId)
+    const userId = req.userId
+    const participant = req.body
 
-  const participant = req.body
-  const validMatchParticipant = validateMatchParticipantUpdateData(participant)
-  if (!validMatchParticipant) {
-    const errorMessage = getErrorMessage(validateMatchParticipantUpdateData)
-    res.status(400).send({ message: errorMessage })
-    return
-  }
+    const exists = await matchParticipantsModel.checkIfExists({
+      id: participantId,
+    })
+    if (!exists) {
+      return res.status(404).send({ message: 'Match participant not found' })
+    }
 
-  try {
+    // We shouldn't be relying on the matchId from the URL,
+    // we should instead check if the participant belongs to the match
     const canUpdate = await matchesModel.checkUpdatePermission({
       id: matchId,
       userId,
     })
     if (canUpdate === undefined) {
-      return res.status(404).send({ message: 'Match does not exist' })
+      return res.status(404).send({ message: 'Match not found' })
     }
     if (!canUpdate) {
-      return res.status(403).send(FORBIDDEN_ERROR)
+      return res.sendStatus(403)
     }
 
     const friendshipExists = await friendsModel.checkFriendshipExists({
@@ -127,43 +159,72 @@ export const update: RequestHandler<
       friend: participant.friend,
     })
     if (!friendshipExists) {
-      return res.status(403).send(FORBIDDEN_ERROR)
+      return res.sendStatus(403)
     }
 
-    const createdParticipant = await matchParticipantsModel.update({
+    const updatedParticipant = await matchParticipantsModel.update({
       id: participantId,
       participant,
     })
 
-    res.status(200).send(createdParticipant)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+    res.status(200).send(updatedParticipant)
+  },
+  {
+    summary: 'Updates a match participant',
+    tags: ['matches/participants'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match that contains the participant',
+      },
+      participantId: {
+        type: 'string',
+        description: 'The id of the match participant',
+      },
+    },
+    body: matchParticipantUpdateData,
+    responses: {
+      200: {
+        description: 'The updated match participant',
+        schema: matchParticipantDTO,
+      },
+      403: {
+        description:
+          "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the match participant trying to be updated",
+      },
+      404: {
+        description: 'The match or match participant was not found',
+      },
+    },
   }
-}
+)
 
-export const deleteById: RequestHandler<
-  { matchId: string; participantId: string },
-  void | ErrorBody,
-  never
-> = async (req, res) => {
-  if (!req.params.matchId || !req.params.participantId) {
-    return res.sendStatus(400)
-  }
-  const matchId = parseInt(req.params.matchId)
-  const participantId = parseInt(req.params.participantId)
-  const userId = req.userId
+export const deleteById = endpoint.DELETE(
+  '/matches/:matchId/participants/:participantId'
+)<{ matchId: string; participantId: string }, void, void>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId)
+    const participantId = parseInt(req.params.participantId)
+    const userId = req.userId
 
-  try {
+    const exists = await matchParticipantsModel.checkIfExists({
+      id: participantId,
+    })
+    if (!exists) {
+      return res.status(404).send({ message: 'Match participant not found' })
+    }
+
+    // We shouldn't be relying on the matchId from the URL,
+    // we should instead check if the participant belongs to the match
     const canUpdateMatch = await matchesModel.checkUpdatePermission({
       id: matchId,
       userId,
     })
     if (canUpdateMatch === undefined) {
-      return res.status(404).send({ message: 'Match does not exist' })
+      return res.status(404).send({ message: 'Match not found' })
     }
     if (!canUpdateMatch) {
-      return res.status(403).send(FORBIDDEN_ERROR)
+      return res.sendStatus(403)
     }
 
     const deleted = await matchParticipantsModel.deleteById({
@@ -177,8 +238,31 @@ export const deleteById: RequestHandler<
     }
 
     return res.sendStatus(200)
-  } catch (e) {
-    logInternalError(e)
-    res.sendStatus(500)
+  },
+  {
+    summary: 'Deletes a match participant by id',
+    tags: ['matches/participants'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match that contains the participant',
+      },
+      participantId: {
+        type: 'string',
+        description: 'The id of the match participant',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The match participant was deleted',
+      },
+      403: {
+        description: "The user doesn't have permissions to update the match",
+      },
+      404: {
+        description: 'The match or match participant was not found',
+      },
+    },
   }
-}
+)

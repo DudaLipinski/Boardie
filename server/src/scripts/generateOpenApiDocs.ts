@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import controllersMap from '../controllers'
 import type { Path } from '../utils/endpoint'
-import headers from '../openapi.headers.json'
+import headers from '../openapi.headers.json' assert { type: 'json' }
 
 const controllers = Object.values(controllersMap)
 const endpoints = controllers.flatMap((endpoints) =>

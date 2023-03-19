@@ -9,7 +9,7 @@ import { actions as userActions } from '../../state/user'
 import { motion } from 'framer-motion'
 import { TextField, Box, Typography, Button } from '@mui/material'
 import { animationProps } from '../../styles/animation'
-import { DASHBOARD, LOGIN } from '../../routes/routeSpecs'
+import { LOGIN } from '../../routes/routeSpecs'
 
 const textFieldProps = {
   fullWidth: true,
@@ -45,7 +45,7 @@ export const CreateAccount = () => {
         dispatch(userActions.setUser(createdUser))
       })
 
-      navigate(DASHBOARD)
+      navigate(LOGIN)
     },
   })
 

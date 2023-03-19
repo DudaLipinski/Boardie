@@ -134,6 +134,7 @@ export const FriendSelector = ({
         loading={friends.isLoading || createAnonymousFriend.isLoading}
         renderInput={(params) => (
           <TextField
+            required
             {...params}
             color="info"
             size="small"

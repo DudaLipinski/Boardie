@@ -15,7 +15,7 @@ import {
   FormControlLabel,
 } from '@mui/material'
 import { animationProps } from '../../styles/animation'
-import { CREATE_ACCOUNT, DASHBOARD } from '../../routes/routeSpecs'
+import { CREATE_ACCOUNT, MATCHES } from '../../routes/routeSpecs'
 
 export const Login = () => {
   const dispatch = useDispatch()
@@ -33,7 +33,7 @@ export const Login = () => {
             throw new Error('Internal error')
           }
           dispatch(userActions.setUser(response.user))
-          navigate(DASHBOARD)
+          navigate(MATCHES)
         })
         .catch((error: any) => alert(error.message))
     },

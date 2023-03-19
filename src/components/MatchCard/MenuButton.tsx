@@ -3,8 +3,21 @@ import { IconButton, Menu, MenuItem } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { EDIT_MATCH } from '../../routes/routeSpecs'
+import { DeleteDialog } from './DeleteDialog'
 
-export const MenuButton = ({ id }: { id: number }) => {
+interface Props {
+  id: number
+  handleDeleteMatch: () => void
+  isDeleteDialogOpen: boolean
+  setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void
+}
+
+export const MenuButton = ({
+  id,
+  handleDeleteMatch,
+  isDeleteDialogOpen,
+  setIsDeleteDialogOpen,
+}: Props) => {
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -12,6 +25,7 @@ export const MenuButton = ({ id }: { id: number }) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -58,8 +72,16 @@ export const MenuButton = ({ id }: { id: number }) => {
         >
           Edit
         </MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem onClick={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}>
+          Delete
+        </MenuItem>
       </Menu>
+      <DeleteDialog
+        isDeleteDialogOpen={isDeleteDialogOpen}
+        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+        handleDeleteMatch={handleDeleteMatch}
+        setAnchorEl={setAnchorEl}
+      />
     </>
   )
 }

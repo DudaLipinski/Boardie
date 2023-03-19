@@ -1,8 +1,6 @@
-import { Match } from '../types/Match'
 import { User } from '../types/User'
 
 const SET_USER = 'SET_USER'
-const SET_MATCHES = 'SET_MATCHES'
 
 const INITIAL_STATE = null
 
@@ -13,11 +11,6 @@ export const reducer = (
   switch (action.type) {
     case SET_USER:
       return action.payload
-    case SET_MATCHES:
-      return {
-        ...(typeof state === 'object' ? state : {}),
-        matches: action.payload,
-      }
     default:
       return state
   }
@@ -25,12 +18,10 @@ export const reducer = (
 
 export const actions = {
   setUser: (user: User) => ({ type: SET_USER, payload: user }),
-  setMatches: (matches: Match[]) => ({ type: SET_MATCHES, payload: matches }),
 }
 
 export const selectors = {
   getUser: (state: { user: User }) => state.user,
   getUserId: (state: { user: { id: string } }) => state.user.id,
   getIsLoggedIn: (state: { user: User }) => !!state.user,
-  getUserMatches: (state: { user: { matches: Match[] } }) => state.user.matches,
 }

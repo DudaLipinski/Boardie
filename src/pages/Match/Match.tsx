@@ -14,6 +14,7 @@ import { animationProps } from '../../styles/animation'
 import { Alert } from '../../components/Alert'
 import { userToParticipant } from '../../utils/friends'
 import { FabSubmit } from '../../components/FabSubmit'
+import { getErrorMessage } from '../../utils/api'
 
 export const Match = () => {
   const { mutate, isLoading, isError, error } = useMatchCreation()
@@ -63,9 +64,7 @@ export const Match = () => {
         position="relative"
         onSubmit={handleSubmit(onSubmit)}
       >
-        {isError && (
-          <Alert severity="error" message={error.response.data.message} />
-        )}
+        {isError && <Alert severity="error" message={getErrorMessage(error)} />}
         <Stack spacing={2} overflow="hidden auto" height="inherit">
           <MatchDetails control={control} />
           <MatchParticipants control={control} />

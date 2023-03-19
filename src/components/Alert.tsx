@@ -14,8 +14,9 @@ export const Alert = ({ severity, message, onClose }: Props) => {
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
-    setTimeout(() => setOpen(false), 3000)
-  }, [])
+    const wordsCount = message.split(' ').length
+    setTimeout(() => setOpen(false), wordsCount * 700)
+  }, [message])
 
   useEffect(() => {
     if (!open) {
@@ -24,7 +25,7 @@ export const Alert = ({ severity, message, onClose }: Props) => {
   }, [open, onClose])
 
   return (
-    <Collapse in={open}>
+    <Collapse in={open} sx={{ position: 'absolute', zIndex: 2 }}>
       <MuiAlert
         severity={severity}
         action={

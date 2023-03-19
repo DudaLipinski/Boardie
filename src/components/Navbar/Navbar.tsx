@@ -9,7 +9,7 @@ const Top = styled.nav`
 export const Navbar = () => {
   return (
     <Top>
-      <Nav></Nav>
+      <Nav style={{ padding: '4px 0 2px' }}></Nav>
     </Top>
   )
 }

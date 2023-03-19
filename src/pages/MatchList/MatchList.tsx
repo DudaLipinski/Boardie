@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMatches } from '../../queries/match'
 import { Match } from '../../types/Match'
@@ -18,16 +17,12 @@ export const MatchList = () => {
   const navigate = useNavigate()
   const { data, isError, error, isLoading } = useMatches()
 
-  const matches = useMemo(
-    () =>
-      data?.map((match: Match) => {
-        return <MatchCard key={match.id} match={match} />
-      }),
-    [data]
-  )
+  const matches = data?.map((match: Match) => {
+    return <MatchCard key={match.id} match={match} />
+  })
 
   const listItems = data?.length ? (
-    <List sx={{ paddingBottom: '80px' }}>{matches}</List>
+    <List>{matches}</List>
   ) : (
     <Typography align="center">Start creating your first match! :)</Typography>
   )

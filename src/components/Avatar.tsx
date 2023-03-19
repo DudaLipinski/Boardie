@@ -4,7 +4,7 @@ import { GenericUser } from '../types/GenericUser'
 type Size = 'sm' | 'md' | 'lg'
 interface SizeDef {
   side: number
-  fontSize: number
+  fontSize: string
 }
 
 const placeholderStyle = {
@@ -13,9 +13,9 @@ const placeholderStyle = {
 }
 
 const sizes: Record<Size, SizeDef> = {
-  sm: { side: 32, fontSize: 14 },
-  md: { side: 62, fontSize: 16 },
-  lg: { side: 92, fontSize: 16 },
+  sm: { side: 32, fontSize: '14px' },
+  md: { side: 62, fontSize: '16px' },
+  lg: { side: 92, fontSize: '16px' },
 }
 
 const getInitials = (fullName?: string) => {
@@ -47,6 +47,7 @@ export const Avatar = ({
     height: sizeDef.side,
     textTransform: 'uppercase',
     boxSizing: 'border-box',
+    fontSize: sizeDef.fontSize,
   }
   const avatarSx = user?.fullName
     ? { ...sizeSx, ...sx }

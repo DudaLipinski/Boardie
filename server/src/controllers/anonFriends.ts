@@ -13,9 +13,7 @@ import * as anonFriendsModel from '../models/anonFriends'
 import { FriendType } from '../models/utils'
 import { endpoint } from '../utils/endpoint'
 
-const ANON_FRIENDS_ENDPOINT = '/me/anonfriends'
-
-export const createForLoggedUser = endpoint.POST(ANON_FRIENDS_ENDPOINT)<
+export const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   void,
   AnonFriendCreationData,
   AnonFriendDTO
@@ -46,7 +44,7 @@ export const createForLoggedUser = endpoint.POST(ANON_FRIENDS_ENDPOINT)<
   }
 )
 
-export const update = endpoint.PUT(`${ANON_FRIENDS_ENDPOINT}/:anonFriendId`)<
+export const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
   { anonFriendId: string },
   AnonFriendUpdateData,
   AnonFriendDTO
@@ -98,9 +96,11 @@ export const update = endpoint.PUT(`${ANON_FRIENDS_ENDPOINT}/:anonFriendId`)<
   }
 )
 
-export const deleteById = endpoint.DELETE(
-  `${ANON_FRIENDS_ENDPOINT}/:anonFriendId`
-)<{ anonFriendId: string }, void, void>(
+export const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendI')<
+  { anonFriendId: string },
+  void,
+  void
+>(
   async (req, res) => {
     const anonFriendId = parseInt(req.params.anonFriendId, 10)
 

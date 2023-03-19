@@ -6,9 +6,7 @@ import type { AuthData } from '../schemas/auth'
 import { userAuthDTO } from '../schemas/auth'
 import { userDTO } from '../schemas/user'
 
-const AUTH_ENDPOINT = '/auth'
-
-export const auth = endpoint.POST(AUTH_ENDPOINT)<
+export const auth = endpoint.POST('/auth')<
   void,
   AuthData,
   {

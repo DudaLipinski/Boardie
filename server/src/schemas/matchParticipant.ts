@@ -1,10 +1,7 @@
 import type { JSONSchemaType } from 'ajv'
 import omit from 'lodash.omit'
-import type {
-  GenericFriend,
-  HydratedGenericFriend,
-} from '../controllers/friends'
-import { genericFriend, genericFriendDTO } from '../schemas/genericFriend'
+import type { GenericFriend, HydratedGenericFriend } from './genericFriend'
+import { genericFriend, genericFriendDTO } from './genericFriend'
 
 interface MatchParticipantBase {
   id: number

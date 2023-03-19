@@ -2,16 +2,8 @@ import * as anonFriendsModel from '../models/anonFriends'
 
 import { FriendType } from '../models/utils'
 import { endpoint } from '../utils/endpoint'
+import type { HydratedGenericFriend } from '../schemas/genericFriend'
 import { genericFriendDTO } from '../schemas/genericFriend'
-
-export interface GenericFriend {
-  id: number
-  type: FriendType
-}
-
-export interface HydratedGenericFriend extends GenericFriend {
-  fullName: string
-}
 
 export const getAllByLoggedUser = endpoint.GET('/me/friends')<
   void,
@@ -19,7 +11,7 @@ export const getAllByLoggedUser = endpoint.GET('/me/friends')<
   HydratedGenericFriend[]
 >(
   async (req, res) => {
-    const anonFriends: HydratedGenericFriend[] = (
+    const anonFriends = (
       await anonFriendsModel.getAllByUserId({ userId: req.userId })
     ).map((friend) => ({ ...friend, type: FriendType.ANON_FRIEND }))
 

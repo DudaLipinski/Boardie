@@ -1,4 +1,4 @@
-import type { GenericFriend } from '../controllers/friends'
+import type { GenericFriend } from '../schemas/genericFriend'
 import * as anonFriendsModel from './anonFriends'
 import { FriendType } from './utils'
 

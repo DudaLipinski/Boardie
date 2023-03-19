@@ -13,7 +13,7 @@ export interface AnonFriendDTO {
   fullName: AnonFriend['fullName']
   type: 'ANON_FRIEND'
 }
-export const anonFriendDTO: JSONSchemaType<AnonFriendDTO> = {
+export const anonFriendDTOSchema: JSONSchemaType<AnonFriendDTO> = {
   title: 'Anonymous friend',
   description: 'Data that represents an anonymous friend',
   type: 'object',
@@ -23,21 +23,23 @@ export const anonFriendDTO: JSONSchemaType<AnonFriendDTO> = {
 }
 
 export type AnonFriendCreationData = Omit<AnonFriendDTO, 'id' | 'type'>
-export const anonFriendCreationData: JSONSchemaType<AnonFriendCreationData> = {
-  title: 'Anonymous friend creation data',
-  description: 'Data used to create an anonymous friend',
-  type: 'object',
-  properties: pick(anonFriendProperties, ['fullName']),
-  required: ['fullName'],
-  additionalProperties: false,
-}
+export const anonFriendCreationDataSchema: JSONSchemaType<AnonFriendCreationData> =
+  {
+    title: 'Anonymous friend creation data',
+    description: 'Data used to create an anonymous friend',
+    type: 'object',
+    properties: pick(anonFriendProperties, ['fullName']),
+    required: ['fullName'],
+    additionalProperties: false,
+  }
 
 export type AnonFriendUpdateData = AnonFriendCreationData
-export const anonFriendUpdateData: JSONSchemaType<AnonFriendUpdateData> = {
-  title: 'Anonymous friend update data',
-  description: 'Data used to update an anonymous friend',
-  type: 'object',
-  properties: pick(anonFriendProperties, ['fullName']),
-  required: ['fullName'],
-  additionalProperties: false,
-}
+export const anonFriendUpdateDataSchema: JSONSchemaType<AnonFriendUpdateData> =
+  {
+    title: 'Anonymous friend update data',
+    description: 'Data used to update an anonymous friend',
+    type: 'object',
+    properties: pick(anonFriendProperties, ['fullName']),
+    required: ['fullName'],
+    additionalProperties: false,
+  }

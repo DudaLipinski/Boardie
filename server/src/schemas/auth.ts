@@ -11,7 +11,9 @@ export const userProperties = {
   password: { type: 'string' },
 } as const
 
-export const userAuthDTO: JSONSchemaType<Pick<User, 'email' | 'password'>> = {
+export const userAuthDTOSchema: JSONSchemaType<
+  Pick<User, 'email' | 'password'>
+> = {
   title: 'auth',
   description: 'Auth information about a user',
   type: 'object',
@@ -21,7 +23,7 @@ export const userAuthDTO: JSONSchemaType<Pick<User, 'email' | 'password'>> = {
 } as const
 
 export type AuthData = Pick<User, 'email' | 'password'>
-export const authData: JSONSchemaType<AuthData> = {
+export const authDataSchema: JSONSchemaType<AuthData> = {
   title: 'auth',
   description: 'Contact and auth information about a user',
   type: 'object',

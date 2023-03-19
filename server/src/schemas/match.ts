@@ -5,9 +5,9 @@ import type {
   MatchParticipantCreationData,
   MatchParticipantDTO,
 } from '../schemas/matchParticipant'
-import { matchParticipantDTO } from '../schemas/matchParticipant'
+import { matchParticipantDTOSchema } from '../schemas/matchParticipant'
 import type { HydratedMatch, Match } from '../models/matches'
-import { matchParticipantCreationData } from './matchParticipant'
+import { matchParticipantCreationDataSchema } from './matchParticipant'
 
 const matchProperties = {
   id: { type: 'number' },
@@ -19,7 +19,7 @@ const matchProperties = {
   notes: { type: 'string', nullable: true },
   participants: {
     type: 'array',
-    items: matchParticipantCreationData,
+    items: matchParticipantCreationDataSchema,
     minItems: 1,
   },
 } as const
@@ -39,7 +39,7 @@ export const matchCreationData: JSONSchemaType<MatchCreationData> = {
 }
 
 export type MatchDTO = HydratedMatch
-export const matchDTO: JSONSchemaType<MatchDTO> = {
+export const matchDTOSchema: JSONSchemaType<MatchDTO> = {
   title: 'Match creation result',
   description: 'Match data with its participants',
   type: 'object',
@@ -47,7 +47,7 @@ export const matchDTO: JSONSchemaType<MatchDTO> = {
     ...matchProperties,
     participants: {
       type: 'array',
-      items: matchParticipantDTO,
+      items: matchParticipantDTOSchema,
     },
   },
   required: ['authorId', 'boardgameName', 'participants'],
@@ -55,7 +55,7 @@ export const matchDTO: JSONSchemaType<MatchDTO> = {
 }
 
 export type MatchUpdateData = Omit<Match, 'id' | 'authorId'>
-export const matchUpdateData: JSONSchemaType<MatchUpdateData> = {
+export const matchUpdateDataSchema: JSONSchemaType<MatchUpdateData> = {
   title: 'Match',
   description: 'Match data with its participants',
   type: 'object',

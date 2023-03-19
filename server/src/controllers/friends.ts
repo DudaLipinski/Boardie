@@ -3,7 +3,7 @@ import * as anonFriendsModel from '../models/anonFriends'
 import { FriendType } from '../models/utils'
 import { endpoint } from '../utils/endpoint'
 import type { HydratedGenericFriend } from '../schemas/genericFriend'
-import { genericFriendDTO } from '../schemas/genericFriend'
+import { genericFriendDTOSchema } from '../schemas/genericFriend'
 
 export const getAllByLoggedUser = endpoint.GET('/me/friends')<
   void,
@@ -27,7 +27,7 @@ export const getAllByLoggedUser = endpoint.GET('/me/friends')<
         description: "The logged user's friends",
         schema: {
           type: 'array',
-          items: genericFriendDTO,
+          items: genericFriendDTOSchema,
         },
       },
     },

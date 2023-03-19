@@ -7,9 +7,9 @@ import type {
   MatchParticipantUpdateData,
 } from '../schemas/matchParticipant'
 import {
-  matchParticipantDTO,
-  matchParticipantCreationData,
-  matchParticipantUpdateData,
+  matchParticipantDTOSchema,
+  matchParticipantCreationDataSchema,
+  matchParticipantUpdateDataSchema,
 } from '../schemas/matchParticipant'
 import { endpoint } from '../utils/endpoint'
 
@@ -49,7 +49,7 @@ export const getAllByMatchId = endpoint.GET('/matches/:matchId/participants')<
         description: 'The match participants',
         schema: {
           type: 'array',
-          items: matchParticipantDTO,
+          items: matchParticipantDTOSchema,
         },
       },
       404: {
@@ -104,11 +104,11 @@ export const create = endpoint.POST('/matches/:matchId/participants')<
         description: 'The id of the match',
       },
     },
-    body: matchParticipantCreationData,
+    body: matchParticipantCreationDataSchema,
     responses: {
       200: {
         description: 'The created match participant',
-        schema: matchParticipantDTO,
+        schema: matchParticipantDTOSchema,
       },
       403: {
         description:
@@ -182,11 +182,11 @@ export const update = endpoint.PUT(
         description: 'The id of the match participant',
       },
     },
-    body: matchParticipantUpdateData,
+    body: matchParticipantUpdateDataSchema,
     responses: {
       200: {
         description: 'The updated match participant',
-        schema: matchParticipantDTO,
+        schema: matchParticipantDTOSchema,
       },
       403: {
         description:

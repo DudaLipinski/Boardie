@@ -1,7 +1,7 @@
 import type { JSONSchemaType } from 'ajv'
 import omit from 'lodash.omit'
 import type { GenericFriend, HydratedGenericFriend } from './genericFriend'
-import { genericFriend, genericFriendDTO } from './genericFriend'
+import { genericFriendSchema, genericFriendDTOSchema } from './genericFriend'
 
 interface MatchParticipantBase {
   id: number
@@ -16,11 +16,11 @@ export interface MatchParticipantDTO extends MatchParticipantBase {
 const matchParticipantProperties: JSONSchemaType<MatchParticipantBase>['properties'] =
   {
     id: { type: 'number' },
-    friend: genericFriendDTO,
+    friend: genericFriendDTOSchema,
     score: { type: 'number' },
     isWinner: { type: 'boolean' },
   }
-export const matchParticipantDTO: JSONSchemaType<MatchParticipantDTO> = {
+export const matchParticipantDTOSchema: JSONSchemaType<MatchParticipantDTO> = {
   title: 'Match participant',
   description: 'Data that represents an existent match participant',
   type: 'object',
@@ -36,9 +36,9 @@ export interface MatchParticipantCreationData
 const matchParticipantCreationProperties: JSONSchemaType<MatchParticipantCreationData>['properties'] =
   {
     ...omit(matchParticipantProperties, ['id']),
-    friend: genericFriend,
+    friend: genericFriendSchema,
   }
-export const matchParticipantCreationData: JSONSchemaType<MatchParticipantCreationData> =
+export const matchParticipantCreationDataSchema: JSONSchemaType<MatchParticipantCreationData> =
   {
     title: 'Match participant creation data',
     description: 'Data used to create a match participant',
@@ -49,5 +49,5 @@ export const matchParticipantCreationData: JSONSchemaType<MatchParticipantCreati
   }
 
 export type MatchParticipantUpdateData = MatchParticipantCreationData
-export const matchParticipantUpdateData: JSONSchemaType<MatchParticipantUpdateData> =
-  matchParticipantCreationData
+export const matchParticipantUpdateDataSchema: JSONSchemaType<MatchParticipantUpdateData> =
+  matchParticipantCreationDataSchema

@@ -16,7 +16,7 @@ const genericFriendProperties = {
 export interface HydratedGenericFriend extends GenericFriend {
   fullName: string
 }
-export const genericFriendDTO: JSONSchemaType<HydratedGenericFriend> = {
+export const genericFriendDTOSchema: JSONSchemaType<HydratedGenericFriend> = {
   title: 'Hydrated generic friend',
   description: 'Friend data with its full name',
   type: 'object',
@@ -28,7 +28,7 @@ export const genericFriendDTO: JSONSchemaType<HydratedGenericFriend> = {
   additionalProperties: false,
 }
 
-export const genericFriend: JSONSchemaType<GenericFriend> = {
+export const genericFriendSchema: JSONSchemaType<GenericFriend> = {
   title: 'Generic friend data',
   description: 'Generic friend data',
   type: 'object',

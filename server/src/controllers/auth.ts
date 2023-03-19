@@ -3,8 +3,8 @@ import { generateAccessToken, jwtTokenSchema } from '../utils/auth'
 import type { User } from '../models/user'
 import { endpoint } from '../utils/endpoint'
 import type { AuthData } from '../schemas/auth'
-import { userAuthDTO } from '../schemas/auth'
-import { userDTO } from '../schemas/user'
+import { userAuthDTOSchema } from '../schemas/auth'
+import { userDTOSchema } from '../schemas/user'
 
 export const auth = endpoint.POST('/auth')<
   void,
@@ -31,7 +31,7 @@ export const auth = endpoint.POST('/auth')<
     summary: 'Authenticates a user',
     tags: ['auth'],
     params: null,
-    body: userAuthDTO,
+    body: userAuthDTOSchema,
     responses: {
       200: {
         description:
@@ -39,7 +39,7 @@ export const auth = endpoint.POST('/auth')<
         schema: {
           type: 'object',
           properties: {
-            user: userDTO,
+            user: userDTOSchema,
             token: jwtTokenSchema,
           },
           required: ['user', 'token'],

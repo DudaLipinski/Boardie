@@ -7,7 +7,11 @@ import type {
   MatchDTO,
   MatchUpdateData,
 } from '../schemas/match'
-import { matchUpdateData, matchCreationData, matchDTO } from '../schemas/match'
+import {
+  matchUpdateDataSchema,
+  matchCreationData,
+  matchDTOSchema,
+} from '../schemas/match'
 import { endpoint } from '../utils/endpoint'
 
 export const createForLoggedUser = endpoint.POST('/me/matches')<
@@ -44,7 +48,7 @@ export const createForLoggedUser = endpoint.POST('/me/matches')<
     responses: {
       201: {
         description: 'The created match',
-        schema: matchDTO,
+        schema: matchDTOSchema,
       },
     },
   }
@@ -71,7 +75,7 @@ export const getAllByLoggedUser = endpoint.GET('/me/matches')<
         description: 'The matches',
         schema: {
           type: 'array',
-          items: matchDTO,
+          items: matchDTOSchema,
         },
       },
     },
@@ -106,7 +110,7 @@ export const getById = endpoint.GET('/matches/:matchId')<
     responses: {
       200: {
         description: 'The match',
-        schema: matchDTO,
+        schema: matchDTOSchema,
       },
       404: {
         description: 'The match was not found',
@@ -149,7 +153,7 @@ export const update = endpoint.PUT('/matches/:matchId')<
         description: 'The id of the match',
       },
     },
-    body: matchUpdateData,
+    body: matchUpdateDataSchema,
     responses: {
       200: {
         description: 'The match was updated',

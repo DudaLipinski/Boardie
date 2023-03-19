@@ -1,9 +1,9 @@
 import omit from 'lodash.omit'
 
 import type { UserCreationData, UserDTO } from '../schemas/user'
-import { userCreationData, userDTO } from '../schemas/user'
+import { userCreationDataSchema, userDTOSchema } from '../schemas/user'
 import type { AuthData } from '../schemas/auth'
-import { authData } from '../schemas/auth'
+import { authDataSchema } from '../schemas/auth'
 import * as userModel from '../models/user'
 import { endpoint } from '../utils/endpoint'
 
@@ -26,11 +26,11 @@ export const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
     summary: 'Creates a new user',
     tags: ['auth'],
     params: null,
-    body: userCreationData,
+    body: userCreationDataSchema,
     responses: {
       201: {
         description: 'The created user',
-        schema: userDTO,
+        schema: userDTOSchema,
       },
       400: {
         description: 'The user data is invalid',
@@ -59,7 +59,7 @@ export const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
     responses: {
       200: {
         description: 'The logged user',
-        schema: userDTO,
+        schema: userDTOSchema,
       },
       404: {
         description: 'The logged user was not found',
@@ -96,7 +96,7 @@ export const unregisterLoggedUser = endpoint.POST('/me/unregister')<
     summary: 'Unregisters the logged user',
     tags: ['auth'],
     params: null,
-    body: authData,
+    body: authDataSchema,
     responses: {
       200: {
         description: 'The logged user was unregistered',

@@ -12,7 +12,7 @@ const userProperties = {
 } as const
 
 export type UserCreationData = Omit<User, 'id'>
-export const userCreationData: JSONSchemaType<UserCreationData> = {
+export const userCreationDataSchema: JSONSchemaType<UserCreationData> = {
   title: 'User',
   description: 'Data used to create a new user',
   type: 'object',
@@ -22,7 +22,7 @@ export const userCreationData: JSONSchemaType<UserCreationData> = {
 }
 
 export type UserDTO = Omit<User, 'password'>
-export const userDTO: JSONSchemaType<UserDTO> = {
+export const userDTOSchema: JSONSchemaType<UserDTO> = {
   title: 'User',
   description: 'User data',
   type: 'object',

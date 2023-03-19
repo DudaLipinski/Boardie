@@ -4,9 +4,9 @@ import type {
   AnonFriendUpdateData,
 } from '../schemas/anonFriend'
 import {
-  anonFriendCreationData,
-  anonFriendDTO,
-  anonFriendUpdateData,
+  anonFriendCreationDataSchema,
+  anonFriendDTOSchema,
+  anonFriendUpdateDataSchema,
 } from '../schemas/anonFriend'
 import * as anonFriendsModel from '../models/anonFriends'
 
@@ -34,11 +34,11 @@ export const createForLoggedUser = endpoint.POST('/me/anonfriends')<
     summary: 'Creates an anonymous friend for the logged user',
     tags: ['friends'],
     params: null,
-    body: anonFriendCreationData,
+    body: anonFriendCreationDataSchema,
     responses: {
       201: {
         description: 'The created anonymous friend',
-        schema: anonFriendDTO,
+        schema: anonFriendDTOSchema,
       },
     },
   }
@@ -80,11 +80,11 @@ export const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
         description: 'The id of the anonymous friend to update',
       },
     },
-    body: anonFriendUpdateData,
+    body: anonFriendUpdateDataSchema,
     responses: {
       200: {
         description: 'The updated anonymous friend',
-        schema: anonFriendDTO,
+        schema: anonFriendDTOSchema,
       },
       403: {
         description: 'The logged user is not allowed to update the friend',

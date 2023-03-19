@@ -96,7 +96,7 @@ export const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
   }
 )
 
-export const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendI')<
+export const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
   { anonFriendId: string },
   void,
   void

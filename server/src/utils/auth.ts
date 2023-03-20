@@ -8,8 +8,15 @@ export function generateAccessToken(userId: string | number) {
   }
 
   return jwt.sign({ userId }, process.env.JWT_TOKEN_SECRET, {
-    expiresIn: '7d',
+    expiresIn: '1d',
   })
+}
+
+const RENEWAL_THRESHOLD = 60 * 60 * 12 // 12 hours
+const checkTokenIsAboutToExpire = (token: string) => {
+  const { exp: expiresAt } = jwt.decode(token) as { exp: number }
+  const now = Date.now() / 1000
+  return expiresAt - now < RENEWAL_THRESHOLD
 }
 
 const unauthenticatedEndpoints = [
@@ -38,6 +45,11 @@ export const authenticateToken: RequestHandler = (req, res, next) => {
       if (err) {
         console.error(err)
         return res.sendStatus(401)
+      }
+
+      if (checkTokenIsAboutToExpire(token)) {
+        const newToken = generateAccessToken(payload.userId)
+        res.set('Authorization', `Bearer ${newToken}`)
       }
 
       req.userId = payload.userId

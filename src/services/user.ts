@@ -1,17 +1,11 @@
-import axios from 'axios'
+import { axios } from '../utils/axios'
 import { User } from '../types/User'
 import { SERVER_URL } from '../constants'
 
 export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
   axios
     .post<User>(`${SERVER_URL}/me`, createUserPayload)
-    .then((response) => {
-      const token = response.data.token
-      localStorage.setItem('token', token)
-      setAuthToken(token)
-
-      return response.data
-    })
+    .then((response) => response.data)
     .catch((err) => {
       if (err.status === 401) {
         throw new Error('Incorrect user format')
@@ -24,16 +18,13 @@ export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
       }
     })
 
-export const authUser = (loginPayload: { email: string; password: string }) =>
+export const authenticateUser = (loginPayload: {
+  email: string
+  password: string
+}) =>
   axios
     .post<{ user: User; token: string }>(`${SERVER_URL}/auth`, loginPayload)
-    .then((response) => {
-      const token = response.data.token
-      localStorage.setItem('token', token)
-      setAuthToken(token)
-
-      return response.data
-    })
+    .then((response) => response.data)
     .catch((err) => {
       if (err.status === 401) {
         throw new Error("Provided credentials doesn't match any valid user")
@@ -43,10 +34,5 @@ export const authUser = (loginPayload: { email: string; password: string }) =>
       }
     })
 
-export const setAuthToken = (token: string) => {
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  } else {
-    delete axios.defaults.headers.common['Authorization']
-  }
-}
+export const getUser = () =>
+  axios.get<User>(`${SERVER_URL}/me`).then((response) => response.data)

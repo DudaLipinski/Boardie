@@ -1,13 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { createUser } from '../../services/user'
-
-import { useDispatch } from 'react-redux'
-import { actions as userActions } from '../../state/user'
-
 import { motion } from 'framer-motion'
 import { TextField, Box, Typography, Button } from '@mui/material'
+import { createUser } from '../../services/user'
+
 import { animationProps } from '../../styles/animation'
 import { LOGIN } from '../../routes/routeSpecs'
 
@@ -25,7 +22,6 @@ const validationSchema = yup.object({
 })
 
 export const CreateAccount = () => {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const formik = useFormik({
@@ -42,10 +38,9 @@ export const CreateAccount = () => {
         if (!createdUser) {
           return
         }
-        dispatch(userActions.setUser(createdUser))
-      })
 
-      navigate(LOGIN)
+        navigate(LOGIN)
+      })
     },
   })
 

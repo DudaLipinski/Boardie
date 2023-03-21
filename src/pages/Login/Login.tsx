@@ -1,8 +1,4 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { authUser } from '../../services/user'
-
-import { useDispatch } from 'react-redux'
-import { actions as userActions } from '../../state/user'
 import { useFormik } from 'formik'
 
 import { motion } from 'framer-motion'
@@ -14,12 +10,17 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@mui/material'
+import { useQueryClient } from 'react-query'
 import { animationProps } from '../../styles/animation'
 import { CREATE_ACCOUNT, MATCHES } from '../../routes/routeSpecs'
+import { authenticateUser } from '../../services/user'
+import { useAuth } from '../../core/AuthContext'
+import { setToken } from '../../utils/api'
 
 export const Login = () => {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { setIsLoggedIn } = useAuth()
 
   const formik = useFormik({
     initialValues: {
@@ -27,13 +28,16 @@ export const Login = () => {
       password: '',
     },
     onSubmit: (values) => {
-      authUser(values)
+      authenticateUser(values)
         .then((response) => {
           if (!response) {
             throw new Error('Internal error')
           }
-          dispatch(userActions.setUser(response.user))
+
+          queryClient.setQueryData('user', response.user)
           navigate(MATCHES)
+          setToken(response.token)
+          setIsLoggedIn(true)
         })
         .catch((error: any) => alert(error.message))
     },

@@ -1,12 +1,10 @@
-import { useSelector } from 'react-redux'
-import { selectors as userSelectors } from '../state/user'
-
+import { Container } from '@mui/material'
+import { useAuth } from '../core/AuthContext'
 import { UnauthenticatedRoutes } from './UnauthenticatedRoutes'
 import { AuthenticatedWrapper } from './AuthenticatedWrapper'
-import { Container } from '@mui/material'
 
 const AppRoutes = () => {
-  const isLoggedIn = useSelector(userSelectors.getIsLoggedIn)
+  const { isLoggedIn } = useAuth()
 
   const Routes = isLoggedIn ? (
     <AuthenticatedWrapper />

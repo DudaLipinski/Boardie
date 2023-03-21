@@ -1,9 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Box } from '@mui/material'
+import { useEffect } from 'react'
 import { TabBar } from '../components/TabBar/TabBar'
 import { Navbar } from '../components/Navbar/Navbar'
+import { setUnauthorizedHandler } from '../utils/api'
+import { useUser } from '../queries/user'
 import { AuthenticatedRoutes } from './AuthenticatedRoutes'
-import { Box } from '@mui/material'
+
+import { useLogout } from './useLogout'
 
 export const AuthenticatedWrapper = () => {
+  const user = useUser()
+  const logout = useLogout()
+
+  useEffect(() => {
+    const clearUnauthorizedHandler = setUnauthorizedHandler(logout)
+    return clearUnauthorizedHandler
+  }, [])
+
   return (
     <Box height="inherit" display="flex" flexDirection="column" width="inherit">
       <Navbar />
@@ -14,7 +28,7 @@ export const AuthenticatedWrapper = () => {
         overflow="hidden auto"
         component="main"
       >
-        <AuthenticatedRoutes />
+        {user.isLoading ? null : <AuthenticatedRoutes />}
       </Box>
       <TabBar />
     </Box>

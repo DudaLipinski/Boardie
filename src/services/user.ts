@@ -1,10 +1,9 @@
 import { axios } from '../utils/axios'
 import { User } from '../types/User'
-import { SERVER_URL } from '../constants'
 
 export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
   axios
-    .post<User>(`${SERVER_URL}/me`, createUserPayload)
+    .post<User>(`/me`, createUserPayload)
     .then((response) => response.data)
     .catch((err) => {
       if (err.status === 401) {
@@ -23,7 +22,7 @@ export const authenticateUser = (loginPayload: {
   password: string
 }) =>
   axios
-    .post<{ user: User; token: string }>(`${SERVER_URL}/auth`, loginPayload)
+    .post<{ user: User; token: string }>(`/auth`, loginPayload)
     .then((response) => response.data)
     .catch((err) => {
       if (err.status === 401) {
@@ -35,4 +34,4 @@ export const authenticateUser = (loginPayload: {
     })
 
 export const getUser = () =>
-  axios.get<User>(`${SERVER_URL}/me`).then((response) => response.data)
+  axios.get<User>(`/me`).then((response) => response.data)

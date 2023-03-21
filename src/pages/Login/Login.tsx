@@ -1,47 +1,35 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useFormik } from 'formik'
-
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Checkbox,
-  FormControlLabel,
-} from '@mui/material'
-import { useQueryClient } from 'react-query'
+import { Box, Typography, TextField, Button } from '@mui/material'
+import { Controller, useForm } from 'react-hook-form'
 import { animationProps } from '../../styles/animation'
-import { CREATE_ACCOUNT, MATCHES } from '../../routes/routeSpecs'
-import { authenticateUser } from '../../services/user'
-import { useAuth } from '../../core/AuthContext'
-import { setToken } from '../../utils/api'
+import { CREATE_ACCOUNT } from '../../routes/routeSpecs'
+import { getErrorMessage } from '../../utils/api'
+import { User } from '../../types/User'
+import { useUserAuthenticator } from '../../queries/user'
+import { Alert } from '../../components/Alert'
+
+const styledTextFieldProps = {
+  fullWidth: true,
+  required: true,
+  variant: 'filled' as const,
+  margin: 'dense' as const,
+}
 
 export const Login = () => {
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const { setIsLoggedIn } = useAuth()
+  const { mutate, isError, error } = useUserAuthenticator()
 
-  const formik = useFormik({
-    initialValues: {
+  const { handleSubmit, control } = useForm({
+    defaultValues: {
       email: '',
       password: '',
     },
-    onSubmit: (values) => {
-      authenticateUser(values)
-        .then((response) => {
-          if (!response) {
-            throw new Error('Internal error')
-          }
-
-          queryClient.setQueryData('user', response.user)
-          navigate(MATCHES)
-          setToken(response.token)
-          setIsLoggedIn(true)
-        })
-        .catch((error: any) => alert(error.message))
-    },
   })
+
+  const onSubmit = (value: Pick<User, 'email' | 'password'>) => {
+    mutate(value)
+    return
+  }
 
   return (
     <motion.div {...animationProps} style={{ height: 'inherit' }}>
@@ -60,39 +48,40 @@ export const Login = () => {
         </Typography>
         <Box
           component="form"
-          onSubmit={formik.handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           display="flex"
           flexDirection="column"
           justifyContent="center"
           gap="12px"
         >
-          <TextField
-            fullWidth
-            required
-            variant="filled"
-            id="email"
-            label="E-mail"
-            margin="dense"
-            type="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
+          {isError && (
+            <Alert severity="error" message={getErrorMessage(error)} />
+          )}
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                id="email"
+                label="E-mail"
+                type="email"
+                {...field}
+                {...styledTextFieldProps}
+              />
+            )}
           />
-          <TextField
-            fullWidth
-            required
-            variant="filled"
-            id="password"
-            label="Password"
-            margin="dense"
-            type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-          />
-          <FormControlLabel
-            value="end"
-            control={<Checkbox />}
-            label="Remember me"
-            labelPlacement="end"
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                id="password"
+                label="Password"
+                type="password"
+                {...field}
+                {...styledTextFieldProps}
+              />
+            )}
           />
           <Button fullWidth variant="contained" size="large" type="submit">
             Login
@@ -105,8 +94,9 @@ export const Login = () => {
           margin="12px 0"
           gap="12px"
         >
-          <Link to="#">Forgot password</Link>
-          <Link to={CREATE_ACCOUNT}>Register now!</Link>
+          <Link style={{ margin: '0 auto' }} to={CREATE_ACCOUNT}>
+            Register now!
+          </Link>
         </Box>
       </Box>
     </motion.div>

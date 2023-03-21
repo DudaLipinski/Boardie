@@ -12,9 +12,9 @@ import { Alert } from '../../components/Alert'
 const styledTextFieldProps = {
   fullWidth: true,
   required: true,
-  variant: 'filled' as const,
-  margin: 'dense' as const,
-}
+  variant: 'filled',
+  margin: 'dense',
+} as const
 
 export const Login = () => {
   const { mutate, isError, error } = useUserAuthenticator()

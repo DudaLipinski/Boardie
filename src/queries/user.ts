@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../core/AuthContext'
-import { MATCHES } from '../routes/routeSpecs'
+import { MATCHES, LOGIN } from '../routes/routeSpecs'
 import * as userService from '../services/user'
 import { setToken } from '../utils/api'
 
@@ -14,7 +14,13 @@ export const useUser = () => {
 }
 
 export const useUserCreation = () => {
-  return useMutation('createUser', userService.createUser, {})
+  const navigate = useNavigate()
+
+  return useMutation('createUser', userService.createUser, {
+    onSuccess: () => {
+      navigate(LOGIN)
+    },
+  })
 }
 
 export const useUserAuthenticator = () => {

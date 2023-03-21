@@ -1,57 +1,49 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useFormik } from 'formik'
-import * as yup from 'yup'
+import { Link } from 'react-router-dom'
+
 import { motion } from 'framer-motion'
 import { TextField, Box, Typography, Button } from '@mui/material'
-import { createUser } from '../../services/user'
+import { Controller, useForm } from 'react-hook-form'
 
 import { animationProps } from '../../styles/animation'
 import { LOGIN } from '../../routes/routeSpecs'
+import { useUserCreation } from '../../queries/user'
+import { User } from '../../types/User'
+import { Alert } from '../../components/Alert'
+import { getErrorMessage } from '../../utils/api'
 
-const textFieldProps = {
+interface FormUser extends Omit<User, 'age' | 'token' | 'id'> {
+  age: string
+}
+
+const styledTextFieldProps = {
   fullWidth: true,
   required: true,
   margin: 'dense',
+  variant: 'filled',
 } as const
 
-const validationSchema = yup.object({
-  email: yup.string().email('Invalid email address'),
-  password: yup
-    .string()
-    .min(8, 'Password should be of minimum 8 characters length'),
-})
-
 export const CreateAccount = () => {
-  const navigate = useNavigate()
+  const { mutate, isError, error } = useUserCreation()
 
-  const formik = useFormik({
-    initialValues: {
+  const { handleSubmit, control } = useForm({
+    defaultValues: {
       firstName: '',
       middleAndSurname: '',
       email: '',
       age: '',
       password: '',
     },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      createUser(values).then((createdUser) => {
-        if (!createdUser) {
-          return
-        }
-
-        navigate(LOGIN)
-      })
-    },
   })
 
-  const getFormikProps = (field: keyof typeof formik.touched) => {
-    const error = formik.touched[field] && Boolean(formik.errors[field])
-    const helperText = formik.touched[field] && formik.errors[field]
-
-    return {
-      error: error,
-      helperText: helperText,
+  const onSubmit = (value: FormUser) => {
+    const age = parseInt(value.age)
+    const user = {
+      ...value,
+      age,
     }
+
+    mutate(user)
+    return
   }
 
   return (
@@ -71,53 +63,80 @@ export const CreateAccount = () => {
         </Typography>
         <Box
           component="form"
-          onSubmit={formik.handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           display="flex"
           flexDirection="column"
           justifyContent="center"
           gap="12px"
         >
-          <TextField
-            id="firstName"
-            label="First name"
-            type="text"
-            value={formik.values.firstName}
-            onChange={formik.handleChange}
-            {...textFieldProps}
+          {isError && (
+            <Alert severity="error" message={getErrorMessage(error)} />
+          )}
+          <Controller
+            name="firstName"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                id="firstName"
+                label="First name"
+                type="text"
+                {...styledTextFieldProps}
+                {...field}
+              />
+            )}
           />
-          <TextField
-            id="middleAndSurname"
-            label="Last name"
-            type="text"
-            value={formik.values.middleAndSurname}
-            onChange={formik.handleChange}
-            {...textFieldProps}
+          <Controller
+            name="middleAndSurname"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                id="middleAndSurname"
+                label="Last name"
+                type="text"
+                {...styledTextFieldProps}
+                {...field}
+              />
+            )}
           />
-          <TextField
-            id="email"
-            label="Email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            {...getFormikProps('email')}
-            {...textFieldProps}
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                id="email"
+                label="Email"
+                type="email"
+                {...styledTextFieldProps}
+                {...field}
+              />
+            )}
           />
-          <TextField
-            id="age"
-            label="Age"
-            type="number"
-            value={formik.values.age}
-            onChange={formik.handleChange}
-            InputProps={{ inputProps: { min: '0', max: '99' } }}
-            {...textFieldProps}
+          <Controller
+            name="age"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                id="age"
+                label="Age"
+                type="number"
+                InputProps={{ inputProps: { min: '1', max: '120' } }}
+                {...styledTextFieldProps}
+                {...field}
+              />
+            )}
           />
-          <TextField
-            id="password"
-            label="Password"
-            type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            {...getFormikProps('password')}
-            {...textFieldProps}
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                id="password"
+                label="Password"
+                type="password"
+                {...styledTextFieldProps}
+                {...field}
+              />
+            )}
           />
           <Button fullWidth variant="contained" size="large" type="submit">
             Create account

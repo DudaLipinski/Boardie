@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Fab, List, Box, Typography } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useMatches } from '../../queries/match'
 import { Match } from '../../types/Match'
 import { getErrorMessage } from '../../utils/api'
 import { CREATE_MATCH } from '../../routes/routeSpecs'
 
-import { motion } from 'framer-motion'
-import { Fab, List, Box, Typography } from '@mui/material'
 import { MatchCard } from '../../components/MatchCard/MatchCard'
-import AddIcon from '@mui/icons-material/Add'
 import { animationProps } from '../../styles/animation'
 import { styledFloatButton } from '../../styles/floatingButton'
 import { Alert } from '../../components/Alert'
-import CircularProgress from '@mui/material/CircularProgress'
 
 export const MatchList = () => {
   const navigate = useNavigate()

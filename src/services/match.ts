@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { axios } from '../utils/axios'
 import { Match } from '../types/Match'
 import { SERVER_URL } from '../constants'
 import { catchInternalError } from '../utils/api'

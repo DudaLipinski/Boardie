@@ -1,17 +1,15 @@
-import { Match } from '../../types/Match'
 import { Link } from 'react-router-dom'
+import { ListItem, Box } from '@mui/material'
+import { useMemo, useState } from 'react'
+import { Match } from '../../types/Match'
 import { getErrorMessage } from '../../utils/api'
 import { useMatchDeletion } from '../../queries/match'
-
-import { ListItem, Box } from '@mui/material'
-
+import { MATCH_DETAILS } from '../../routes/routeSpecs'
+import { Alert } from '../Alert'
 import { Participants } from './Participants'
 import { MatchInfo } from './MatchInfo'
 import { styledListItem } from './MatchCard.styles'
-import { MATCH_DETAILS } from '../../routes/routeSpecs'
 import { MenuButton } from './MenuButton'
-import { useMemo, useState } from 'react'
-import { Alert } from '../Alert'
 
 export const MatchCard = ({ match }: { match: Match }) => {
   const { id, boardgameName, participants, startedAt } = match

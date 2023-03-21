@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { axios } from '../utils/axios'
 import { GenericUser } from '../types/GenericUser'
 import { SERVER_URL } from '../constants'
 

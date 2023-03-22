@@ -1,20 +1,29 @@
-import { useSelector } from 'react-redux'
-import { selectors as userSelectors } from '../../state/user'
 import { motion } from 'framer-motion'
+import { Box, Button, Typography } from '@mui/material'
 import { animationProps } from '../../styles/animation'
+import { useUser } from '../../queries/user'
+import { useLogout } from '../../routes/useLogout'
 
 export const Profile = () => {
-  const user = useSelector(userSelectors.getUser)
+  const { data: user } = useUser()
+  const logout = useLogout()
 
   return (
-    <motion.div {...animationProps}>
-      <div data-testid="user-details">
-        <p data-testid="user-details__name">
+    <motion.div {...animationProps} style={{ width: '100%' }}>
+      <Box width="inherit">
+        <Typography variant="h4" component="h1">
+          Profile
+        </Typography>
+        <Typography variant="body1" component="p" margin="10px 0">
           Name: {user?.firstName} {user?.middleAndSurname}
-        </p>
-        <p>E-mail: {user?.email}</p>
-        <p>Age: {user?.age}</p>
-      </div>
+        </Typography>
+        <Typography variant="body1" component="p" margin="10px 0">
+          E-mail: {user?.email}
+        </Typography>
+        <Button fullWidth variant="contained" size="small" onClick={logout}>
+          Logout
+        </Button>
+      </Box>
     </motion.div>
   )
 }

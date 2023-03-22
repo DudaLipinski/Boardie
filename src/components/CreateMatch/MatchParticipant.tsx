@@ -1,4 +1,3 @@
-import { Match } from '../../types/Match'
 import {
   TextField,
   FormControlLabel,
@@ -7,9 +6,10 @@ import {
   Checkbox,
   Box,
 } from '@mui/material'
-import { Avatar } from '../Avatar'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import { Controller, Control } from 'react-hook-form'
+import { Avatar } from '../Avatar'
+import { Match } from '../../types/Match'
 import { FriendSelector } from '../FriendSelector'
 
 const parseEventValueToInt = (

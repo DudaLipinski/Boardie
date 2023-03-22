@@ -6,11 +6,10 @@ import {
   Chip,
 } from '@mui/material'
 import React, { useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useAnonFriendCreation, useFriends } from '../queries/friends'
 import { GenericUser } from '../types/GenericUser'
-import { selectors as userSelectors } from '../state/user'
 import { userToGeneric } from '../utils/friends'
+import { useUser } from '../queries/user'
 
 interface ExistentOrNewFriend extends GenericUser {
   newFriendName?: string
@@ -32,11 +31,11 @@ export const FriendSelector = ({
   onChange,
 }: Props) => {
   const friends = useFriends()
-  const loggedUser = useSelector(userSelectors.getUser)
+  const { data: loggedUser } = useUser()
   const createAnonymousFriend = useAnonFriendCreation()
 
   const isLoggedUser = (user: GenericUser) =>
-    user.type === 'USER' && loggedUser.id === user.id
+    user.type === 'USER' && loggedUser?.id === user.id
 
   const handleChange = async (
     event: React.SyntheticEvent<Element, Event>,
@@ -96,7 +95,7 @@ export const FriendSelector = ({
   const options = useMemo(() => {
     const result = friends.data ? [...friends.data] : []
 
-    if (includeLoggedUser) {
+    if (includeLoggedUser && loggedUser) {
       result.push(userToGeneric(loggedUser))
     }
 

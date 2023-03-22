@@ -1,24 +1,23 @@
 import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
+import { Box, Stack } from '@mui/material'
 import { Match as MatchType } from '../../types/Match'
 import { useMatchCreation } from '../../queries/match'
-import { useSelector } from 'react-redux'
-import { selectors as userSelectors } from '../../state/user'
 
 import { MatchParticipants } from '../../components/CreateMatch/MatchParticipants'
 import { MatchDetails } from '../../components/CreateMatch/MatchDetails'
-import { Box, Stack } from '@mui/material'
 
 import { animationProps } from '../../styles/animation'
 import { Alert } from '../../components/Alert'
 import { userToParticipant } from '../../utils/friends'
 import { FabSubmit } from '../../components/FabSubmit'
 import { getErrorMessage } from '../../utils/api'
+import { useUser } from '../../queries/user'
 
 export const Match = () => {
   const { mutate, isLoading, isError, error } = useMatchCreation()
-  const user = useSelector(userSelectors.getUser)
+  const { data: user } = useUser()
   const emptyParticipant = {
     score: 0,
     isWinner: false,
@@ -35,7 +34,10 @@ export const Match = () => {
       startedAt: dayjs(),
       endedAt: null,
       notes: '',
-      participants: [userToParticipant(user), emptyParticipant],
+      participants: [
+        ...(user ? [userToParticipant(user)] : []),
+        emptyParticipant,
+      ],
     },
   })
 

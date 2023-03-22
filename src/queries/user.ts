@@ -1,5 +1,9 @@
-import { useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../core/AuthContext'
+import { MATCHES, LOGIN } from '../routes/routeSpecs'
 import * as userService from '../services/user'
+import { setToken } from '../utils/api'
 
 export const useUser = () => {
   const userQuery = useQuery('user', userService.getUser, {
@@ -7,4 +11,32 @@ export const useUser = () => {
   })
 
   return userQuery
+}
+
+export const useUserCreation = () => {
+  const navigate = useNavigate()
+
+  return useMutation('createUser', userService.createUser, {
+    onSuccess: () => {
+      navigate(LOGIN)
+    },
+  })
+}
+
+export const useUserAuthenticator = () => {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { setIsLoggedIn } = useAuth()
+
+  return useMutation('authUser', userService.authenticateUser, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        'user',
+        data?.user !== undefined ? data.user : null
+      )
+      navigate(MATCHES)
+      setToken(data?.token !== undefined ? data.token : null)
+      setIsLoggedIn(true)
+    },
+  })
 }

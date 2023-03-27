@@ -2,11 +2,12 @@ import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
 import { Box, Stack } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import { Match as MatchType } from '../../types/Match'
 import { useMatchCreation } from '../../queries/match'
 
-import { MatchParticipants } from '../../components/CreateMatch/MatchParticipants'
-import { MatchDetails } from '../../components/CreateMatch/MatchDetails'
+import { MatchParticipants } from '../../components/Match/MatchParticipants'
+import { MatchDetails } from '../../components/Match/MatchDetails'
 
 import { animationProps } from '../../styles/animation'
 import { Alert } from '../../components/Alert'
@@ -14,9 +15,12 @@ import { userToParticipant } from '../../utils/friends'
 import { FabSubmit } from '../../components/FabSubmit'
 import { getErrorMessage } from '../../utils/api'
 import { useUser } from '../../queries/user'
+import { EDIT_MATCH } from '../../routes/routeSpecs'
 
-export const Match = () => {
-  const { mutate, isLoading, isError, error } = useMatchCreation()
+export const MatchCreation = () => {
+  const navigate = useNavigate()
+  const { mutate, isLoading, isError, error, data, isSuccess } =
+    useMatchCreation()
   const { data: user } = useUser()
   const emptyParticipant = {
     score: 0,
@@ -54,6 +58,11 @@ export const Match = () => {
     }
 
     mutate(match)
+
+    if (isSuccess) {
+      navigate(EDIT_MATCH.replace(':id', data.id.toString()))
+    }
+
     return
   }
 

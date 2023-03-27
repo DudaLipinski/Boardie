@@ -17,7 +17,10 @@ export const MatchCard = ({ match }: { match: Match }) => {
   const { mutate, isError, error } = useMatchDeletion()
 
   const participantsByScore = useMemo(
-    () => participants.sort((a, b) => (b.score ?? 0) - (a.score ?? 0)),
+    () =>
+      participants
+        ? participants.sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+        : [],
     [participants]
   )
   const highestScore = participantsByScore?.[0]?.score ?? null

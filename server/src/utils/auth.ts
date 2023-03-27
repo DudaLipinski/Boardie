@@ -41,8 +41,8 @@ export const authenticateToken: RequestHandler = (req, res, next) => {
   jwt.verify(
     token,
     process.env[JWT_TOKEN_SECRET_KEY] as string,
-    (err: any, payload: any) => {
-      if (err) {
+    (err, payload) => {
+      if (err || !payload || typeof payload === 'string') {
         console.error(err)
         return res.sendStatus(401)
       }

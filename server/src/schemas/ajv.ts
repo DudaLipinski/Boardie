@@ -10,6 +10,9 @@ const customKeywords: KeywordDefinition[] = [
     schemaType: 'boolean',
     compile: () => (dateTimeString) => isoUtcDateTimeRegex.test(dateTimeString),
   },
+  {
+    keyword: 'example',
+  },
 ]
 
 const ajv = new Ajv({ allErrors: true })

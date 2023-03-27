@@ -12,10 +12,20 @@ export const useMatches = () => {
   return matchesQuery
 }
 
+const MATCH_KEY = 'match'
+export const useMatch = (matchId: number) => {
+  const matchQuery = useQuery([MATCH_KEY, matchId], () =>
+    matchesService.getMatch(matchId)
+  )
+
+  return matchQuery
+}
+
+const CREATE_MATCH_KEY = 'createMatch'
 export const useMatchCreation = () => {
   const queryClient = useQueryClient()
 
-  return useMutation('createMatch', matchesService.createMatch, {
+  return useMutation(CREATE_MATCH_KEY, matchesService.createMatch, {
     onSettled: () => {
       queryClient.invalidateQueries(MATCHES_KEY)
     },
@@ -34,5 +44,41 @@ export const useMatchDeletion = () => {
     DELETE_MATCH_KEY,
     matchesService.deleteMatch,
     filterDeletedMatch
+  )
+}
+
+const UPDATE_MATCH_KEY = 'updateMatchDetails'
+export const useMatchUpdate = () => {
+  return useMutation(UPDATE_MATCH_KEY, matchesService.updateMatchDetails)
+}
+
+const CREATE_MATCH_PARTICIPANT_KEY = 'createMatchParticipant'
+export const useMatchParticipantCreation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    CREATE_MATCH_PARTICIPANT_KEY,
+    matchesService.createMatchParticipant,
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(MATCH_KEY)
+      },
+    }
+  )
+}
+
+const DELETE_MATCH_PARTICIPANT_KEY = 'deleteMatch'
+export const useMatchParticipantDeletion = () => {
+  return useMutation(
+    DELETE_MATCH_PARTICIPANT_KEY,
+    matchesService.deleteMatchParticipant
+  )
+}
+
+const UPDATE_MATCH_PARTICIPANT_KEY = 'updateMatchDetails'
+export const useMatchUpdateParticipant = () => {
+  return useMutation(
+    UPDATE_MATCH_PARTICIPANT_KEY,
+    matchesService.updateMatchParticipant
   )
 }

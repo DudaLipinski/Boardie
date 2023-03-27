@@ -36,6 +36,7 @@ export const MatchDetails = ({ control }: Props) => {
               margin="dense"
               label="Boardgame"
               {...field}
+              value={field.value}
             />
           )}
         />
@@ -49,6 +50,7 @@ export const MatchDetails = ({ control }: Props) => {
                   label="Started at"
                   renderInput={renderDateInput}
                   {...field}
+                  value={field.value}
                 />
               )}
             />
@@ -60,7 +62,7 @@ export const MatchDetails = ({ control }: Props) => {
               render={({ field }) => (
                 <MobileDateTimePicker
                   {...field}
-                  value={field.value || null}
+                  value={field.value || undefined}
                   label="Ended at"
                   renderInput={renderDateInput}
                 />
@@ -79,6 +81,7 @@ export const MatchDetails = ({ control }: Props) => {
               id="notes"
               label="Notes"
               {...field}
+              value={field.value}
             />
           )}
         />

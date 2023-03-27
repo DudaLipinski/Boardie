@@ -8,11 +8,13 @@ export const Participants = ({
 }: {
   participants: Participant[]
 }) => {
-  const participant = participants.map((participant) => {
+  const participant = participants.map((participant, index) => {
     const { id } = participant.friend
 
     if (!participant.isWinner) {
-      return <Avatar user={participant.friend} size="sm" key={id} />
+      return (
+        <Avatar user={participant.friend} size="sm" key={`${id}-${index}`} />
+      )
     }
 
     return (

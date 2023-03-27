@@ -1,6 +1,7 @@
 import { Dayjs } from 'dayjs'
 import { GenericUser } from './GenericUser'
 export interface Participant {
+  id?: number
   score?: number
   isWinner?: boolean
   friend: GenericUser
@@ -12,5 +13,5 @@ export interface Match {
   startedAt: Dayjs | string
   endedAt: Dayjs | string | null
   notes: string
-  participants: Participant[]
+  participants?: Participant[]
 }

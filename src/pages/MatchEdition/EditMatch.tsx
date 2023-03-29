@@ -5,6 +5,7 @@ import { Box, Stack } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useEffect, useState } from 'react'
+import pick from 'lodash.pick'
 import { Match as MatchType } from '../../types/Match'
 import { useMatch, useMatchUpdate } from '../../queries/match'
 
@@ -36,13 +37,15 @@ export const MatchEdition = () => {
 
   useEffect(() => {
     if (data) {
-      reset({
-        boardgameName: data.boardgameName,
-        startedAt: data.startedAt,
-        endedAt: data.endedAt,
-        notes: data.notes,
-        participants: data.participants,
-      })
+      reset(
+        pick(data, [
+          'boardgameName',
+          'startedAt',
+          'endedAt',
+          'notes',
+          'participants',
+        ])
+      )
     }
 
     if (isLoadingMatch === false) {

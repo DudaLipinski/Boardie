@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { Typography } from '@mui/material'
 import { animationProps } from '../../styles/animation'
 
-export const Dashboard = () => {
+export const Friends = () => {
   return (
     <motion.div
       {...animationProps}
@@ -13,8 +13,8 @@ export const Dashboard = () => {
         alignSelf: 'center',
       }}
     >
-      <Typography align="center" variant="body2" component="p">
-        Dashboards coming soon
+      <Typography align="center" variant="body2" component="p" marginTop="8px">
+        Friends coming soon
       </Typography>
     </motion.div>
   )

@@ -15,12 +15,11 @@ import { userToParticipant } from '../../utils/friends'
 import { FabSubmit } from '../../components/FabSubmit'
 import { getErrorMessage } from '../../utils/api'
 import { useUser } from '../../queries/user'
-import { EDIT_MATCH } from '../../routes/routeSpecs'
+import { MATCHES } from '../../routes/routeSpecs'
 
 export const MatchCreation = () => {
   const navigate = useNavigate()
-  const { mutate, isLoading, isError, error, data, isSuccess } =
-    useMatchCreation()
+  const { mutate, isLoading, isError, error } = useMatchCreation()
   const { data: user } = useUser()
   const emptyParticipant = {
     score: 0,
@@ -58,9 +57,8 @@ export const MatchCreation = () => {
     }
 
     mutate(match)
-
-    if (isSuccess) {
-      navigate(EDIT_MATCH.replace(':id', data.id.toString()))
+    if (!isError) {
+      navigate(MATCHES)
     }
 
     return

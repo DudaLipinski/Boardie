@@ -47,7 +47,10 @@ export const CreateAccount = () => {
   }
 
   return (
-    <motion.div {...animationProps} style={{ height: 'inherit' }}>
+    <motion.main
+      {...animationProps}
+      style={{ height: 'inherit', padding: '0 24px' }}
+    >
       <Box
         height="inherit"
         display="flex"
@@ -143,9 +146,11 @@ export const CreateAccount = () => {
           </Button>
         </Box>
         <Box margin="12px 0" textAlign="center">
-          <Link to={LOGIN}>Login</Link>
+          <Link to={LOGIN}>
+            <Typography> Login</Typography>
+          </Link>
         </Box>
       </Box>
-    </motion.div>
+    </motion.main>
   )
 }

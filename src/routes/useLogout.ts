@@ -1,11 +1,12 @@
-import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import { setToken } from '../utils/api'
 import { useAuth } from '../core/AuthContext'
 import { LOGIN } from './routeSpecs'
+import { useRouter } from 'next/router'
 
 export const useLogout = () => {
-  const navigate = useNavigate()
+  const router = useRouter()
+
   const queryClient = useQueryClient()
   const { setIsLoggedIn } = useAuth()
 
@@ -13,6 +14,6 @@ export const useLogout = () => {
     queryClient.invalidateQueries()
     setToken(null)
     setIsLoggedIn(false)
-    navigate(LOGIN)
+    router.push(LOGIN)
   }
 }

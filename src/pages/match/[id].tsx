@@ -1,23 +1,31 @@
+import { ParsedUrlQuery } from 'querystring'
 import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
 import { Box, Stack } from '@mui/material'
-import { useParams } from 'react-router-dom'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useEffect, useState } from 'react'
-import { Match as MatchType } from '../../types/Match'
-import { useMatch, useMatchUpdate } from '../../queries/match'
+import { useRouter } from 'next/router'
+import { Match as MatchType } from '@/types/Match'
+import { useMatch, useMatchUpdate } from '@/queries/match'
 
-import { MatchParticipants } from '../../components/Match/MatchParticipants'
-import { MatchDetails } from '../../components/Match/MatchDetails'
+import { MatchParticipants } from '@/components/Match/MatchParticipants'
+import { MatchDetails } from '@/components/Match/MatchDetails'
 
-import { animationProps } from '../../styles/animation'
-import { FabSubmit } from '../../components/FabSubmit'
-import { getErrorMessage } from '../../utils/api'
-import { Alert } from '../../components/Alert'
+import { animationProps } from '@/styles/animation'
+import { FabSubmit } from '@/components/FabSubmit'
+import { getErrorMessage } from '@/utils/api'
+import { Alert } from '@/components/Alert'
+import { AuthenticatedLayout } from '@/components/AuthenticatedLayout'
 
-export const MatchEdition = () => {
-  const { id } = useParams()
+export interface PostPageQuery extends ParsedUrlQuery {
+  id?: string
+}
+
+const MatchEdition = () => {
+  const router = useRouter()
+  const { id } = router.query as PostPageQuery
+
   const matchId = id ? parseInt(id) : 0
   const [isReady, setIsReady] = useState(false)
 
@@ -102,31 +110,42 @@ export const MatchEdition = () => {
   }
 
   return (
-    <motion.div {...animationProps} style={{ width: '100%' }}>
-      {isReady ? (
-        <Box
-          component="form"
-          gap="12px"
-          height="100%"
-          position="relative"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          {isError && (
-            <Alert severity="error" message={getErrorMessage(error)} />
-          )}
-          <Stack spacing={2} overflow="hidden auto" height="inherit">
-            <MatchDetails control={control} />
-            <MatchParticipants control={control} />
-          </Stack>
-          <FabSubmit isLoading={false} />
-        </Box>
-      ) : (
-        <Box
-          sx={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
-    </motion.div>
+    <AuthenticatedLayout>
+      <motion.div
+        {...animationProps}
+        style={{ width: '100%', padding: '0 24px' }}
+      >
+        {isReady ? (
+          <Box
+            component="form"
+            gap="12px"
+            height="100%"
+            position="relative"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            {isError && (
+              <Alert severity="error" message={getErrorMessage(error)} />
+            )}
+            <Stack spacing={2} overflow="hidden auto" height="inherit">
+              <MatchDetails control={control} />
+              <MatchParticipants control={control} />
+            </Stack>
+            <FabSubmit isLoading={false} />
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '50px',
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+      </motion.div>
+    </AuthenticatedLayout>
   )
 }
+
+export default MatchEdition

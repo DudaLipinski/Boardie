@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../core/AuthContext'
 import { MATCHES, LOGIN } from '../routes/routeSpecs'
 import * as userService from '../services/user'
 import { setToken } from '../utils/api'
+import { useAuth } from '@/core/AuthContext'
+import { useRouter } from 'next/router'
 
 export const useUser = () => {
   const userQuery = useQuery('user', userService.getUser, {
@@ -14,17 +15,17 @@ export const useUser = () => {
 }
 
 export const useUserCreation = () => {
-  const navigate = useNavigate()
+  const router = useRouter()
 
   return useMutation('createUser', userService.createUser, {
     onSuccess: () => {
-      navigate(LOGIN)
+      router.push(LOGIN)
     },
   })
 }
 
 export const useUserAuthenticator = () => {
-  const navigate = useNavigate()
+  const router = useRouter()
   const queryClient = useQueryClient()
   const { setIsLoggedIn } = useAuth()
 
@@ -34,7 +35,8 @@ export const useUserAuthenticator = () => {
         'user',
         data?.user !== undefined ? data.user : null
       )
-      navigate(MATCHES)
+
+      router.push(MATCHES)
       setToken(data?.token !== undefined ? data.token : null)
       setIsLoggedIn(true)
     },

@@ -1,0 +1,37 @@
+import { motion } from 'framer-motion'
+import { Box, Button, Typography } from '@mui/material'
+import { animationProps } from '@/styles/animation'
+import { useUser } from '@/queries/user'
+import { useLogout } from '@/routes/useLogout'
+import { AuthenticatedLayout } from '@/components/AuthenticatedLayout'
+
+const Profile = () => {
+  const { data: user } = useUser()
+  const logout = useLogout()
+
+  return (
+    <AuthenticatedLayout>
+      <motion.div
+        {...animationProps}
+        style={{ width: '100%', padding: '24px 24px' }}
+      >
+        <Box width="inherit">
+          <Typography variant="h4" component="h1">
+            Profile
+          </Typography>
+          <Typography variant="body1" component="p" margin="10px 0">
+            Name: {user?.firstName} {user?.middleAndSurname}
+          </Typography>
+          <Typography variant="body1" component="p" margin="10px 0">
+            E-mail: {user?.email}
+          </Typography>
+          <Button fullWidth variant="contained" size="small" onClick={logout}>
+            Logout
+          </Button>
+        </Box>
+      </motion.div>
+    </AuthenticatedLayout>
+  )
+}
+
+export default Profile

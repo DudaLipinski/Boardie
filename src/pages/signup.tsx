@@ -1,15 +1,14 @@
-import { Link } from 'react-router-dom'
-
 import { motion } from 'framer-motion'
 import { TextField, Box, Typography, Button } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 
-import { animationProps } from '../../styles/animation'
-import { LOGIN } from '../../routes/routeSpecs'
-import { useUserCreation } from '../../queries/user'
-import { User } from '../../types/User'
-import { Alert } from '../../components/Alert'
-import { getErrorMessage } from '../../utils/api'
+import Link from 'next/link'
+import { animationProps } from '@/styles/animation'
+import { LOGIN } from '@/routes/routeSpecs'
+import { useUserCreation } from '@/queries/user'
+import { User } from '@/types/User'
+import { Alert } from '@/components/Alert'
+import { getErrorMessage } from '@/utils/api'
 
 interface FormUser extends Omit<User, 'age' | 'token' | 'id'> {
   age: string
@@ -22,7 +21,7 @@ const styledTextFieldProps = {
   variant: 'filled',
 } as const
 
-export const CreateAccount = () => {
+const Signup = () => {
   const { mutate, isError, error } = useUserCreation()
 
   const { handleSubmit, control } = useForm({
@@ -47,7 +46,10 @@ export const CreateAccount = () => {
   }
 
   return (
-    <motion.div {...animationProps} style={{ height: 'inherit' }}>
+    <motion.div
+      {...animationProps}
+      style={{ height: 'inherit', padding: '0 24px' }}
+    >
       <Box
         height="inherit"
         display="flex"
@@ -143,9 +145,11 @@ export const CreateAccount = () => {
           </Button>
         </Box>
         <Box margin="12px 0" textAlign="center">
-          <Link to={LOGIN}>Login</Link>
+          <Link href={LOGIN}>Login</Link>
         </Box>
       </Box>
     </motion.div>
   )
 }
+
+export default Signup

@@ -1,15 +1,15 @@
-import { Link } from 'react-router-dom'
 import { ListItem, Box } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { Match } from '../../types/Match'
-import { getErrorMessage } from '../../utils/api'
-import { useMatchDeletion } from '../../queries/match'
-import { MATCH_DETAILS } from '../../routes/routeSpecs'
+import Link from 'next/link'
 import { Alert } from '../Alert'
 import { Participants } from './Participants'
 import { MatchInfo } from './MatchInfo'
 import { styledListItem } from './MatchCard.styles'
 import { MenuButton } from './MenuButton'
+import { Match } from '@/types/Match'
+import { getErrorMessage } from '@/utils/api'
+import { useMatchDeletion } from '@/queries/match'
+import { MATCH_DETAILS } from '@/routes/routeSpecs'
 
 export const MatchCard = ({ match }: { match: Match }) => {
   const { id, boardgameName, participants, startedAt } = match
@@ -38,7 +38,7 @@ export const MatchCard = ({ match }: { match: Match }) => {
       <ListItem sx={{ ...styledListItem }}>
         <Box width="92%" paddingTop="6px">
           <Link
-            to={`${MATCH_DETAILS.replace(':id', id.toString())}`}
+            href={`${MATCH_DETAILS.replace(':id', id.toString())}`}
             style={{ textDecoration: 'none' }}
           >
             <MatchInfo

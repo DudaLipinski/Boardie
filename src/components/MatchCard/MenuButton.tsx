@@ -1,8 +1,8 @@
 import { MoreVert as MoreVertIcon } from '@mui/icons-material'
 import { IconButton, Menu, MenuItem } from '@mui/material'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { EDIT_MATCH } from '../../routes/routeSpecs'
+import { useRouter } from 'next/router'
+import { MATCH_DETAILS } from '../../routes/routeSpecs'
 import { DeleteDialog } from './DeleteDialog'
 
 interface Props {
@@ -18,7 +18,7 @@ export const MenuButton = ({
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
 }: Props) => {
-  const navigate = useNavigate()
+  const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const open = Boolean(anchorEl)
@@ -68,7 +68,9 @@ export const MenuButton = ({
         }}
       >
         <MenuItem
-          onClick={() => navigate(EDIT_MATCH.replace(':id', id.toString()))}
+          onClick={() =>
+            router.push(MATCH_DETAILS.replace(':id', id.toString()))
+          }
         >
           Edit
         </MenuItem>

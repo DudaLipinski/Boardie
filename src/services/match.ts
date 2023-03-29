@@ -23,7 +23,7 @@ export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(
           'We were unable to create a match. Try again in a few minutes.'
         )
@@ -41,7 +41,7 @@ export const getMatches = (): Promise<Match[]> =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(
           'We were unable to fetch matches. Try again in a few minutes.'
         )
@@ -58,12 +58,13 @@ export const getMatch = (matchId: number): Promise<Match> =>
     })
     .catch((err) => {
       catchInternalError(err)
+      const { status } = err.response
 
-      if (err.status === 404) {
+      if (status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (status !== 200) {
         throw new Error(
           'We were unable to fetch the match. Try again in a few minutes.'
         )
@@ -80,18 +81,19 @@ export const deleteMatch = (matchId: number): Promise<void> =>
     })
     .catch((err) => {
       catchInternalError(err)
+      const { status } = err.response
 
-      if (err.status === 403) {
+      if (status === 403) {
         throw new Error(
           "You don't have the needed permissions to delete this match."
         )
       }
 
-      if (err.status === 404) {
+      if (status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (status !== 200) {
         throw new Error(
           'We were unable to this action. Try again in a few minutes.'
         )
@@ -109,17 +111,19 @@ export const updateMatchDetails = (matchPayload: matchDetails): Promise<void> =>
     })
     .catch((err) => {
       catchInternalError(err)
-      if (err.status === 403) {
+      const { status } = err.response
+
+      if (status === 403) {
         throw new Error(
           "You don't have the needed permissions to update this match."
         )
       }
 
-      if (err.status === 404) {
+      if (status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (status !== 200) {
         throw new Error(
           'We were unable to this action. Try again in a few minutes.'
         )
@@ -137,18 +141,19 @@ export const createMatchParticipant = (participant: participantDetails) =>
     })
     .catch((err) => {
       catchInternalError(err)
+      const { status } = err.response
 
-      if (err.status === 403) {
+      if (status === 403) {
         throw new Error(
           "You don't have the needed permissions to update this match."
         )
       }
 
-      if (err.status === 404) {
+      if (status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (status !== 200) {
         throw new Error(
           'We were unable to this action. Try again in a few minutes.'
         )
@@ -171,18 +176,19 @@ export const deleteMatchParticipant = ({
     })
     .catch((err) => {
       catchInternalError(err)
+      const { status } = err.response
 
-      if (err.status === 403) {
+      if (status === 403) {
         throw new Error(
           "You don't have the needed permissions to delete this match."
         )
       }
 
-      if (err.status === 404) {
+      if (status === 404) {
         throw new Error('We were unable to find the match or the participant.')
       }
 
-      if (err.status !== 200) {
+      if (status !== 200) {
         throw new Error(
           'We were unable to this action. Try again in a few minutes.'
         )
@@ -202,18 +208,19 @@ export const updateMatchParticipant = (
     })
     .catch((err) => {
       catchInternalError(err)
+      const { status } = err.response
 
-      if (err.status === 403) {
+      if (status === 403) {
         throw new Error(
           "You don't have the needed permissions to update this match."
         )
       }
 
-      if (err.status === 404) {
+      if (status === 404) {
         throw new Error('We were unable to find the match or the participant.')
       }
 
-      if (err.status !== 200) {
+      if (status !== 200) {
         throw new Error(
           'We were unable to this action. Try again in a few minutes.'
         )

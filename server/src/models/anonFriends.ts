@@ -1,5 +1,4 @@
-import db from '../database'
-import { prefixKeysWithDollar } from './utils'
+import kysely from '../database'
 
 export interface AnonFriend {
   id: number
@@ -7,154 +6,57 @@ export interface AnonFriend {
   userId: number
 }
 
-export function create(anonFriend: Omit<AnonFriend, 'id'>) {
-  const query = `
-    INSERT INTO anonFriend(
-      userId,
-      fullName
-    ) VALUES (
-      $userId,
-      $fullName
-    )
-  `
+export const create = (anonFriend: Omit<AnonFriend, 'id'>) =>
+  kysely
+    .insertInto('anon_friend')
+    .values(anonFriend)
+    .returning('id')
+    .executeTakeFirstOrThrow()
 
-  return new Promise<number>((resolve, reject) => {
-    db.run(query, prefixKeysWithDollar(anonFriend), function (error) {
-      if (error) {
-        reject(
-          `An error occurred while creating an anon friend: ${error?.message}`
-        )
-      }
-
-      resolve(this.lastID)
-    })
-  })
+export const getById = (id: number) => {
+  return kysely
+    .selectFrom('anon_friend')
+    .selectAll()
+    .where('id', '==', id)
+    .limit(1)
+    .executeTakeFirst()
 }
 
-export const checkUpdatePermission = ({
-  id,
-  userId,
-}: {
-  id: number
-  userId: number
-}) => {
-  const query = `
-    SELECT userId FROM anonFriend
-    WHERE
-      rowId = $id
-    LIMIT 1
-  `
-
-  return new Promise<boolean | undefined>((resolve, reject) => {
-    db.get(query, prefixKeysWithDollar({ id }), function (error, anonFriend) {
-      if (error) {
-        return reject(
-          `An error occurred while checking update permission for an anon friend: ${error?.message}`
-        )
-      }
-
-      resolve(anonFriend ? anonFriend.userId === userId : undefined)
-    })
-  })
-}
-export const checkDeletePermission = checkUpdatePermission
-
-export function update(
+export const update = (
   id: AnonFriend['id'],
   params: { fullName: AnonFriend['fullName'] }
-) {
-  const query = `
-    UPDATE anonFriend
-    SET
-      fullName = $fullName
-    WHERE
-      rowId = $id
-  `
-
-  return new Promise<void>((resolve, reject) => {
-    db.run(query, prefixKeysWithDollar({ id, ...params }), function (error) {
-      if (error) {
-        reject(
-          `An error occurred while updating an anon friend: ${error?.message}`
-        )
-      }
-
-      resolve()
-    })
-  })
+) => {
+  return kysely
+    .updateTable('anon_friend')
+    .set(params)
+    .where('id', '==', id)
+    .executeTakeFirst()
+    .then((result) => result.numUpdatedRows === 1n)
 }
 
-export function deleteById(id: AnonFriend['id']) {
-  const query = `
-    DELETE FROM anonFriend
-    WHERE
-      rowId = $id
-  `
+export const deleteById = (id: AnonFriend['id']) =>
+  kysely
+    .deleteFrom('anon_friend')
+    .where('id', '==', id)
+    .executeTakeFirst()
+    .then((result) => result.numDeletedRows === 1n)
 
-  return new Promise<boolean>((resolve, reject) => {
-    db.run(query, prefixKeysWithDollar({ id }), function (error) {
-      if (error) {
-        reject(
-          `An error occurred while deleting an anon friend: ${error?.message}`
-        )
-      }
-
-      resolve(this.changes === 1)
-    })
-  })
-}
-
-export function getAllByUserId(params: { userId: number }) {
-  const query = `
-    SELECT
-      rowId as id,
-      fullName
-    FROM anonFriend
-    WHERE
-      userId = $userId;
-  `
-
-  return new Promise<Omit<AnonFriend, 'userId'>[]>((resolve, reject) => {
-    db.all(
-      query,
-      prefixKeysWithDollar(params),
-      function (error: Error, friends: Omit<AnonFriend, 'userId'>[]) {
-        if (error) {
-          reject(
-            `An error occurred while trying to fetch anon friends by userId: ${error?.message}`
-          )
-        }
-
-        resolve(friends)
-      }
-    )
-  })
-}
+export const getAllByUserId = (params: { userId: number }) =>
+  kysely
+    .selectFrom('anon_friend')
+    .select(['id', 'fullName'])
+    .where('userId', '==', params.userId)
+    .execute()
 
 export const checkFriendshipExists = async (params: {
   userId: number
   id: number
-}) => {
-  const query = `
-    SELECT EXISTS(
-      SELECT 1 FROM anonFriend
-      WHERE
-        rowId = $id
-        AND userId = $userId
-      LIMIT 1
-    );
-  `
-
-  return new Promise<boolean>((resolve, reject) => {
-    db.get(query, prefixKeysWithDollar(params), function (error, result) {
-      if (error) {
-        reject(
-          `An error occurred while trying to check if an anon friendship exists: ${error?.message}`
-        )
-      }
-
-      const isFriend = Object.values(result)[0] === 1
-      resolve(isFriend)
-    })
-  })
-}
+}) =>
+  kysely
+    .selectFrom('anon_friend')
+    .select('id')
+    .where('userId', '==', params.userId)
+    .where('id', '==', params.id)
+    .limit(1)
+    .executeTakeFirst()
+    .then((result) => result !== undefined)

@@ -1,6 +1,7 @@
 import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
-import * as matchParticipantModel from '../models/matchParticipants'
+import * as playerModel from '../models/players'
+import * as friendsModel from '../models/friends'
 
 import type {
   MatchCreationData,
@@ -9,28 +10,79 @@ import type {
 } from '../schemas/match'
 import {
   matchUpdateDataSchema,
-  matchCreationData,
+  matchCreationDataSchema,
   matchDTOSchema,
 } from '../schemas/match'
+import { playerDtoToDbModel } from '../schemas/player'
 import { endpoint } from '../utils/endpoint'
+import { FriendType } from '../models/utils'
+import kysely from '../database'
 
-export const createForLoggedUser = endpoint.POST('/me/matches')<
+export const checkAccess = {
+  create: async (userId: number, matchCreationData: MatchCreationData) => {
+    for (const player of matchCreationData.players) {
+      const friendExists = await friendsModel.checkFriendshipExists({
+        friend: player.friend,
+        userId,
+      })
+      if (!friendExists) {
+        return false
+      }
+    }
+
+    return true
+  },
+  read: (userId: number, match: MatchDTO) =>
+    match.authorId === userId ||
+    match.players.some(
+      (player) =>
+        player.friend.type === FriendType.USER && player.friend.id === userId
+    ),
+  update: (userId: number, match: matchesModel.Match) =>
+    match.authorId === userId,
+  delete: (userId: number, match: matchesModel.Match) =>
+    match.authorId === userId,
+}
+
+const createForLoggedUser = endpoint.POST('/me/matches')<
   void,
   MatchCreationData,
   MatchDTO
 >(
   async (req, res) => {
-    const matchCreationData = req.body
+    const { body: matchCreationData, userId } = req
+
+    if (!(await checkAccess.create(userId, matchCreationData))) {
+      return res.sendStatus(403)
+    }
 
     const match = {
-      ...omit(matchCreationData, ['participants']),
-      authorId: req.userId,
+      ...omit(matchCreationData, ['players']),
+      authorId: userId,
     }
-    const matchId = await matchesModel.create(match)
 
-    const { participants } = matchCreationData
-    await matchParticipantModel.createMultiple({ matchId, participants })
+    const matchId = await kysely.transaction().execute(async (transaction) => {
+      // wrap match creation and player creation in a transaction
+      const { id: matchId } = await matchesModel.create.call(
+        { transaction },
+        match
+      )
 
+      const { players } = matchCreationData
+      const digestedPlayers = players.map((player) => ({
+        ...playerDtoToDbModel(player),
+        matchId,
+      }))
+
+      await playerModel.createMultiple.call({ transaction }, digestedPlayers)
+
+      return matchId
+    })
+    if (!matchId) {
+      return res.sendStatus(500)
+    }
+
+    // TODO: include fetching in transaction and create generic transaction approach
     const createdMatch = await matchesModel.getHydratedById({
       id: matchId,
     })
@@ -44,21 +96,20 @@ export const createForLoggedUser = endpoint.POST('/me/matches')<
     summary: 'Creates a match for the logged user',
     tags: ['matches'],
     params: null,
-    body: matchCreationData,
+    body: matchCreationDataSchema,
     responses: {
       201: {
         description: 'The created match',
         schema: matchDTOSchema,
       },
+      403: {
+        description: 'The logged user is not friends with one of the players',
+      },
     },
   }
 )
 
-export const getAllByLoggedUser = endpoint.GET('/me/matches')<
-  void,
-  void,
-  MatchDTO[]
->(
+const getAllByLoggedUser = endpoint.GET('/me/matches')<void, void, MatchDTO[]>(
   async (req, res) => {
     const matches = await matchesModel.getHydratedByAuthor({
       authorId: req.userId,
@@ -82,8 +133,7 @@ export const getAllByLoggedUser = endpoint.GET('/me/matches')<
   }
 )
 
-// TODO: implement access logic
-export const getById = endpoint.GET('/matches/:matchId')<
+const getById = endpoint.GET('/matches/:matchId')<
   { matchId: string },
   void,
   MatchDTO
@@ -93,6 +143,10 @@ export const getById = endpoint.GET('/matches/:matchId')<
     const match = await matchesModel.getHydratedById({ id: parseInt(matchId) })
     if (!match) {
       return res.sendStatus(404)
+    }
+
+    if (!checkAccess.read(req.userId, match)) {
+      return res.sendStatus(403)
     }
 
     res.status(200).send(match)
@@ -112,6 +166,10 @@ export const getById = endpoint.GET('/matches/:matchId')<
         description: 'The match',
         schema: matchDTOSchema,
       },
+      403: {
+        description:
+          'The logged user is not the author or a participant of the match',
+      },
       404: {
         description: 'The match was not found',
       },
@@ -119,7 +177,7 @@ export const getById = endpoint.GET('/matches/:matchId')<
   }
 )
 
-export const update = endpoint.PUT('/matches/:matchId')<
+const update = endpoint.PUT('/matches/:matchId')<
   { matchId: string },
   MatchUpdateData,
   void
@@ -132,8 +190,7 @@ export const update = endpoint.PUT('/matches/:matchId')<
       return res.sendStatus(404)
     }
 
-    const loggedUserId = req.userId
-    if (match.authorId !== loggedUserId) {
+    if (!checkAccess.update(req.userId, match)) {
       return res.sendStatus(403)
     }
 
@@ -168,7 +225,7 @@ export const update = endpoint.PUT('/matches/:matchId')<
   }
 )
 
-export const deleteById = endpoint.DELETE('/matches/:matchId')<
+const deleteById = endpoint.DELETE('/matches/:matchId')<
   { matchId: string },
   void,
   void
@@ -181,8 +238,7 @@ export const deleteById = endpoint.DELETE('/matches/:matchId')<
       return res.sendStatus(404)
     }
 
-    const loggedUserId = req.userId
-    if (match.authorId !== loggedUserId) {
+    if (!checkAccess.delete(req.userId, match)) {
       return res.sendStatus(403)
     }
 
@@ -216,3 +272,11 @@ export const deleteById = endpoint.DELETE('/matches/:matchId')<
     },
   }
 )
+
+export const endpoints = {
+  createForLoggedUser,
+  getAllByLoggedUser,
+  getById,
+  update,
+  deleteById,
+}

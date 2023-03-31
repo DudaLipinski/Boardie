@@ -15,6 +15,7 @@ module.exports = {
     '@typescript-eslint/consistent-type-imports': 'error',
     'import/order': 'error',
     'import/no-unresolved': 'off',
+    'no-redeclare': 'error',
   },
   env: {
     browser: true,

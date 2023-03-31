@@ -1,0 +1,279 @@
+import * as matchesModel from '../models/matches'
+import * as playersModel from '../models/players'
+import * as friendsModel from '../models/friends'
+import type {
+  PlayerCreationData,
+  PlayerDTO,
+  PlayerUpdateData,
+} from '../schemas/player'
+import {
+  playerDtoToDbModel,
+  playerDTOSchema,
+  playerCreationDataSchema,
+  playerUpdateDataSchema,
+} from '../schemas/player'
+import { endpoint } from '../utils/endpoint'
+import * as matchesController from './matches'
+
+const checkPlayerFriendship = (
+  userId: number,
+  player: PlayerCreationData | PlayerUpdateData
+) =>
+  friendsModel.checkFriendshipExists({
+    userId,
+    friend: player.friend,
+  })
+
+const checkAccess = {
+  create: async (
+    userId: number,
+    match: matchesModel.Match,
+    player: PlayerCreationData
+  ) =>
+    matchesController.checkAccess.update(userId, match) &&
+    (await checkPlayerFriendship(userId, player)),
+  read: matchesController.checkAccess.read,
+  update: async (
+    userId: number,
+    match: matchesModel.Match,
+    player: PlayerUpdateData
+  ) =>
+    matchesController.checkAccess.update(userId, match) &&
+    (await checkPlayerFriendship(userId, player)),
+  delete: matchesController.checkAccess.update,
+}
+
+// TODO: implement access logic
+const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
+  { matchId: string },
+  void,
+  PlayerDTO[]
+>(
+  async (req, res) => {
+    const { matchId } = req.params
+
+    const match = await matchesModel.getHydratedById({
+      id: parseInt(matchId),
+    })
+    if (!match) {
+      return res.sendStatus(404)
+    }
+    if (!checkAccess.read(req.userId, match)) {
+      return res.sendStatus(403)
+    }
+
+    res.status(200).send(match.players)
+  },
+  {
+    summary: 'Gets all players by match id',
+    tags: ['matches/players'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The players',
+        schema: {
+          type: 'array',
+          items: playerDTOSchema,
+        },
+      },
+      404: {
+        description: 'The match was not found',
+      },
+    },
+  }
+)
+
+const create = endpoint.POST('/matches/:matchId/players')<
+  { matchId: string },
+  PlayerCreationData,
+  PlayerDTO
+>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId)
+    const userId = req.userId
+    const player = req.body
+
+    const match = await matchesModel.getById({ id: matchId })
+    if (!match) {
+      return res.sendStatus(404)
+    }
+
+    if (!(await checkAccess.create(userId, match, player))) {
+      return res.sendStatus(403)
+    }
+
+    const createdPlayer = await playersModel.create({
+      matchId,
+      ...playerDtoToDbModel(player),
+    })
+    if (!createdPlayer) {
+      return res.sendStatus(500)
+    }
+
+    res.status(200).send(createdPlayer)
+  },
+  {
+    summary: 'Creates a player',
+    tags: ['matches/players'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match',
+      },
+    },
+    body: playerCreationDataSchema,
+    responses: {
+      200: {
+        description: 'The created player',
+        schema: playerDTOSchema,
+      },
+      403: {
+        description:
+          "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the player trying to be created",
+      },
+      404: {
+        description: 'The match was not found',
+      },
+    },
+  }
+)
+
+const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
+  { matchId: string; playerId: string },
+  PlayerUpdateData,
+  PlayerDTO
+>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId)
+    const playerId = parseInt(req.params.playerId)
+    const userId = req.userId
+    const player = req.body
+
+    const exists = await playersModel.checkIfExists({
+      id: playerId,
+    })
+    if (!exists) {
+      return res.sendStatus(404)
+    }
+
+    // We shouldn't be relying on the matchId from the URL,
+    // we should instead check if the player belongs to the match
+    const match = await matchesModel.getById({ id: matchId })
+    if (!match) {
+      return res.sendStatus(404)
+    }
+    if (!(await checkAccess.update(userId, match, player))) {
+      return res.sendStatus(403)
+    }
+
+    const updatedPlayer = await playersModel.update({
+      id: playerId,
+      player: playerDtoToDbModel(player),
+    })
+    if (!updatedPlayer) {
+      return res.sendStatus(500)
+    }
+
+    res.status(200).send(updatedPlayer)
+  },
+  {
+    summary: 'Updates a player',
+    tags: ['matches/players'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match that contains the player',
+      },
+      playerId: {
+        type: 'string',
+        description: 'The id of the player',
+      },
+    },
+    body: playerUpdateDataSchema,
+    responses: {
+      200: {
+        description: 'The updated player',
+        schema: playerDTOSchema,
+      },
+      403: {
+        description:
+          "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the player trying to be updated",
+      },
+      404: {
+        description: 'The match or player was not found',
+      },
+    },
+  }
+)
+
+const deleteById = endpoint.DELETE('/matches/:matchId/players/:playerId')<
+  { matchId: string; playerId: string },
+  void,
+  void
+>(
+  async (req, res) => {
+    const matchId = parseInt(req.params.matchId)
+    const playerId = parseInt(req.params.playerId)
+    const userId = req.userId
+
+    // We shouldn't be relying on the matchId from the URL,
+    // we should instead check if the player belongs to the match
+    const match = await matchesModel.getById({ id: matchId })
+    if (!match) {
+      return res.status(404).send({ message: 'Match not found' })
+    }
+
+    if (!checkAccess.delete(userId, match)) {
+      return res.sendStatus(403)
+    }
+
+    const deleted = await playersModel.deleteById({
+      id: playerId,
+      matchId,
+    })
+    if (!deleted) {
+      return res.sendStatus(404)
+    }
+
+    return res.sendStatus(200)
+  },
+  {
+    summary: 'Deletes a player by id',
+    tags: ['matches/players'],
+    params: {
+      matchId: {
+        type: 'string',
+        description: 'The id of the match that contains the player',
+      },
+      playerId: {
+        type: 'string',
+        description: 'The id of the player',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The player was deleted',
+      },
+      403: {
+        description: "The user doesn't have permissions to update the match",
+      },
+      404: {
+        description: 'The match or player was not found',
+      },
+    },
+  }
+)
+
+export const endpoints = {
+  getAllByMatchId,
+  create,
+  update,
+  deleteById,
+}

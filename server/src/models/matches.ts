@@ -1,273 +1,104 @@
-import db from '../database'
-import { CURRENT_DATETIME } from '../utils/sql'
+import { CURRENT_DATETIME_QUERY } from '../utils/sql'
 import type { MatchUpdateData } from '../schemas/match'
-import type { MatchParticipantDTO } from '../schemas/matchParticipant'
-import { getAllByMatchId } from './matchParticipants'
-import { generateUpdate, prefixKeysWithDollar } from './utils'
-
-const ISNT_DELETED = 'deletedAt IS NULL'
+import type { PlayerDTO } from '../schemas/player'
+import type { Transaction } from '../database'
+import kysely from '../database'
+import { getAllByMatchId } from './players'
 
 export interface Match {
   id: number
-  authorId: number
+  authorId: number | null
   boardgameName: string
   location?: string | null
-  startedAt?: string
-  endedAt?: string
-  notes?: string
+  notes?: string | null
+  createdAt: string
+  deletedAt?: string | null
+  startedAt: string
+  endedAt?: string | null
 }
 
 export interface HydratedMatch extends Match {
-  participants: MatchParticipantDTO[]
+  players: PlayerDTO[]
 }
 
-export const create = (match: Omit<Match, 'id'>) => {
-  const query = `INSERT INTO match(
-    authorId,
-    boardgameName,
-    startedAt,
-    endedAt,
-    location,
-    notes
-  ) VALUES (
-    $authorId,
-    $boardgameName,
-    $startedAt,
-    $endedAt,
-    $location,
-    $notes
-  )`
+export function create(
+  this: { transaction?: Transaction },
+  match: Omit<Match, 'id'>
+) {
+  return (this.transaction ?? kysely)
+    .insertInto('match')
+    .values(match)
+    .returning('id')
+    .executeTakeFirstOrThrow()
+}
 
-  return new Promise<number>((resolve, reject) => {
-    db.run(query, prefixKeysWithDollar(match), function (error) {
-      if (error) {
-        reject(`An error occurred while creating a match: ${error?.message}`)
-      }
+export const update = (matchId: number, match: MatchUpdateData) =>
+  kysely
+    .updateTable('match')
+    .set(match)
+    .where('id', '==', matchId)
+    .executeTakeFirst()
+    .then((result) => result.numUpdatedRows === 1n)
 
-      resolve(this.lastID)
+export const getHydratedById = async ({ id }: { id: number }) => {
+  const match = await kysely
+    .selectFrom('match')
+    .selectAll()
+    .where('id', '==', id)
+    .where('deletedAt', 'is', null)
+    .executeTakeFirst()
+
+  if (!match) {
+    return null
+  }
+
+  const players = await getAllByMatchId({ matchId: match.id })
+  return {
+    ...match,
+    players,
+  }
+}
+
+export const getHydratedByAuthor = async (params: { authorId: number }) => {
+  const matches = await kysely
+    .selectFrom('match')
+    .selectAll()
+    .where('authorId', '==', params.authorId)
+    .where('deletedAt', 'is', null)
+    .execute()
+
+  /**
+   * We are fine with this N+1 query since the server and the database
+   * will be running within the same machine, with low latency
+   */
+  const result: HydratedMatch[] = []
+  for (const match of matches) {
+    if (!match) {
+      continue
+    }
+
+    const players = await getAllByMatchId({ matchId: match.id })
+    result.push({
+      ...match,
+      players,
     })
-  })
+  }
+
+  return result
 }
 
-export const update = (matchId: number, match: MatchUpdateData) => {
-  const { fieldAssignments, params } = generateUpdate(match)
-  const query = `
-    UPDATE match
-    SET
-      ${fieldAssignments}
-    WHERE
-      rowId = $matchId
-  `
+export const getById = (params: { id: number }) =>
+  kysely
+    .selectFrom('match')
+    .selectAll()
+    .where('id', '==', params.id)
+    .where('deletedAt', 'is', null)
+    .executeTakeFirst()
 
-  return new Promise<boolean>((resolve, reject) => {
-    db.run(
-      query,
-      {
-        ...params,
-        $matchId: matchId,
-      },
-      function (error) {
-        if (error) {
-          reject(
-            `An error occurred while trying to update a match: ${error?.message}`
-          )
-        }
-
-        resolve(this.changes === 1)
-      }
-    )
-  })
-}
-
-export const getHydratedById = ({ id }: { id: number }) => {
-  const query = `
-    SELECT
-      m.*,
-      m.rowId as id
-    FROM match m
-    WHERE
-      m.rowId = $id
-      AND ${ISNT_DELETED};
-  `
-
-  return new Promise<HydratedMatch | null>((resolve, reject) => {
-    db.get(query, { $id: id }, async function (error, match: Match) {
-      if (!match?.id) {
-        return resolve(null)
-      }
-
-      if (error) {
-        reject(
-          `An error occurred while trying to fetch a match and its participants by id: ${error?.message}`
-        )
-      }
-
-      try {
-        const participants = await getAllByMatchId({ matchId: match.id })
-        resolve({
-          ...match,
-          participants,
-        })
-      } catch (e) {
-        reject(e)
-      }
-    })
-  })
-}
-
-export const getHydratedByAuthor = (params: { authorId: number }) => {
-  const query = `
-    SELECT
-      rowId as id,
-      boardgameName,
-      startedAt,
-      endedAt,
-      location
-    FROM match
-    WHERE
-      authorId = $authorId
-      AND ${ISNT_DELETED}
-  `
-
-  return new Promise<HydratedMatch[]>((resolve, reject) => {
-    db.all(
-      query,
-      prefixKeysWithDollar(params),
-      async function (error: Error | null, matches: Match[]) {
-        if (error) {
-          reject(
-            `An error occurred while trying to fetch matches by authorId: ${error?.message}`
-          )
-        }
-
-        try {
-          /**
-           * We are fine with this N+1 query since the server and the database
-           * will be running within the same machine, with low latency
-           */
-          const result: HydratedMatch[] = []
-          for (const match of matches) {
-            const participants = await getAllByMatchId({ matchId: match.id })
-            result.push({
-              ...match,
-              participants,
-            })
-          }
-
-          resolve(result)
-        } catch (e) {
-          reject(e)
-        }
-      }
-    )
-  })
-}
-
-export const getById = (params: { id: number }) => {
-  const query = `
-    SELECT
-      rowId as id,
-      *
-    FROM match
-    WHERE
-      rowId = $id
-      AND ${ISNT_DELETED};
-  `
-
-  return new Promise<Match | null>((resolve, reject) => {
-    db.get(
-      query,
-      prefixKeysWithDollar(params),
-      function (error: Error | null, match: Match) {
-        if (!match) {
-          return resolve(null)
-        }
-
-        if (error) {
-          return reject(
-            `An error occurred while trying to fetch a match by id: ${error?.message}`
-          )
-        }
-
-        resolve(match)
-      }
-    )
-  })
-}
-
-export const deleteById = (params: { id: number }) => {
-  const query = `
-    UPDATE match
-    SET deletedAt = ${CURRENT_DATETIME}
-    WHERE
-      rowId = $id
-      AND ${ISNT_DELETED};
-  `
-
-  return new Promise<boolean>((resolve, reject) => {
-    db.run(query, prefixKeysWithDollar(params), function (error) {
-      if (error) {
-        return reject(
-          `An error occurred while trying to delete a match: ${error?.message}`
-        )
-      }
-
-      resolve(!!this.changes && this.changes > 0)
-    })
-  })
-}
-
-export const checkIfExists = async (params: { id: number }) => {
-  const query = `
-    SELECT EXISTS(
-      SELECT 1 FROM match
-      WHERE
-        rowId = $id
-        AND ${ISNT_DELETED}
-      LIMIT 1
-    );
-  `
-
-  return new Promise<boolean>((resolve, reject) => {
-    db.get(query, prefixKeysWithDollar(params), function (error, result) {
-      if (error) {
-        return reject(
-          `An error occurred while trying to check if a match exists: ${error?.message}`
-        )
-      }
-
-      const exists = Object.values(result)[0] === 1
-      resolve(exists)
-    })
-  })
-}
-
-export const checkUpdatePermission = ({
-  id,
-  userId,
-}: {
-  id: number
-  userId: number
-}) => {
-  const query = `
-    SELECT authorId FROM match
-    WHERE
-      rowId = $id
-      AND ${ISNT_DELETED}
-    LIMIT 1
-  `
-
-  return new Promise<boolean | undefined>((resolve, reject) => {
-    db.get(query, prefixKeysWithDollar({ id }), function (error, match) {
-      if (error) {
-        return reject(
-          `An error occurred while trying to check if a user can update a match: ${error?.message}`
-        )
-      }
-
-      resolve(match ? match.authorId === userId : undefined)
-    })
-  })
-}
-
-export const checkDeletePermission = checkUpdatePermission
+export const deleteById = (params: { id: number }) =>
+  kysely
+    .updateTable('match')
+    .set({ deletedAt: CURRENT_DATETIME_QUERY })
+    .where('id', '==', params.id)
+    .executeTakeFirst()
+    .then((result) => result.numUpdatedRows === 1n)

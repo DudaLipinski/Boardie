@@ -5,7 +5,6 @@ import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
 import openApiDocument from './openapi.json' assert { type: 'json' }
 
-import db from './database'
 import { setRoutes } from './routes'
 import { authenticateToken } from './utils/auth'
 
@@ -32,5 +31,3 @@ const port = process.env.PORT
 app.listen(port, () =>
   console.log(`Express server is running on localhost:${port}`)
 )
-
-process.on('exit', () => db.close())

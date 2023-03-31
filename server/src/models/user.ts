@@ -1,176 +1,69 @@
-import db from '../database'
-import type { UserDTO } from '../schemas/user'
-import { CURRENT_DATETIME } from '../utils/sql'
-
-const HASNT_UNREGISTERED = 'unregisteredAt IS NULL'
+import { CURRENT_DATETIME_QUERY } from '../utils/sql'
+import kysely from '../database'
 
 export interface User {
   id: number
   firstName: string
   middleAndSurname: string
-  age: number
+  age: number | null
   email: string
   password: string
 }
 
-export const create = (user: Omit<User, 'id'>) => {
-  const query = `INSERT INTO user(
-    firstName,
-    middleAndSurname,
-    age,
-    email,
-    password
-  ) VALUES (?,?,?,?,?)`
+export const create = async (user: Omit<User, 'id'>) => {
+  const result = await kysely
+    .insertInto('user')
+    .values(user)
+    .returning('id')
+    .onConflict((u) => u.column('email').doNothing())
+    .executeTakeFirst()
 
-  return new Promise<number>((resolve, reject) => {
-    db.run(
-      query,
-      [
-        user.firstName,
-        user.middleAndSurname,
-        user.age,
-        user.email,
-        user.password,
-      ],
-      function (error) {
-        if (error) {
-          reject(
-            `An error occurred while trying to create an user: ${error?.message}`
-          )
-        }
-
-        resolve(this.lastID)
-      }
-    )
-  })
+  return result?.id
 }
 
-export const unregister = (
+// TODO: fix this, we are now returning false when the user is not found
+// and also when the credentials are wrong
+export const unregister = async (
   userId: number,
   auth: Pick<User, 'email' | 'password'>
 ) => {
-  const query = `UPDATE user
-    SET unregisteredAt = ${CURRENT_DATETIME}
-    WHERE
-      rowId = $userId
-      AND email = $email
-      AND password = $password
-      AND ${HASNT_UNREGISTERED}
-  `
+  const result = await kysely
+    .updateTable('user')
+    .set({
+      unregisteredAt: CURRENT_DATETIME_QUERY,
+    })
+    .where('id', '==', userId)
+    .where('email', '==', auth.email)
+    .where('password', '==', auth.password)
+    .where('unregisteredAt', 'is', null)
+    .executeTakeFirst()
 
-  return new Promise((resolve, reject) => {
-    db.run(
-      query,
-      {
-        $userId: userId,
-        $email: auth.email,
-        $password: auth.password,
-      },
-      function (error) {
-        if (error) {
-          reject(
-            `An error occurred while trying to unregister an user: ${error?.message}`
-          )
-        }
-
-        resolve(this.changes && this.changes > 0)
-      }
-    )
-  })
+  return result.numUpdatedRows === 1n
 }
 
-export const getById = (id: number) => {
-  const query = `SELECT
-    rowId as id,
-    firstName,
-    middleAndSurname,
-    age,
-    email
-  FROM user
-    WHERE
-      rowId = $id
-      AND ${HASNT_UNREGISTERED}
-    LIMIT 1
-  `
+export const getById = (id: number) =>
+  kysely
+    .selectFrom('user')
+    .select(['id', 'firstName', 'middleAndSurname', 'age', 'email'])
+    .where('id', '==', id)
+    .where('unregisteredAt', 'is', null)
+    .executeTakeFirst()
 
-  return new Promise<UserDTO>((resolve, reject) => {
-    db.get(
-      query,
-      {
-        $id: id,
-      },
-      function (error, user) {
-        if (error) {
-          reject(
-            `An error occurred while trying to fetch an user by id: ${error?.message}`
-          )
-        }
+export const getByEmail = (email: string) =>
+  kysely
+    .selectFrom('user')
+    .select(['id', 'firstName', 'middleAndSurname', 'age', 'email'])
+    .where('email', '==', email)
+    .where('unregisteredAt', 'is', null)
+    .limit(1)
+    .executeTakeFirst()
 
-        resolve(user)
-      }
-    )
-  })
-}
-
-export const getByEmail = (email: string) => {
-  const query = `SELECT * FROM user
-    WHERE
-      email = $email
-      AND ${HASNT_UNREGISTERED}
-    LIMIT 1
-  `
-
-  return new Promise((resolve, reject) => {
-    db.get(
-      query,
-      {
-        $email: email,
-      },
-      function (error, user) {
-        if (error) {
-          reject(
-            `An error occurred while trying to fetch an user by email: ${error?.message}`
-          )
-        }
-
-        resolve(user)
-      }
-    )
-  })
-}
-
-export const auth = (auth: Pick<User, 'email' | 'password'>) => {
-  const query = `
-    SELECT
-      rowId as id,
-      firstName,
-      middleAndSurname,
-      age,
-      email
-    FROM user
-    WHERE
-      email = $email
-      AND password = $password
-      AND ${HASNT_UNREGISTERED}
-    LIMIT 1
-  `
-
-  return new Promise<Omit<User, 'password'>>((resolve, reject) => {
-    db.get(
-      query,
-      {
-        $email: auth.email,
-        $password: auth.password,
-      },
-      function (error, user) {
-        if (error) {
-          return reject(
-            `An error occurred while trying to auth: ${error?.message}`
-          )
-        }
-
-        resolve(user)
-      }
-    )
-  })
-}
+export const auth = (auth: Pick<User, 'email' | 'password'>) =>
+  kysely
+    .selectFrom('user')
+    .select(['id', 'firstName', 'middleAndSurname', 'age', 'email'])
+    .where('email', '==', auth.email)
+    .where('password', '==', auth.password)
+    .where('unregisteredAt', 'is', null)
+    .limit(1)
+    .executeTakeFirst()

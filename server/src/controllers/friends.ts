@@ -5,7 +5,7 @@ import { endpoint } from '../utils/endpoint'
 import type { HydratedGenericFriend } from '../schemas/genericFriend'
 import { genericFriendDTOSchema } from '../schemas/genericFriend'
 
-export const getAllByLoggedUser = endpoint.GET('/me/friends')<
+const getAllByLoggedUser = endpoint.GET('/me/friends')<
   void,
   void,
   HydratedGenericFriend[]
@@ -33,3 +33,7 @@ export const getAllByLoggedUser = endpoint.GET('/me/friends')<
     },
   }
 )
+
+export const endpoints = {
+  getAllByLoggedUser,
+}

@@ -1,0 +1,64 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table user {
+  id Int [pk, increment]
+  email String [unique, not null]
+  firstName String [not null]
+  middleAndSurname String [not null]
+  age Int
+  password String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  unregisteredAt DateTime
+}
+
+Table anon_friend {
+  id Int [pk, increment]
+  fullName String [not null]
+  userId Int [not null]
+}
+
+Table match {
+  id Int [pk, increment]
+  boardgameName String [not null]
+  startedAt DateTime [not null]
+  endedAt DateTime
+  location String
+  notes String
+  createdAt DateTime [default: `now()`, not null]
+  deletedAt DateTime
+  authorId Int
+}
+
+Table player {
+  id Int [pk, increment]
+  score Int
+  isWinner Boolean
+  matchId Int [not null]
+  userId Int
+  anonFriendId Int
+}
+
+Table friendship_request {
+  requestingUserId Int [not null]
+  requestedUserId Int [not null]
+
+  indexes {
+    (requestingUserId, requestedUserId) [pk]
+  }
+}
+
+Ref: anon_friend.userId > user.id [delete: Cascade]
+
+Ref: match.authorId > user.id [delete: Set Null]
+
+Ref: player.matchId > match.id [delete: Cascade]
+
+Ref: player.userId > user.id [delete: Cascade]
+
+Ref: player.anonFriendId > anon_friend.id [delete: Cascade]
+
+Ref: friendship_request.requestingUserId > user.id [delete: Cascade]
+
+Ref: friendship_request.requestedUserId > user.id [delete: Cascade]

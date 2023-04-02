@@ -1,5 +1,5 @@
 import z from 'zod'
-import { userSchema, zodUserDTOSchema } from '../schemas/user'
+import { userSchema, userDTOSchema } from './user.schemas'
 
 export const authDTOSchema = userSchema
   .pick({
@@ -10,6 +10,6 @@ export const authDTOSchema = userSchema
   .describe('Auth information about a user')
 
 export const authSchema = z.object({
-  user: zodUserDTOSchema,
+  user: userDTOSchema,
   token: z.string(),
 })

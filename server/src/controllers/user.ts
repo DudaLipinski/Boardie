@@ -1,14 +1,16 @@
 import omit from 'lodash.omit'
 
 import type z from 'zod'
-import type { UserCreationData, UserDTO } from '../schemas/user'
-import { userCreationDataSchema, userDTOSchema } from '../schemas/user'
 import * as userModel from '../models/user'
-import { endpoint } from '../utils/endpoint'
-import { endpoint as zodEndpoint } from '../utils/endpoint.zod'
+import { endpoint } from '../utils/endpoint.zod'
+import { userCreationDataSchema, userDTOSchema } from './user.schemas'
 import { authDTOSchema } from './auth.schemas'
 
-const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
+const create = endpoint.POST('/me')<
+  void,
+  z.infer<typeof userCreationDataSchema>,
+  z.infer<typeof userDTOSchema>
+>(
   async (req, res) => {
     const user = req.body
 
@@ -42,7 +44,11 @@ const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
   }
 )
 
-const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
+const getLoggedUser = endpoint.GET('/me')<
+  void,
+  void,
+  z.infer<typeof userDTOSchema>
+>(
   async (req, res) => {
     const user = await userModel.getById(req.userId)
     if (!user) {
@@ -79,7 +85,7 @@ const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
  * The front-end will then have to have a specific route to handle that, that
  * will basically call a "confirm unregistering" endpoint passing the token
  */
-const unregisterLoggedUser = zodEndpoint.POST('/me/unregister')<
+const unregisterLoggedUser = endpoint.POST('/me/unregister')<
   void,
   z.infer<typeof authDTOSchema>,
   void

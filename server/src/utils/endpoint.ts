@@ -1,11 +1,11 @@
 import type { RequestHandler, Express } from 'express'
 import type { OpenAPIV3_1 } from 'openapi-types'
 import type { z } from 'zod'
-import { logInternalError } from './log'
 import {
-  ZOD_INTERNAL_ERROR_SCHEMA,
-  ZOD_INVALID_REQUEST_BODY_SCHEMA,
-} from './errors'
+  INTERNAL_ERROR_SCHEMA,
+  INVALID_REQUEST_BODY_SCHEMA,
+} from '../schemas/errors'
+import { logInternalError } from './log'
 
 type HttpMethod = 'get' | 'post' | 'put' | 'delete'
 type ContentType =
@@ -109,8 +109,8 @@ export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
     this.body = def.body
     this.responses = {
       ...def.responses,
-      500: ZOD_INTERNAL_ERROR_SCHEMA,
-      400: this.body ? ZOD_INVALID_REQUEST_BODY_SCHEMA : undefined,
+      500: INTERNAL_ERROR_SCHEMA,
+      400: this.body ? INVALID_REQUEST_BODY_SCHEMA : undefined,
     }
     this.allowedStatusCodes = new Set(Object.keys(this.responses).map(Number))
     this.handler = handler

@@ -1,11 +1,12 @@
 import omit from 'lodash.omit'
 
+import type z from 'zod'
 import type { UserCreationData, UserDTO } from '../schemas/user'
 import { userCreationDataSchema, userDTOSchema } from '../schemas/user'
-import type { AuthData } from '../schemas/auth'
-import { authDataSchema } from '../schemas/auth'
 import * as userModel from '../models/user'
 import { endpoint } from '../utils/endpoint'
+import { endpoint as zodEndpoint } from '../utils/endpoint.zod'
+import { authDTOSchema } from './auth.schemas'
 
 const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
   async (req, res) => {
@@ -78,9 +79,9 @@ const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
  * The front-end will then have to have a specific route to handle that, that
  * will basically call a "confirm unregistering" endpoint passing the token
  */
-const unregisterLoggedUser = endpoint.POST('/me/unregister')<
+const unregisterLoggedUser = zodEndpoint.POST('/me/unregister')<
   void,
-  AuthData,
+  z.infer<typeof authDTOSchema>,
   void
 >(
   async (req, res) => {
@@ -95,7 +96,7 @@ const unregisterLoggedUser = endpoint.POST('/me/unregister')<
     summary: 'Unregisters the logged user',
     tags: ['auth'],
     params: null,
-    body: authDataSchema,
+    body: authDTOSchema,
     responses: {
       200: {
         description: 'The logged user was unregistered',

@@ -1,5 +1,6 @@
 import type { JSONSchemaType } from 'ajv'
 import omit from 'lodash.omit'
+import z from 'zod'
 import type { User } from '../models/user'
 
 const userProperties = {
@@ -30,3 +31,19 @@ export const userDTOSchema: JSONSchemaType<UserDTO> = {
   required: ['id', 'firstName', 'middleAndSurname', 'age', 'email'],
   additionalProperties: false,
 }
+
+export const userSchema = z.object({
+  id: z.number(),
+  firstName: z.string(),
+  middleAndSurname: z.string(),
+  age: z.number().min(1).max(120).nullable(),
+  email: z.string(),
+  password: z.string(),
+})
+
+export const zodUserDTOSchema = userSchema
+  .omit({
+    password: true,
+  })
+  .strict()
+  .describe('Data that represents a user')

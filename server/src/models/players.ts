@@ -75,19 +75,32 @@ export const create = (player: PlayerCreationData) =>
     .execute()
     .then((rows) => getById({ id: rows[0]?.id }))
 
-export const update = ({
-  id,
-  player,
-}: {
-  id: number
-  player: PlayerUpdateData
-}) =>
-  kysely
+export function update(
+  {
+    id,
+    player,
+  }: {
+    id: number
+    player: PlayerUpdateData
+  },
+  transaction?: Transaction
+) {
+  return (transaction ?? kysely)
     .updateTable('player')
     .set(player)
     .where('id', '==', id)
+    .executeTakeFirst()
+    .then((result) => result.numUpdatedRows !== 1n)
+}
+
+export const deleteMultiple = (
+  params: { ids: number[] },
+  transaction?: Transaction
+) =>
+  (transaction ?? kysely)
+    .deleteFrom('player')
+    .where('id', 'in', params.ids)
     .execute()
-    .then(() => getById({ id }))
 
 export const deleteById = (params: { id: number; matchId: number }) =>
   kysely

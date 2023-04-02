@@ -750,6 +750,120 @@
                   "notes": {
                     "type": "string",
                     "nullable": true
+                  },
+                  "players": {
+                    "anyOf": [
+                      {
+                        "not": {}
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "create": {
+                            "anyOf": [
+                              {
+                                "not": {}
+                              },
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "friend": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "number"
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "ANON_FRIEND",
+                                            "USER"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "type"
+                                      ],
+                                      "additionalProperties": false,
+                                      "description": "Generic friend identification data"
+                                    },
+                                    "score": {
+                                      "type": "number",
+                                      "nullable": true
+                                    },
+                                    "isWinner": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "friend",
+                                    "score",
+                                    "isWinner"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            ],
+                            "nullable": true
+                          },
+                          "update": {
+                            "anyOf": [
+                              {
+                                "not": {}
+                              },
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "friend": {
+                                      "$ref": "#/properties/players/anyOf/0/anyOf/1/properties/create/anyOf/0/anyOf/1/items/properties/friend"
+                                    },
+                                    "score": {
+                                      "$ref": "#/properties/players/anyOf/0/anyOf/1/properties/create/anyOf/0/anyOf/1/items/properties/score"
+                                    },
+                                    "isWinner": {
+                                      "$ref": "#/properties/players/anyOf/0/anyOf/1/properties/create/anyOf/0/anyOf/1/items/properties/isWinner"
+                                    },
+                                    "id": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "required": [
+                                    "friend",
+                                    "score",
+                                    "isWinner",
+                                    "id"
+                                  ],
+                                  "additionalProperties": false,
+                                  "description": "Data used to update a player"
+                                }
+                              }
+                            ],
+                            "nullable": true
+                          },
+                          "delete": {
+                            "anyOf": [
+                              {
+                                "not": {}
+                              },
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "number"
+                                }
+                              }
+                            ],
+                            "nullable": true
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ],
+                    "nullable": true
                   }
                 },
                 "required": [

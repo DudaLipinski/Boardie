@@ -169,14 +169,18 @@ const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
       return res.sendStatus(403)
     }
 
-    const updatedPlayer = await playersModel.update({
+    const wasUpdated = await playersModel.update({
       id: playerId,
       player: playerDtoToDbModel(player),
     })
+    if (!wasUpdated) {
+      return res.sendStatus(404)
+    }
+
+    const updatedPlayer = await playersModel.getById({ id: playerId })
     if (!updatedPlayer) {
       return res.sendStatus(500)
     }
-
     res.status(200).send(updatedPlayer)
   },
   {

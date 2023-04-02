@@ -1,7 +1,10 @@
 import z from 'zod'
-import { playerDTOSchema, playerUpdateDataSchema } from '../schemas/player'
 import { isoDateString } from '../utils/schemas'
-import { playerCreationDataSchema } from './player'
+import {
+  playerDTOSchema,
+  playerCreationDataSchema,
+  playerUpdateDataSchema,
+} from './player'
 
 const matchSchema = z.object({
   id: z.number(),
@@ -33,6 +36,18 @@ export const matchDTOSchema = matchSchema
   .strict()
   .describe('Match data with its players')
 
+export const playersCRUDSchema = z
+  .object({
+    create: z.array(playerCreationDataSchema).optional().nullable(),
+    update: z
+      .array(playerUpdateDataSchema.extend({ id: z.number() }))
+      .optional()
+      .nullable(),
+    delete: z.array(z.number()).optional().nullable(),
+  })
+  .optional()
+  .nullable()
+
 export const matchUpdateDataSchema = matchSchema
   .omit({
     id: true,
@@ -42,13 +57,7 @@ export const matchUpdateDataSchema = matchSchema
     players: true,
   })
   .extend({
-    players: z
-      .object({
-        create: z.array(playerCreationDataSchema),
-        update: z.array(playerUpdateDataSchema),
-        delete: z.array(z.number()),
-      })
-      .optional(),
+    players: playersCRUDSchema,
   })
   .strict()
   .describe('Match data with its players')

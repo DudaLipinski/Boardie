@@ -3,7 +3,8 @@ import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
 import * as playerModel from '../models/players'
 import * as friendsModel from '../models/friends'
-
+import { FriendType } from '../schemas/friends'
+import type { playersCRUDSchema } from '../schemas/match'
 import {
   matchUpdateDataSchema,
   matchCreationDataSchema,
@@ -11,8 +12,8 @@ import {
 } from '../schemas/match'
 import { playerDtoToDbModel } from '../schemas/player'
 import { endpoint } from '../utils/endpoint'
+import type { Transaction } from '../database'
 import kysely from '../database'
-import { FriendType } from '../schemas/friends'
 
 type MatchDTO = z.infer<typeof matchDTOSchema>
 type MatchCreationData = z.infer<typeof matchCreationDataSchema>
@@ -174,10 +175,38 @@ const getById = endpoint.GET('/matches/:matchId')<
   }
 )
 
+const handlePlayersCRUD = async (
+  matchId: number,
+  players: z.infer<typeof playersCRUDSchema>,
+  transaction: Transaction
+) => {
+  if (players?.create) {
+    const digestedPlayers = players.create.map((player) => ({
+      ...playerDtoToDbModel(player),
+      matchId,
+    }))
+    await playerModel.createMultiple.call({ transaction }, digestedPlayers)
+  }
+
+  if (players?.update) {
+    const digestedPlayers = players.update.map((player) => ({
+      ...playerDtoToDbModel(player),
+      id: player.id,
+    }))
+    for (const { id, ...player } of digestedPlayers) {
+      await playerModel.update({ id, player }, transaction)
+    }
+  }
+
+  if (players?.delete) {
+    await playerModel.deleteMultiple({ ids: players.delete }, transaction)
+  }
+}
+
 const update = endpoint.PUT('/matches/:matchId')<
   { matchId: string },
   MatchUpdateData,
-  void
+  MatchDTO
 >(
   async (req, res) => {
     const matchId = parseInt(req.params.matchId, 10)
@@ -191,12 +220,31 @@ const update = endpoint.PUT('/matches/:matchId')<
       return res.sendStatus(403)
     }
 
-    const matchUpdated = await matchesModel.update(matchId, req.body)
-    if (!matchUpdated) {
+    const updated = await kysely.transaction().execute(async (transaction) => {
+      const { players, ...matchDetails } = req.body
+
+      const matchUpdated = await matchesModel.update.call(
+        { transaction },
+        matchId,
+        matchDetails
+      )
+      if (!matchUpdated) {
+        return false
+      }
+
+      await handlePlayersCRUD(matchId, players, transaction)
+
+      return true
+    })
+    if (!updated) {
       return res.sendStatus(404)
     }
 
-    return res.sendStatus(200)
+    const updatedMatch = await matchesModel.getHydratedById({ id: matchId })
+    if (!updatedMatch) {
+      return res.sendStatus(500)
+    }
+    return res.status(200).send(updatedMatch)
   },
   {
     summary: 'Updates a match',

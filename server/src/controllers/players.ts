@@ -1,11 +1,7 @@
+import z from 'zod'
 import * as matchesModel from '../models/matches'
 import * as playersModel from '../models/players'
 import * as friendsModel from '../models/friends'
-import type {
-  PlayerCreationData,
-  PlayerDTO,
-  PlayerUpdateData,
-} from '../schemas/player'
 import {
   playerDtoToDbModel,
   playerDTOSchema,
@@ -14,6 +10,10 @@ import {
 } from '../schemas/player'
 import { endpoint } from '../utils/endpoint'
 import * as matchesController from './matches'
+
+type PlayerDTO = z.infer<typeof playerDTOSchema>
+type PlayerCreationData = z.infer<typeof playerCreationDataSchema>
+type PlayerUpdateData = z.infer<typeof playerUpdateDataSchema>
 
 const checkPlayerFriendship = (
   userId: number,
@@ -77,10 +77,7 @@ const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
     responses: {
       200: {
         description: 'The players',
-        schema: {
-          type: 'array',
-          items: playerDTOSchema,
-        },
+        schema: z.array(playerDTOSchema),
       },
       404: {
         description: 'The match was not found',

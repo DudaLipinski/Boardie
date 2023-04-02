@@ -1,8 +1,8 @@
 import type z from 'zod'
 import * as userModel from '../models/user'
 import { generateAccessToken } from '../utils/auth'
-import { endpoint } from '../utils/endpoint.zod'
-import { authSchema, authDTOSchema } from './auth.schemas'
+import { endpoint } from '../utils/endpoint'
+import { authSchema, authDTOSchema } from '../schemas/auth'
 
 const auth = endpoint.POST('/auth')<
   void,

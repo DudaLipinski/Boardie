@@ -11,11 +11,6 @@ export const prefixKeysWithDollar = <
     {}
   )
 
-export enum FriendType {
-  ANON_FRIEND = 'ANON_FRIEND',
-  USER = 'USER',
-}
-
 export const generateUpdate = (
   values: Record<string, string | number | boolean | null>
 ) => {

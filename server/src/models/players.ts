@@ -1,7 +1,7 @@
 import { sql } from 'kysely'
 import type { Transaction } from '../database'
 import kysely from '../database'
-import { FriendType } from './utils'
+import { FriendType } from '../schemas/friends'
 
 export interface Player {
   id: number

@@ -1,13 +1,9 @@
+import z from 'zod'
 import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
 import * as playerModel from '../models/players'
 import * as friendsModel from '../models/friends'
 
-import type {
-  MatchCreationData,
-  MatchDTO,
-  MatchUpdateData,
-} from '../schemas/match'
 import {
   matchUpdateDataSchema,
   matchCreationDataSchema,
@@ -15,8 +11,12 @@ import {
 } from '../schemas/match'
 import { playerDtoToDbModel } from '../schemas/player'
 import { endpoint } from '../utils/endpoint'
-import { FriendType } from '../models/utils'
 import kysely from '../database'
+import { FriendType } from '../schemas/friends'
+
+type MatchDTO = z.infer<typeof matchDTOSchema>
+type MatchCreationData = z.infer<typeof matchCreationDataSchema>
+type MatchUpdateData = z.infer<typeof matchUpdateDataSchema>
 
 export const checkAccess = {
   create: async (userId: number, matchCreationData: MatchCreationData) => {
@@ -124,10 +124,7 @@ const getAllByLoggedUser = endpoint.GET('/me/matches')<void, void, MatchDTO[]>(
     responses: {
       200: {
         description: 'The matches',
-        schema: {
-          type: 'array',
-          items: matchDTOSchema,
-        },
+        schema: z.array(matchDTOSchema),
       },
     },
   }

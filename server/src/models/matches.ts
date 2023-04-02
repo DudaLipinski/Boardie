@@ -1,6 +1,4 @@
 import { CURRENT_DATETIME_QUERY } from '../utils/sql'
-import type { MatchUpdateData } from '../schemas/match'
-import type { PlayerDTO } from '../schemas/player'
 import type { Transaction } from '../database'
 import kysely from '../database'
 import { getAllByMatchId } from './players'
@@ -9,21 +7,17 @@ export interface Match {
   id: number
   authorId: number | null
   boardgameName: string
-  location?: string | null
-  notes?: string | null
+  location: string | null
+  notes: string | null
   createdAt: string
-  deletedAt?: string | null
+  deletedAt: string | null
   startedAt: string
-  endedAt?: string | null
-}
-
-export interface HydratedMatch extends Match {
-  players: PlayerDTO[]
+  endedAt: string | null
 }
 
 export function create(
   this: { transaction?: Transaction },
-  match: Omit<Match, 'id'>
+  match: Omit<Match, 'id' | 'createdAt' | 'deletedAt'>
 ) {
   return (this.transaction ?? kysely)
     .insertInto('match')
@@ -32,7 +26,10 @@ export function create(
     .executeTakeFirstOrThrow()
 }
 
-export const update = (matchId: number, match: MatchUpdateData) =>
+export const update = (
+  matchId: number,
+  match: Omit<Match, 'id' | 'authorId' | 'createdAt' | 'deletedAt'>
+) =>
   kysely
     .updateTable('match')
     .set(match)
@@ -71,7 +68,7 @@ export const getHydratedByAuthor = async (params: { authorId: number }) => {
    * We are fine with this N+1 query since the server and the database
    * will be running within the same machine, with low latency
    */
-  const result: HydratedMatch[] = []
+  const result = []
   for (const match of matches) {
     if (!match) {
       continue

@@ -1,13 +1,14 @@
-import type { GenericFriend } from '../schemas/genericFriend'
+import type z from 'zod'
+import type { genericFriendIdDTOSchema } from '../schemas/friends'
+import { FriendType } from '../schemas/friends'
 import * as anonFriendsModel from './anonFriends'
-import { FriendType } from './utils'
 
 export const checkFriendshipExists = ({
   userId,
   friend,
 }: {
   userId: number
-  friend: GenericFriend
+  friend: z.infer<typeof genericFriendIdDTOSchema>
 }) => {
   const { id, type } = friend
   if (type === FriendType.ANON_FRIEND) {

@@ -1,14 +1,15 @@
+import z from 'zod'
 import * as anonFriendsModel from '../models/anonFriends'
 
-import { FriendType } from '../models/utils'
 import { endpoint } from '../utils/endpoint'
-import type { HydratedGenericFriend } from '../schemas/genericFriend'
-import { genericFriendDTOSchema } from '../schemas/genericFriend'
+import { genericFriendDTOSchema, FriendType } from '../schemas/friends'
+
+type GenericFriend = z.infer<typeof genericFriendDTOSchema>
 
 const getAllByLoggedUser = endpoint.GET('/me/friends')<
   void,
   void,
-  HydratedGenericFriend[]
+  GenericFriend[]
 >(
   async (req, res) => {
     const anonFriends = (
@@ -25,10 +26,7 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
     responses: {
       200: {
         description: "The logged user's friends",
-        schema: {
-          type: 'array',
-          items: genericFriendDTOSchema,
-        },
+        schema: z.array(genericFriendDTOSchema),
       },
     },
   }

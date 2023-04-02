@@ -1,5 +1,5 @@
 import z from 'zod'
-import { userSchema, userDTOSchema } from './user.schemas'
+import { userSchema, userDTOSchema } from './user'
 
 export const authDTOSchema = userSchema
   .pick({

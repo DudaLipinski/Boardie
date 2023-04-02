@@ -1,13 +1,13 @@
 import type { z } from 'zod'
 import * as anonFriendsModel from '../models/anonFriends'
 
-import { FriendType } from '../models/utils'
-import { endpoint } from '../utils/endpoint.zod'
+import { endpoint } from '../utils/endpoint'
+import { FriendType } from '../schemas/friends'
 import {
   anonFriendUpdateDataSchema,
   anonFriendCreationDataSchema,
   anonFriendDTOSchema,
-} from './anonFriends.schemas'
+} from '../schemas/anonFriends'
 
 const checkAccess = {
   update: (userId: number, anonFriend: anonFriendsModel.AnonFriend) =>

@@ -1,17 +1,13 @@
-import type {
-  AnonFriendCreationData,
-  AnonFriendDTO,
-  AnonFriendUpdateData,
-} from '../schemas/anonFriend'
-import {
-  anonFriendCreationDataSchema,
-  anonFriendDTOSchema,
-  anonFriendUpdateDataSchema,
-} from '../schemas/anonFriend'
+import type { z } from 'zod'
 import * as anonFriendsModel from '../models/anonFriends'
 
 import { FriendType } from '../models/utils'
-import { endpoint } from '../utils/endpoint'
+import { endpoint } from '../utils/endpoint.zod'
+import {
+  anonFriendUpdateDataSchema,
+  anonFriendCreationDataSchema,
+  anonFriendDTOSchema,
+} from './anonFriends.schemas'
 
 const checkAccess = {
   update: (userId: number, anonFriend: anonFriendsModel.AnonFriend) =>
@@ -22,8 +18,8 @@ const checkAccess = {
 
 const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   void,
-  AnonFriendCreationData,
-  AnonFriendDTO
+  z.infer<typeof anonFriendCreationDataSchema>,
+  z.infer<typeof anonFriendDTOSchema>
 >(
   async (req, res) => {
     const { id } = await anonFriendsModel.create({
@@ -53,8 +49,8 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
 
 const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
   { anonFriendId: string },
-  AnonFriendUpdateData,
-  AnonFriendDTO
+  z.infer<typeof anonFriendUpdateDataSchema>,
+  z.infer<typeof anonFriendDTOSchema>
 >(
   async (req, res) => {
     const anonFriendUpdateData = req.body

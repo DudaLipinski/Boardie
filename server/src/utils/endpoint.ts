@@ -1,6 +1,7 @@
 import type { RequestHandler, Express } from 'express'
 import type { OpenAPIV3_1 } from 'openapi-types'
 import type { z } from 'zod'
+import { zodToJsonSchema } from 'zod-to-json-schema'
 import {
   INTERNAL_ERROR_SCHEMA,
   INVALID_REQUEST_BODY_SCHEMA,
@@ -170,60 +171,60 @@ export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
     }
 
   // TODO: split this method into smaller ones
-  getOpenApiObject = (): OpenAPIV3_1.PathItemObject => ({
-    [this.method]: {
-      summary: this.summary,
-      tags: this.tags,
-      parameters: this.params
-        ? Object.entries(this.params).map(
-            ([paramName, paramSchema]): OpenAPIV3_1.ParameterObject => {
-              const schema = paramSchema as ParameterObject
-              return {
-                in: schema.in ?? 'path',
-                name: paramName,
-                required: schema.required ?? true,
-                schema: {
-                  type: schema.type,
-                },
-              }
-            }
-          )
-        : undefined,
-      requestBody: this.body
-        ? {
-            content: {
-              'application/json': {
-                schema: this.body,
+  getOpenApiObject = (): OpenAPIV3_1.OperationObject => ({
+    summary: this.summary,
+    tags: this.tags,
+    parameters: this.params
+      ? Object.entries(this.params).map(
+          ([paramName, paramSchema]): OpenAPIV3_1.ParameterObject => {
+            const schema = paramSchema as ParameterObject
+            return {
+              in: schema.in ?? 'path',
+              name: paramName,
+              required: schema.required ?? true,
+              schema: {
+                type: schema.type,
               },
+            }
+          }
+        )
+      : undefined,
+    requestBody: this.body
+      ? {
+          content: {
+            'application/json': {
+              schema: zodToJsonSchema(this.body, { target: 'openApi3' }),
             },
-          }
-        : undefined,
-      responses: Object.entries(this.responses).reduce(
-        (result, [statusCode, res]) => {
-          if (res === undefined) {
-            return result
-          }
+          },
+        }
+      : undefined,
+    responses: Object.entries(this.responses).reduce(
+      (result, [statusCode, res]) => {
+        if (res === undefined) {
+          return result
+        }
 
-          const response = res as Response<unknown>
-          const content = response.schema
-            ? {
-                [response.contentType ?? 'application/json']: {
-                  schema: response.schema,
-                },
-              }
-            : undefined
+        const response = res as Response<unknown>
+        const content = response.schema
+          ? {
+              [response.contentType ?? 'application/json']: {
+                schema: zodToJsonSchema(response.schema, {
+                  target: 'openApi3',
+                }),
+              },
+            }
+          : undefined
 
-          return {
-            ...result,
-            [statusCode]: {
-              description: response.description,
-              content,
-            },
-          }
-        },
-        {}
-      ),
-    },
+        return {
+          ...result,
+          [statusCode]: {
+            description: response.description,
+            content,
+          },
+        }
+      },
+      {}
+    ),
   })
 
   setRouter = (app: Express) => {

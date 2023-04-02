@@ -16,8 +16,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "User",
-                "description": "Data used to create a new user",
                 "type": "object",
                 "properties": {
                   "firstName": {
@@ -27,9 +25,10 @@
                     "type": "string"
                   },
                   "age": {
-                    "type": "integer",
+                    "type": "number",
                     "minimum": 1,
-                    "maximum": 120
+                    "maximum": 120,
+                    "nullable": true
                   },
                   "email": {
                     "type": "string"
@@ -45,7 +44,8 @@
                   "email",
                   "password"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data used to create a new user"
               }
             }
           }
@@ -56,8 +56,6 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "User",
-                  "description": "User data",
                   "type": "object",
                   "properties": {
                     "id": {
@@ -70,9 +68,10 @@
                       "type": "string"
                     },
                     "age": {
-                      "type": "integer",
+                      "type": "number",
                       "minimum": 1,
-                      "maximum": 120
+                      "maximum": 120,
+                      "nullable": true
                     },
                     "email": {
                       "type": "string"
@@ -85,56 +84,20 @@
                     "age",
                     "email"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Data that represents a user"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "409": {
             "description": "There's already a user registered with this email"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       },
@@ -149,8 +112,6 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "User",
-                  "description": "User data",
                   "type": "object",
                   "properties": {
                     "id": {
@@ -163,9 +124,10 @@
                       "type": "string"
                     },
                     "age": {
-                      "type": "integer",
+                      "type": "number",
                       "minimum": 1,
-                      "maximum": 120
+                      "maximum": 120,
+                      "nullable": true
                     },
                     "email": {
                       "type": "string"
@@ -178,7 +140,8 @@
                     "age",
                     "email"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Data that represents a user"
                 }
               }
             }
@@ -187,25 +150,7 @@
             "description": "The logged user was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -220,8 +165,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "auth",
-                "description": "Contact and auth information about a user",
                 "type": "object",
                 "properties": {
                   "email": {
@@ -235,7 +178,8 @@
                   "email",
                   "password"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Auth information about a user"
               }
             }
           }
@@ -245,50 +189,13 @@
             "description": "The logged user was unregistered"
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "401": {
             "description": "Invalid credentials"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -303,8 +210,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "auth",
-                "description": "Auth information about a user",
                 "type": "object",
                 "properties": {
                   "email": {
@@ -318,110 +223,22 @@
                   "email",
                   "password"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Auth information about a user"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "The logged in user's data along with the generated JWT token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "user": {
-                      "title": "User",
-                      "description": "User data",
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "number"
-                        },
-                        "firstName": {
-                          "type": "string"
-                        },
-                        "middleAndSurname": {
-                          "type": "string"
-                        },
-                        "age": {
-                          "type": "integer",
-                          "minimum": 1,
-                          "maximum": 120
-                        },
-                        "email": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "firstName",
-                        "middleAndSurname",
-                        "age",
-                        "email"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "token": {
-                      "description": "A JWT token",
-                      "type": "string",
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjUyMTc4MCwiZXhwIjoxNjY2NTQzMzgwfQ.MDwMf43KJDUspoelvhst3FrzWdxaFzmowZ80alZERVQ"
-                    }
-                  },
-                  "required": [
-                    "user",
-                    "token"
-                  ]
-                }
-              }
-            }
-          },
+          "200": {},
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "401": {
             "description": "Provided credentials doesn't match any valid user"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -436,8 +253,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "Match creation payload",
-                "description": "Data used to create a match along with its initial players",
                 "type": "object",
                 "properties": {
                   "boardgameName": {
@@ -448,23 +263,10 @@
                     "nullable": true
                   },
                   "startedAt": {
-                    "type": "string",
-                    "isoUtcDateTime": true,
-                    "nullable": false
+                    "type": "string"
                   },
                   "endedAt": {
                     "type": "string",
-                    "isoUtcDateTime": true,
-                    "nullable": true
-                  },
-                  "createdAt": {
-                    "type": "string",
-                    "isoUtcDateTime": true,
-                    "nullable": false
-                  },
-                  "deletedAt": {
-                    "type": "string",
-                    "isoUtcDateTime": true,
                     "nullable": true
                   },
                   "notes": {
@@ -474,13 +276,9 @@
                   "players": {
                     "type": "array",
                     "items": {
-                      "title": "Player creation data",
-                      "description": "Data used to create a player",
                       "type": "object",
                       "properties": {
                         "friend": {
-                          "title": "Generic friend data",
-                          "description": "Generic friend data",
                           "type": "object",
                           "properties": {
                             "id": {
@@ -489,18 +287,21 @@
                             "type": {
                               "type": "string",
                               "enum": [
-                                "USER",
-                                "ANON_FRIEND"
+                                "ANON_FRIEND",
+                                "USER"
                               ]
                             }
                           },
                           "required": [
                             "id",
                             "type"
-                          ]
+                          ],
+                          "additionalProperties": false,
+                          "description": "Generic friend identification data"
                         },
                         "score": {
-                          "type": "number"
+                          "type": "number",
+                          "nullable": true
                         },
                         "isWinner": {
                           "type": "boolean"
@@ -512,15 +313,19 @@
                         "isWinner"
                       ],
                       "additionalProperties": false
-                    },
-                    "minItems": 1
+                    }
                   }
                 },
                 "required": [
                   "boardgameName",
+                  "location",
+                  "startedAt",
+                  "endedAt",
+                  "notes",
                   "players"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data used to create a match along with its initial players"
               }
             }
           }
@@ -531,15 +336,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Match creation result",
-                  "description": "Match data with its players",
                   "type": "object",
                   "properties": {
                     "id": {
                       "type": "number"
                     },
                     "authorId": {
-                      "type": "number"
+                      "type": "number",
+                      "nullable": true
                     },
                     "boardgameName": {
                       "type": "string"
@@ -549,23 +353,17 @@
                       "nullable": true
                     },
                     "startedAt": {
-                      "type": "string",
-                      "isoUtcDateTime": true,
-                      "nullable": false
+                      "type": "string"
                     },
                     "endedAt": {
                       "type": "string",
-                      "isoUtcDateTime": true,
                       "nullable": true
                     },
                     "createdAt": {
-                      "type": "string",
-                      "isoUtcDateTime": true,
-                      "nullable": false
+                      "type": "string"
                     },
                     "deletedAt": {
                       "type": "string",
-                      "isoUtcDateTime": true,
                       "nullable": true
                     },
                     "notes": {
@@ -575,16 +373,12 @@
                     "players": {
                       "type": "array",
                       "items": {
-                        "title": "Player",
-                        "description": "Data that represents an existent player",
                         "type": "object",
                         "properties": {
                           "id": {
                             "type": "number"
                           },
                           "friend": {
-                            "title": "Hydrated generic friend",
-                            "description": "Friend data with its full name",
                             "type": "object",
                             "properties": {
                               "id": {
@@ -593,8 +387,8 @@
                               "type": {
                                 "type": "string",
                                 "enum": [
-                                  "USER",
-                                  "ANON_FRIEND"
+                                  "ANON_FRIEND",
+                                  "USER"
                                 ]
                               },
                               "fullName": {
@@ -606,10 +400,12 @@
                               "type",
                               "fullName"
                             ],
-                            "additionalProperties": false
+                            "additionalProperties": false,
+                            "description": "Generic friend"
                           },
                           "score": {
-                            "type": "number"
+                            "type": "number",
+                            "nullable": true
                           },
                           "isWinner": {
                             "type": "boolean"
@@ -621,65 +417,37 @@
                           "score",
                           "isWinner"
                         ],
-                        "additionalProperties": false
+                        "additionalProperties": false,
+                        "description": "Data that represents an existent player"
                       }
                     }
                   },
                   "required": [
+                    "id",
                     "authorId",
                     "boardgameName",
+                    "location",
+                    "startedAt",
+                    "endedAt",
+                    "createdAt",
+                    "deletedAt",
+                    "notes",
                     "players"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Match data with its players"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "403": {
             "description": "The logged user is not friends with one of the players"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       },
@@ -696,15 +464,14 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "title": "Match creation result",
-                    "description": "Match data with its players",
                     "type": "object",
                     "properties": {
                       "id": {
                         "type": "number"
                       },
                       "authorId": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                       },
                       "boardgameName": {
                         "type": "string"
@@ -714,23 +481,17 @@
                         "nullable": true
                       },
                       "startedAt": {
-                        "type": "string",
-                        "isoUtcDateTime": true,
-                        "nullable": false
+                        "type": "string"
                       },
                       "endedAt": {
                         "type": "string",
-                        "isoUtcDateTime": true,
                         "nullable": true
                       },
                       "createdAt": {
-                        "type": "string",
-                        "isoUtcDateTime": true,
-                        "nullable": false
+                        "type": "string"
                       },
                       "deletedAt": {
                         "type": "string",
-                        "isoUtcDateTime": true,
                         "nullable": true
                       },
                       "notes": {
@@ -740,16 +501,12 @@
                       "players": {
                         "type": "array",
                         "items": {
-                          "title": "Player",
-                          "description": "Data that represents an existent player",
                           "type": "object",
                           "properties": {
                             "id": {
                               "type": "number"
                             },
                             "friend": {
-                              "title": "Hydrated generic friend",
-                              "description": "Friend data with its full name",
                               "type": "object",
                               "properties": {
                                 "id": {
@@ -758,8 +515,8 @@
                                 "type": {
                                   "type": "string",
                                   "enum": [
-                                    "USER",
-                                    "ANON_FRIEND"
+                                    "ANON_FRIEND",
+                                    "USER"
                                   ]
                                 },
                                 "fullName": {
@@ -771,10 +528,12 @@
                                 "type",
                                 "fullName"
                               ],
-                              "additionalProperties": false
+                              "additionalProperties": false,
+                              "description": "Generic friend"
                             },
                             "score": {
-                              "type": "number"
+                              "type": "number",
+                              "nullable": true
                             },
                             "isWinner": {
                               "type": "boolean"
@@ -786,41 +545,32 @@
                             "score",
                             "isWinner"
                           ],
-                          "additionalProperties": false
+                          "additionalProperties": false,
+                          "description": "Data that represents an existent player"
                         }
                       }
                     },
                     "required": [
+                      "id",
                       "authorId",
                       "boardgameName",
+                      "location",
+                      "startedAt",
+                      "endedAt",
+                      "createdAt",
+                      "deletedAt",
+                      "notes",
                       "players"
                     ],
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "description": "Match data with its players"
                   }
                 }
               }
             }
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -847,15 +597,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Match creation result",
-                  "description": "Match data with its players",
                   "type": "object",
                   "properties": {
                     "id": {
                       "type": "number"
                     },
                     "authorId": {
-                      "type": "number"
+                      "type": "number",
+                      "nullable": true
                     },
                     "boardgameName": {
                       "type": "string"
@@ -865,23 +614,17 @@
                       "nullable": true
                     },
                     "startedAt": {
-                      "type": "string",
-                      "isoUtcDateTime": true,
-                      "nullable": false
+                      "type": "string"
                     },
                     "endedAt": {
                       "type": "string",
-                      "isoUtcDateTime": true,
                       "nullable": true
                     },
                     "createdAt": {
-                      "type": "string",
-                      "isoUtcDateTime": true,
-                      "nullable": false
+                      "type": "string"
                     },
                     "deletedAt": {
                       "type": "string",
-                      "isoUtcDateTime": true,
                       "nullable": true
                     },
                     "notes": {
@@ -891,16 +634,12 @@
                     "players": {
                       "type": "array",
                       "items": {
-                        "title": "Player",
-                        "description": "Data that represents an existent player",
                         "type": "object",
                         "properties": {
                           "id": {
                             "type": "number"
                           },
                           "friend": {
-                            "title": "Hydrated generic friend",
-                            "description": "Friend data with its full name",
                             "type": "object",
                             "properties": {
                               "id": {
@@ -909,8 +648,8 @@
                               "type": {
                                 "type": "string",
                                 "enum": [
-                                  "USER",
-                                  "ANON_FRIEND"
+                                  "ANON_FRIEND",
+                                  "USER"
                                 ]
                               },
                               "fullName": {
@@ -922,10 +661,12 @@
                               "type",
                               "fullName"
                             ],
-                            "additionalProperties": false
+                            "additionalProperties": false,
+                            "description": "Generic friend"
                           },
                           "score": {
-                            "type": "number"
+                            "type": "number",
+                            "nullable": true
                           },
                           "isWinner": {
                             "type": "boolean"
@@ -937,16 +678,25 @@
                           "score",
                           "isWinner"
                         ],
-                        "additionalProperties": false
+                        "additionalProperties": false,
+                        "description": "Data that represents an existent player"
                       }
                     }
                   },
                   "required": [
+                    "id",
                     "authorId",
                     "boardgameName",
+                    "location",
+                    "startedAt",
+                    "endedAt",
+                    "createdAt",
+                    "deletedAt",
+                    "notes",
                     "players"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Match data with its players"
                 }
               }
             }
@@ -958,25 +708,7 @@
             "description": "The match was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       },
@@ -999,8 +731,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "Match",
-                "description": "Match data with its players",
                 "type": "object",
                 "properties": {
                   "boardgameName": {
@@ -1011,34 +741,26 @@
                     "nullable": true
                   },
                   "startedAt": {
-                    "type": "string",
-                    "isoUtcDateTime": true,
-                    "nullable": false
+                    "type": "string"
                   },
                   "endedAt": {
                     "type": "string",
-                    "isoUtcDateTime": true,
                     "nullable": true
                   },
                   "notes": {
                     "type": "string",
                     "nullable": true
-                  },
-                  "createdAt": {
-                    "type": "string",
-                    "isoUtcDateTime": true,
-                    "nullable": false
-                  },
-                  "deletedAt": {
-                    "type": "string",
-                    "isoUtcDateTime": true,
-                    "nullable": true
                   }
                 },
                 "required": [
-                  "boardgameName"
+                  "boardgameName",
+                  "location",
+                  "startedAt",
+                  "endedAt",
+                  "notes"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Match data with its players"
               }
             }
           }
@@ -1048,26 +770,7 @@
             "description": "The match was updated"
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "403": {
             "description": "The logged user is not the author of the match"
@@ -1076,25 +779,7 @@
             "description": "The match was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       },
@@ -1124,25 +809,7 @@
             "description": "The match was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -1161,8 +828,6 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "title": "Hydrated generic friend",
-                    "description": "Friend data with its full name",
                     "type": "object",
                     "properties": {
                       "id": {
@@ -1171,8 +836,8 @@
                       "type": {
                         "type": "string",
                         "enum": [
-                          "USER",
-                          "ANON_FRIEND"
+                          "ANON_FRIEND",
+                          "USER"
                         ]
                       },
                       "fullName": {
@@ -1184,32 +849,15 @@
                       "type",
                       "fullName"
                     ],
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "description": "Generic friend"
                   }
                 }
               }
             }
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -1224,19 +872,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "Anonymous friend creation data",
-                "description": "Data used to create an anonymous friend",
                 "type": "object",
                 "properties": {
                   "fullName": {
-                    "type": "string",
-                    "example": "Meeple Catanicus"
+                    "type": "string"
                   }
                 },
                 "required": [
                   "fullName"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data used to create an anonymous friend"
               }
             }
           }
@@ -1247,17 +893,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Anonymous friend",
-                  "description": "Data that represents an anonymous friend",
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "number",
-                      "example": 28
+                      "type": "number"
                     },
                     "fullName": {
-                      "type": "string",
-                      "example": "Meeple Catanicus"
+                      "type": "string"
                     },
                     "type": {
                       "type": "string",
@@ -1271,53 +913,17 @@
                     "fullName",
                     "type"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Data that represents an anonymous friend"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -1342,19 +948,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "Anonymous friend update data",
-                "description": "Data used to update an anonymous friend",
                 "type": "object",
                 "properties": {
                   "fullName": {
-                    "type": "string",
-                    "example": "Meeple Catanicus"
+                    "type": "string"
                   }
                 },
                 "required": [
                   "fullName"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data used to update an anonymous friend"
               }
             }
           }
@@ -1365,17 +969,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Anonymous friend",
-                  "description": "Data that represents an anonymous friend",
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "number",
-                      "example": 28
+                      "type": "number"
                     },
                     "fullName": {
-                      "type": "string",
-                      "example": "Meeple Catanicus"
+                      "type": "string"
                     },
                     "type": {
                       "type": "string",
@@ -1389,32 +989,14 @@
                     "fullName",
                     "type"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Data that represents an anonymous friend"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "403": {
             "description": "The logged user is not allowed to update the friend"
@@ -1423,25 +1005,7 @@
             "description": "The friend does not exist"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       },
@@ -1471,25 +1035,7 @@
             "description": "The friend does not exist"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -1518,16 +1064,12 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "title": "Player",
-                    "description": "Data that represents an existent player",
                     "type": "object",
                     "properties": {
                       "id": {
                         "type": "number"
                       },
                       "friend": {
-                        "title": "Hydrated generic friend",
-                        "description": "Friend data with its full name",
                         "type": "object",
                         "properties": {
                           "id": {
@@ -1536,8 +1078,8 @@
                           "type": {
                             "type": "string",
                             "enum": [
-                              "USER",
-                              "ANON_FRIEND"
+                              "ANON_FRIEND",
+                              "USER"
                             ]
                           },
                           "fullName": {
@@ -1549,10 +1091,12 @@
                           "type",
                           "fullName"
                         ],
-                        "additionalProperties": false
+                        "additionalProperties": false,
+                        "description": "Generic friend"
                       },
                       "score": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                       },
                       "isWinner": {
                         "type": "boolean"
@@ -1564,7 +1108,8 @@
                       "score",
                       "isWinner"
                     ],
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "description": "Data that represents an existent player"
                   }
                 }
               }
@@ -1574,25 +1119,7 @@
             "description": "The match was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       },
@@ -1615,13 +1142,9 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "Player creation data",
-                "description": "Data used to create a player",
                 "type": "object",
                 "properties": {
                   "friend": {
-                    "title": "Generic friend data",
-                    "description": "Generic friend data",
                     "type": "object",
                     "properties": {
                       "id": {
@@ -1630,18 +1153,21 @@
                       "type": {
                         "type": "string",
                         "enum": [
-                          "USER",
-                          "ANON_FRIEND"
+                          "ANON_FRIEND",
+                          "USER"
                         ]
                       }
                     },
                     "required": [
                       "id",
                       "type"
-                    ]
+                    ],
+                    "additionalProperties": false,
+                    "description": "Generic friend identification data"
                   },
                   "score": {
-                    "type": "number"
+                    "type": "number",
+                    "nullable": true
                   },
                   "isWinner": {
                     "type": "boolean"
@@ -1663,16 +1189,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Player",
-                  "description": "Data that represents an existent player",
                   "type": "object",
                   "properties": {
                     "id": {
                       "type": "number"
                     },
                     "friend": {
-                      "title": "Hydrated generic friend",
-                      "description": "Friend data with its full name",
                       "type": "object",
                       "properties": {
                         "id": {
@@ -1681,8 +1203,8 @@
                         "type": {
                           "type": "string",
                           "enum": [
-                            "USER",
-                            "ANON_FRIEND"
+                            "ANON_FRIEND",
+                            "USER"
                           ]
                         },
                         "fullName": {
@@ -1694,10 +1216,12 @@
                         "type",
                         "fullName"
                       ],
-                      "additionalProperties": false
+                      "additionalProperties": false,
+                      "description": "Generic friend"
                     },
                     "score": {
-                      "type": "number"
+                      "type": "number",
+                      "nullable": true
                     },
                     "isWinner": {
                       "type": "boolean"
@@ -1709,32 +1233,14 @@
                     "score",
                     "isWinner"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Data that represents an existent player"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "403": {
             "description": "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the player trying to be created"
@@ -1743,25 +1249,7 @@
             "description": "The match was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }
@@ -1794,13 +1282,9 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "Player creation data",
-                "description": "Data used to create a player",
                 "type": "object",
                 "properties": {
                   "friend": {
-                    "title": "Generic friend data",
-                    "description": "Generic friend data",
                     "type": "object",
                     "properties": {
                       "id": {
@@ -1809,18 +1293,21 @@
                       "type": {
                         "type": "string",
                         "enum": [
-                          "USER",
-                          "ANON_FRIEND"
+                          "ANON_FRIEND",
+                          "USER"
                         ]
                       }
                     },
                     "required": [
                       "id",
                       "type"
-                    ]
+                    ],
+                    "additionalProperties": false,
+                    "description": "Generic friend identification data"
                   },
                   "score": {
-                    "type": "number"
+                    "type": "number",
+                    "nullable": true
                   },
                   "isWinner": {
                     "type": "boolean"
@@ -1831,7 +1318,8 @@
                   "score",
                   "isWinner"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data used to update a player"
               }
             }
           }
@@ -1842,16 +1330,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Player",
-                  "description": "Data that represents an existent player",
                   "type": "object",
                   "properties": {
                     "id": {
                       "type": "number"
                     },
                     "friend": {
-                      "title": "Hydrated generic friend",
-                      "description": "Friend data with its full name",
                       "type": "object",
                       "properties": {
                         "id": {
@@ -1860,8 +1344,8 @@
                         "type": {
                           "type": "string",
                           "enum": [
-                            "USER",
-                            "ANON_FRIEND"
+                            "ANON_FRIEND",
+                            "USER"
                           ]
                         },
                         "fullName": {
@@ -1873,10 +1357,12 @@
                         "type",
                         "fullName"
                       ],
-                      "additionalProperties": false
+                      "additionalProperties": false,
+                      "description": "Generic friend"
                     },
                     "score": {
-                      "type": "number"
+                      "type": "number",
+                      "nullable": true
                     },
                     "isWinner": {
                       "type": "boolean"
@@ -1888,32 +1374,14 @@
                     "score",
                     "isWinner"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Data that represents an existent player"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Invalid request body",
-                  "description": "The request body is invalid",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "An informative error message informing the issue with the request body"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "The request body is invalid"
           },
           "403": {
             "description": "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the player trying to be updated"
@@ -1922,25 +1390,7 @@
             "description": "The match or player was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       },
@@ -1978,25 +1428,7 @@
             "description": "The match or player was not found"
           },
           "500": {
-            "description": "Unexpected internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Internal error",
-                  "description": "An unexpected internal error",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
+            "description": "An unexpected internal error"
           }
         }
       }

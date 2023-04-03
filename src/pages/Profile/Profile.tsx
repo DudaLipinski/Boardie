@@ -1,15 +1,14 @@
-import { motion } from 'framer-motion'
 import { Box, Button, Typography } from '@mui/material'
-import { animationProps } from '../../styles/animation'
 import { useUser } from '../../queries/user'
 import { useLogout } from '../../routes/useLogout'
+import { Motion } from '../../components/Motion'
 
 export const Profile = () => {
   const { data: user } = useUser()
   const logout = useLogout()
 
   return (
-    <motion.div {...animationProps} style={{ width: '100%' }}>
+    <Motion style={{ width: '100%' }}>
       <Box width="inherit">
         <Typography variant="h4" component="h1">
           Profile
@@ -24,6 +23,6 @@ export const Profile = () => {
           Logout
         </Button>
       </Box>
-    </motion.div>
+    </Motion>
   )
 }

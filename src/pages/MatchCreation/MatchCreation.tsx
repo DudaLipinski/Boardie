@@ -1,21 +1,21 @@
-import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
 import { Box, Stack } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import { Match as MatchType } from '../../types/Match'
 import { useMatchCreation } from '../../queries/match'
 
 import { MatchParticipants } from '../../components/Match/MatchParticipants'
 import { MatchDetails } from '../../components/Match/MatchDetails'
 
-import { animationProps } from '../../styles/animation'
 import { Alert } from '../../components/Alert'
 import { userToParticipant } from '../../utils/friends'
 import { FabSubmit } from '../../components/FabSubmit'
 import { getErrorMessage } from '../../utils/api'
 import { useUser } from '../../queries/user'
 import { EDIT_MATCH } from '../../routes/routeSpecs'
+import { Motion } from '../../components/Motion'
 
 export const MatchCreation = () => {
   const navigate = useNavigate()
@@ -59,15 +59,17 @@ export const MatchCreation = () => {
 
     mutate(match)
 
-    if (isSuccess) {
-      navigate(EDIT_MATCH.replace(':id', data.id.toString()))
-    }
-
     return
   }
 
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(EDIT_MATCH.replace(':id', data.id.toString()))
+    }
+  }, [isSuccess, data?.id, navigate])
+
   return (
-    <motion.div {...animationProps}>
+    <Motion>
       <Box
         component="form"
         gap="12px"
@@ -82,6 +84,6 @@ export const MatchCreation = () => {
         </Stack>
         <FabSubmit isLoading={isLoading} />
       </Box>
-    </motion.div>
+    </Motion>
   )
 }

@@ -1,9 +1,7 @@
-import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
 import { Box, Stack } from '@mui/material'
 import { useParams } from 'react-router-dom'
-import CircularProgress from '@mui/material/CircularProgress'
 import { useEffect, useState } from 'react'
 import pick from 'lodash.pick'
 import { Match as MatchType } from '../../types/Match'
@@ -12,14 +10,16 @@ import { useMatch, useMatchUpdate } from '../../queries/match'
 import { MatchParticipants } from '../../components/Match/MatchParticipants'
 import { MatchDetails } from '../../components/Match/MatchDetails'
 
-import { animationProps } from '../../styles/animation'
 import { FabSubmit } from '../../components/FabSubmit'
 import { getErrorMessage } from '../../utils/api'
 import { Alert } from '../../components/Alert'
+import { FullScreenLoader } from '../../components/FullScreenLoader'
+import { Motion } from '../../components/Motion'
 
 export const MatchEdition = () => {
   const { id } = useParams()
   const matchId = id ? parseInt(id) : 0
+
   const [isReady, setIsReady] = useState(false)
 
   const { data, isLoading: isLoadingMatch, isError, error } = useMatch(matchId)
@@ -62,12 +62,12 @@ export const MatchEdition = () => {
       : value.endedAt
 
     const matchDetails = {
-      ...value,
+      id: matchId,
+      boardgameName: value.boardgameName,
+      notes: value.notes,
       startedAt: formattedStartedAt,
       endedAt: formattedEndedAt,
-      id: matchId,
     }
-    delete matchDetails.participants
 
     mutateMatchDetails(matchDetails)
 
@@ -105,7 +105,7 @@ export const MatchEdition = () => {
   }
 
   return (
-    <motion.div {...animationProps} style={{ width: '100%' }}>
+    <Motion style={{ width: '100%' }}>
       {isReady ? (
         <Box
           component="form"
@@ -124,12 +124,8 @@ export const MatchEdition = () => {
           <FabSubmit isLoading={false} />
         </Box>
       ) : (
-        <Box
-          sx={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}
-        >
-          <CircularProgress />
-        </Box>
+        <FullScreenLoader />
       )}
-    </motion.div>
+    </Motion>
   )
 }

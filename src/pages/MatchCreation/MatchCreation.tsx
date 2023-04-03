@@ -19,7 +19,7 @@ import { Motion } from '../../components/Motion'
 
 export const MatchCreation = () => {
   const navigate = useNavigate()
-  const { mutate, isLoading, isError, error, data, isSuccess } =
+  const { mutate, isLoading, isError, error, isSuccess, data } =
     useMatchCreation()
   const { data: user } = useUser()
   const emptyParticipant = {

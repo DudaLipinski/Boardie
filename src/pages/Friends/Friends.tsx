@@ -1,18 +1,18 @@
 import { Typography } from '@mui/material'
 import { Motion } from '../../components/Motion'
 
-export const Dashboard = () => {
+export const Friends = () => {
   return (
     <Motion
       style={{
-        width: '100%',
         display: 'flex',
+        width: '100%',
         flexDirection: 'column',
         alignSelf: 'center',
       }}
     >
-      <Typography align="center" variant="body2" component="p">
-        Dashboards coming soon
+      <Typography align="center" variant="body2" component="p" marginTop="8px">
+        Friends coming soon
       </Typography>
     </Motion>
   )

@@ -75,7 +75,7 @@ export const useMatchParticipantDeletion = () => {
   )
 }
 
-const UPDATE_MATCH_PARTICIPANT_KEY = 'updateMatchDetails'
+const UPDATE_MATCH_PARTICIPANT_KEY = 'updateMatchParticipants'
 export const useMatchUpdateParticipant = () => {
   return useMutation(
     UPDATE_MATCH_PARTICIPANT_KEY,

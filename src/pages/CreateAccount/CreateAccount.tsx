@@ -141,7 +141,9 @@ export const CreateAccount = () => {
           </Button>
         </Box>
         <Box margin="12px 0" textAlign="center">
-          <Link to={LOGIN}>Login</Link>
+          <Link to={LOGIN}>
+            <Typography> Login</Typography>
+          </Link>
         </Box>
       </Box>
     </Motion>

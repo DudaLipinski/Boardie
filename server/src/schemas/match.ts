@@ -38,15 +38,11 @@ export const matchDTOSchema = matchSchema
 
 export const playersCRUDSchema = z
   .object({
-    create: z.array(playerCreationDataSchema).optional().nullable(),
-    update: z
-      .array(playerUpdateDataSchema.extend({ id: z.number() }))
-      .optional()
-      .nullable(),
-    delete: z.array(z.number()).optional().nullable(),
+    create: z.array(playerCreationDataSchema),
+    update: z.array(playerUpdateDataSchema.extend({ id: z.number() })),
+    delete: z.array(z.number()),
   })
-  .optional()
-  .nullable()
+  .partial()
 
 export const matchUpdateDataSchema = matchSchema
   .omit({

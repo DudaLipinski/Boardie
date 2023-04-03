@@ -175,6 +175,7 @@ const getById = endpoint.GET('/matches/:matchId')<
   }
 )
 
+// TODO: add friendship validation
 const handlePlayersCRUD = async (
   matchId: number,
   players: z.infer<typeof playersCRUDSchema>,

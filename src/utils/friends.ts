@@ -1,5 +1,5 @@
 import { GenericUser } from '../types/GenericUser'
-import { Participant } from '../types/Match'
+import { Player } from '../types/Match'
 import { User } from '../types/User'
 
 export const userToGeneric = (user: User): GenericUser => {
@@ -10,7 +10,7 @@ export const userToGeneric = (user: User): GenericUser => {
   }
 }
 
-export const userToParticipant = (user: User): Participant => {
+export const userToPlayer = (user: User): Player => {
   return {
     score: 0,
     isWinner: false,

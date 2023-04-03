@@ -6,24 +6,22 @@ import { getErrorMessage } from '../../utils/api'
 import { useMatchDeletion } from '../../queries/match'
 import { MATCH_DETAILS } from '../../routes/routeSpecs'
 import { Alert } from '../Alert'
-import { Participants } from './Participants'
+import { Players } from './Players'
 import { MatchInfo } from './MatchInfo'
 import { styledListItem } from './MatchCard.styles'
 import { MenuButton } from './MenuButton'
 
 export const MatchCard = ({ match }: { match: Match }) => {
-  const { id, boardgameName, participants, startedAt } = match
+  const { id, boardgameName, players, startedAt } = match
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const { mutate, isError, error } = useMatchDeletion()
 
-  const participantsByScore = useMemo(
+  const playersByScore = useMemo(
     () =>
-      participants
-        ? participants.sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-        : [],
-    [participants]
+      players ? players.sort((a, b) => (b.score ?? 0) - (a.score ?? 0)) : [],
+    [players]
   )
-  const highestScore = participantsByScore?.[0]?.score ?? null
+  const highestScore = playersByScore?.[0]?.score ?? null
 
   const handleDeleteMatch = () => {
     mutate(id)
@@ -46,7 +44,7 @@ export const MatchCard = ({ match }: { match: Match }) => {
               date={startedAt}
               highestScore={highestScore}
             />
-            <Participants participants={participantsByScore} />
+            <Players players={playersByScore} />
           </Link>
         </Box>
         <Box width="8%" height="auto">

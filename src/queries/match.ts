@@ -52,33 +52,23 @@ export const useMatchUpdate = () => {
   return useMutation(UPDATE_MATCH_KEY, matchesService.updateMatchDetails)
 }
 
-const CREATE_MATCH_PARTICIPANT_KEY = 'createMatchParticipant'
-export const useMatchParticipantCreation = () => {
+const CREATE_MATCH_PLAYER_KEY = 'createPlayer'
+export const usePlayerCreation = () => {
   const queryClient = useQueryClient()
 
-  return useMutation(
-    CREATE_MATCH_PARTICIPANT_KEY,
-    matchesService.createMatchParticipant,
-    {
-      onSettled: () => {
-        queryClient.invalidateQueries(MATCH_KEY)
-      },
-    }
-  )
+  return useMutation(CREATE_MATCH_PLAYER_KEY, matchesService.createPlayer, {
+    onSettled: () => {
+      queryClient.invalidateQueries(MATCH_KEY)
+    },
+  })
 }
 
-const DELETE_MATCH_PARTICIPANT_KEY = 'deleteMatch'
-export const useMatchParticipantDeletion = () => {
-  return useMutation(
-    DELETE_MATCH_PARTICIPANT_KEY,
-    matchesService.deleteMatchParticipant
-  )
+const DELETE_MATCH_PLAYER_KEY = 'deleteMatch'
+export const usePlayerDeletion = () => {
+  return useMutation(DELETE_MATCH_PLAYER_KEY, matchesService.deletePlayer)
 }
 
-const UPDATE_MATCH_PARTICIPANT_KEY = 'updateMatchParticipants'
-export const useMatchUpdateParticipant = () => {
-  return useMutation(
-    UPDATE_MATCH_PARTICIPANT_KEY,
-    matchesService.updateMatchParticipant
-  )
+const UPDATE_MATCH_PLAYER_KEY = 'updatePlayers'
+export const useMatchUpdatePlayer = () => {
+  return useMutation(UPDATE_MATCH_PLAYER_KEY, matchesService.updatePlayer)
 }

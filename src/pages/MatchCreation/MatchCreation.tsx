@@ -6,11 +6,11 @@ import { useEffect } from 'react'
 import { Match as MatchType } from '../../types/Match'
 import { useMatchCreation } from '../../queries/match'
 
-import { MatchParticipants } from '../../components/Match/MatchParticipants'
+import { Players } from '../../components/Match/Players'
 import { MatchDetails } from '../../components/Match/MatchDetails'
 
 import { Alert } from '../../components/Alert'
-import { userToParticipant } from '../../utils/friends'
+import { userToPlayer } from '../../utils/friends'
 import { FabSubmit } from '../../components/FabSubmit'
 import { getErrorMessage } from '../../utils/api'
 import { useUser } from '../../queries/user'
@@ -22,7 +22,7 @@ export const MatchCreation = () => {
   const { mutate, isLoading, isError, error, isSuccess, data } =
     useMatchCreation()
   const { data: user } = useUser()
-  const emptyParticipant = {
+  const emptyPlayer = {
     score: 0,
     isWinner: false,
     friend: {
@@ -38,10 +38,7 @@ export const MatchCreation = () => {
       startedAt: dayjs(),
       endedAt: null,
       notes: '',
-      participants: [
-        ...(user ? [userToParticipant(user)] : []),
-        emptyParticipant,
-      ],
+      players: [...(user ? [userToPlayer(user)] : []), emptyPlayer],
     },
   })
 
@@ -80,7 +77,7 @@ export const MatchCreation = () => {
         {isError && <Alert severity="error" message={getErrorMessage(error)} />}
         <Stack spacing={2} overflow="hidden auto" height="inherit">
           <MatchDetails control={control} />
-          <MatchParticipants control={control} />
+          <Players control={control} />
         </Stack>
         <FabSubmit isLoading={isLoading} />
       </Box>

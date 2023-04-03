@@ -1,20 +1,14 @@
 import { AvatarGroup, Badge } from '@mui/material'
 import { Avatar } from '../Avatar'
-import { Participant } from '../../types/Match'
+import { Player } from '../../types/Match'
 import { styledAvatarGroup } from './MatchCard.styles'
 
-export const Participants = ({
-  participants,
-}: {
-  participants: Participant[]
-}) => {
-  const participant = participants.map((participant, index) => {
-    const { id } = participant.friend
+export const Players = ({ players }: { players: Player[] }) => {
+  const player = players.map((player, index) => {
+    const { id } = player.friend
 
-    if (!participant.isWinner) {
-      return (
-        <Avatar user={participant.friend} size="sm" key={`${id}-${index}`} />
-      )
+    if (!player.isWinner) {
+      return <Avatar user={player.friend} size="sm" key={`${id}-${index}`} />
     }
 
     return (
@@ -29,14 +23,14 @@ export const Participants = ({
           },
         }}
       >
-        <Avatar user={participant.friend} size="sm" />
+        <Avatar user={player.friend} size="sm" />
       </Badge>
     )
   })
 
   return (
     <AvatarGroup max={4} sx={{ ...styledAvatarGroup }}>
-      {participant}
+      {player}
     </AvatarGroup>
   )
 }

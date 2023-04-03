@@ -1,24 +1,37 @@
 import omit from 'lodash.omit'
 import { axios } from '../utils/axios'
-import { Match, Participant } from '../types/Match'
+import { Match, Player } from '../types/Match'
 import { catchInternalError } from '../utils/api'
 
-interface matchDetails extends Omit<Match, 'authorId' | 'participants' | 'id'> {
+interface MatchDetails extends Omit<Match, 'authorId' | 'players' | 'id'> {
   id?: number
 }
 
-interface participantDetails extends Participant {
+interface PlayerDetails extends Player {
   matchId: number
 }
 
 const genericError =
   'We were unable to perfom this action. Try again in a few minutes.'
 
+const normalizeMatchData = (match: Omit<Match, 'id'> | MatchDetails) => ({
+  ...match,
+  location: null,
+  players: (match as Omit<Match, 'id'>).players
+    ? (match as Omit<Match, 'id'>).players.map(
+        ({ friend: { fullName, ...friend }, ...player }) => ({
+          ...player,
+          friend,
+        })
+      )
+    : [],
+})
+
 export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
   axios({
     method: 'post',
     url: `/me/matches`,
-    data: matchPayload,
+    data: normalizeMatchData(matchPayload),
   })
     .then((response) => {
       return response.data
@@ -99,11 +112,11 @@ export const deleteMatch = (matchId: number): Promise<void> =>
       }
     })
 
-export const updateMatchDetails = (matchPayload: matchDetails): Promise<void> =>
+export const updateMatchDetails = (matchPayload: MatchDetails): Promise<void> =>
   axios({
     method: 'put',
     url: `/matches/${matchPayload.id}`,
-    data: omit(matchPayload, 'id'),
+    data: normalizeMatchData(omit(matchPayload, 'id')),
   })
     .then((response) => {
       return response.data
@@ -125,11 +138,11 @@ export const updateMatchDetails = (matchPayload: matchDetails): Promise<void> =>
       }
     })
 
-export const createMatchParticipant = (participant: participantDetails) =>
+export const createPlayer = (player: PlayerDetails) =>
   axios({
     method: 'post',
-    url: `/matches/${participant.matchId}/participants`,
-    data: omit(participant, 'matchId'),
+    url: `/matches/${player.matchId}/players`,
+    data: omit(player, 'matchId'),
   })
     .then((response) => {
       return response.data
@@ -152,16 +165,16 @@ export const createMatchParticipant = (participant: participantDetails) =>
       }
     })
 
-export const deleteMatchParticipant = ({
+export const deletePlayer = ({
   matchId,
-  participantId,
+  playerId,
 }: {
   matchId: number
-  participantId: number
+  playerId: number
 }): Promise<void> =>
   axios({
     method: 'delete',
-    url: `/matches/${matchId}/participants/${participantId}`,
+    url: `/matches/${matchId}/players/${playerId}`,
   })
     .then((response) => {
       return response.data
@@ -176,7 +189,7 @@ export const deleteMatchParticipant = ({
       }
 
       if (err.status === 404) {
-        throw new Error('We were unable to find the match or the participant.')
+        throw new Error('We were unable to find the match or the player.')
       }
 
       if (err.status !== 200) {
@@ -184,13 +197,11 @@ export const deleteMatchParticipant = ({
       }
     })
 
-export const updateMatchParticipant = (
-  participant: participantDetails
-): Promise<void> =>
+export const updatePlayer = (player: PlayerDetails): Promise<void> =>
   axios({
     method: 'put',
-    url: `/matches/${participant.matchId}/participants/${participant.id}`,
-    data: omit(participant, 'id', 'matchId'),
+    url: `/matches/${player.matchId}/players/${player.id}`,
+    data: omit(player, 'id', 'matchId'),
   })
     .then((response) => {
       return response.data
@@ -205,7 +216,7 @@ export const updateMatchParticipant = (
       }
 
       if (err.status === 404) {
-        throw new Error('We were unable to find the match or the participant.')
+        throw new Error('We were unable to find the match or the player.')
       }
 
       if (err.status !== 200) {

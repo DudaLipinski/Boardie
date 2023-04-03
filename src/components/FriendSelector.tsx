@@ -111,7 +111,7 @@ export const FriendSelector = ({
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
-        id={`participants[${index}].friend.fullName`}
+        id={`players[${index}].friend.fullName`}
         options={options}
         getOptionLabel={getOptionLabel}
         renderOption={(props, option) => (
@@ -137,7 +137,7 @@ export const FriendSelector = ({
             {...params}
             color="info"
             size="small"
-            label="Add participant"
+            label="Add player"
             placeholder="Select a friend or create one"
           />
         )}

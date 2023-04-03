@@ -7,7 +7,7 @@ import pick from 'lodash.pick'
 import { Match as MatchType } from '../../types/Match'
 import { useMatch, useMatchUpdate } from '../../queries/match'
 
-import { MatchParticipants } from '../../components/Match/MatchParticipants'
+import { Players } from '../../components/Match/Players'
 import { MatchDetails } from '../../components/Match/MatchDetails'
 
 import { FabSubmit } from '../../components/FabSubmit'
@@ -31,7 +31,7 @@ export const MatchEdition = () => {
       startedAt: '',
       endedAt: '',
       notes: '',
-      participants: [],
+      players: [],
     },
   })
 
@@ -43,7 +43,7 @@ export const MatchEdition = () => {
           'startedAt',
           'endedAt',
           'notes',
-          'participants',
+          'players',
         ])
       )
     }
@@ -54,8 +54,8 @@ export const MatchEdition = () => {
   }, [data, isLoadingMatch, reset])
 
   const onSubmit = (value: MatchType) => {
-    const initialParticipants = data?.participants
-    const receivedParticipants = value.participants
+    const initialPlayers = data?.players
+    const receivedPlayers = value.players
     const formattedStartedAt = dayjs.utc(value.startedAt).toISOString()
     const formattedEndedAt = value.endedAt
       ? dayjs.utc(value.endedAt).toISOString()
@@ -71,34 +71,30 @@ export const MatchEdition = () => {
 
     mutateMatchDetails(matchDetails)
 
-    if (!receivedParticipants || !initialParticipants) {
+    if (!receivedPlayers || !initialPlayers) {
       return
     }
 
-    const deletedParticipants = initialParticipants?.filter(
-      (oldParticipant) =>
-        !receivedParticipants.find(
-          (newParticipant) => newParticipant.id === oldParticipant.id
-        )
+    const deletedPlayers = initialPlayers?.filter(
+      (oldPlayer) =>
+        !receivedPlayers.find((newPlayer) => newPlayer.id === oldPlayer.id)
     )
 
-    const updatedParticipants = receivedParticipants.filter(
-      (receivedParticipant) => {
-        const oldParticipant = initialParticipants.find(
-          (participant) => participant.id === receivedParticipant.id
-        )
-        return (
-          oldParticipant &&
-          JSON.stringify(receivedParticipant) !== JSON.stringify(oldParticipant)
-        )
-      }
-    )
+    const updatedPlayers = receivedPlayers.filter((receivedPlayer) => {
+      const oldPlayer = initialPlayers.find(
+        (player) => player.id === receivedPlayer.id
+      )
+      return (
+        oldPlayer &&
+        JSON.stringify(receivedPlayer) !== JSON.stringify(oldPlayer)
+      )
+    })
 
-    const newParticipants = receivedParticipants
-      .filter((participant) => !('id' in participant))
-      .map((participant) => {
+    const newPlayers = receivedPlayers
+      .filter((player) => !('id' in player))
+      .map((player) => {
         return {
-          ...participant,
+          ...player,
           matchId: matchId,
         }
       })
@@ -119,7 +115,7 @@ export const MatchEdition = () => {
           )}
           <Stack spacing={2} overflow="hidden auto" height="inherit">
             <MatchDetails control={control} />
-            <MatchParticipants control={control} />
+            <Players control={control} />
           </Stack>
           <FabSubmit isLoading={false} />
         </Box>

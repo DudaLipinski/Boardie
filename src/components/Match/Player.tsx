@@ -26,15 +26,10 @@ interface Props {
   index: number
   control: Control<Match>
   onRemove: (index: number) => void
-  isUniqueParticipant: boolean
+  isUniquePlayer: boolean
 }
 
-export const MatchParticipant = ({
-  index,
-  control,
-  onRemove,
-  isUniqueParticipant,
-}: Props) => {
+export const Player = ({ index, control, onRemove, isUniquePlayer }: Props) => {
   return (
     <Box
       bgcolor="background.paper"
@@ -46,7 +41,7 @@ export const MatchParticipant = ({
     >
       <Box>
         <Controller
-          name={`participants.${index}.friend`}
+          name={`players.${index}.friend`}
           control={control}
           render={({ field: { value: friend } }) => (
             <Avatar user={friend} size="md" />
@@ -55,7 +50,7 @@ export const MatchParticipant = ({
       </Box>
       <Box>
         <Controller
-          name={`participants.${index}.friend`}
+          name={`players.${index}.friend`}
           control={control}
           render={({ field: { onChange, value } }) => (
             <FriendSelector index={index} onChange={onChange} value={value} />
@@ -64,7 +59,7 @@ export const MatchParticipant = ({
         <Grid container gap="16px" sx={{ marginTop: '14px' }}>
           <Grid item xs={6}>
             <Controller
-              name={`participants.${index}.score`}
+              name={`players.${index}.score`}
               control={control}
               render={({ field: { onChange, value } }) => (
                 <TextField
@@ -91,7 +86,7 @@ export const MatchParticipant = ({
               labelPlacement="end"
               control={
                 <Controller
-                  name={`participants.${index}.isWinner`}
+                  name={`players.${index}.isWinner`}
                   control={control}
                   render={({ field }) => (
                     <Checkbox checked={field.value} {...field} />
@@ -104,10 +99,10 @@ export const MatchParticipant = ({
         </Grid>
       </Box>
       <Box>
-        {!isUniqueParticipant ? (
+        {!isUniquePlayer ? (
           <IconButton
             sx={{ padding: '5px 0' }}
-            aria-label="remove participant"
+            aria-label="remove player"
             onClick={() => onRemove(index)}
           >
             <RemoveCircleOutlineIcon />

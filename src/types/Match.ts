@@ -13,5 +13,5 @@ export interface Match {
   startedAt: Dayjs | string
   endedAt: Dayjs | string | null
   notes: string
-  participants?: Participant[]
+  participants: Participant[]
 }

@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { List, Box, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useMatches } from '../../queries/match'
@@ -6,8 +5,8 @@ import { Match } from '../../types/Match'
 import { getErrorMessage } from '../../utils/api'
 
 import { MatchCard } from '../../components/MatchCard/MatchCard'
-import { animationProps } from '../../styles/animation'
 import { Alert } from '../../components/Alert'
+import { Motion } from '../../components/Motion'
 
 export const MatchList = () => {
   const { data, isError, error, isLoading } = useMatches()
@@ -42,12 +41,9 @@ export const MatchList = () => {
   )
 
   return (
-    <motion.div
-      {...animationProps}
-      style={{ width: '100%', position: 'relative' }}
-    >
+    <Motion style={{ width: '100%', position: 'relative' }}>
       {isError && <Alert severity="error" message={getErrorMessage(error)} />}
       {content}
-    </motion.div>
+    </Motion>
   )
 }

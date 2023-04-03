@@ -11,6 +11,9 @@ interface participantDetails extends Participant {
   matchId: number
 }
 
+const genericError =
+  'We were unable to perfom this action. Try again in a few minutes.'
+
 export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
   axios({
     method: 'post',
@@ -92,9 +95,7 @@ export const deleteMatch = (matchId: number): Promise<void> =>
       }
 
       if (err.status !== 200) {
-        throw new Error(
-          'We were unable to this action. Try again in a few minutes.'
-        )
+        throw new Error(genericError)
       }
     })
 
@@ -120,9 +121,7 @@ export const updateMatchDetails = (matchPayload: matchDetails): Promise<void> =>
       }
 
       if (err.status !== 200) {
-        throw new Error(
-          'We were unable to this action. Try again in a few minutes.'
-        )
+        throw new Error(genericError)
       }
     })
 
@@ -149,9 +148,7 @@ export const createMatchParticipant = (participant: participantDetails) =>
       }
 
       if (err.status !== 200) {
-        throw new Error(
-          'We were unable to this action. Try again in a few minutes.'
-        )
+        throw new Error(genericError)
       }
     })
 
@@ -183,9 +180,7 @@ export const deleteMatchParticipant = ({
       }
 
       if (err.status !== 200) {
-        throw new Error(
-          'We were unable to this action. Try again in a few minutes.'
-        )
+        throw new Error(genericError)
       }
     })
 
@@ -214,8 +209,6 @@ export const updateMatchParticipant = (
       }
 
       if (err.status !== 200) {
-        throw new Error(
-          'We were unable to this action. Try again in a few minutes.'
-        )
+        throw new Error(genericError)
       }
     })

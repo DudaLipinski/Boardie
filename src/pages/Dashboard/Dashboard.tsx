@@ -1,11 +1,9 @@
-import { motion } from 'framer-motion'
 import { Typography } from '@mui/material'
-import { animationProps } from '../../styles/animation'
+import { Motion } from '../../components/Motion'
 
 export const Dashboard = () => {
   return (
-    <motion.div
-      {...animationProps}
+    <Motion
       style={{
         width: '100%',
         display: 'flex',
@@ -16,6 +14,6 @@ export const Dashboard = () => {
       <Typography align="center" variant="body2" component="p">
         Dashboards coming soon
       </Typography>
-    </motion.div>
+    </Motion>
   )
 }

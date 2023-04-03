@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { Box, Typography, TextField, Button } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
-import { animationProps } from '../../styles/animation'
 import { CREATE_ACCOUNT } from '../../routes/routeSpecs'
 import { getErrorMessage } from '../../utils/api'
 import { User } from '../../types/User'
 import { useUserAuthenticator } from '../../queries/user'
 import { Alert } from '../../components/Alert'
+import { Motion } from '../../components/Motion'
 
 const styledTextFieldProps = {
   fullWidth: true,
@@ -32,10 +31,7 @@ export const Login = () => {
   }
 
   return (
-    <motion.main
-      {...animationProps}
-      style={{ height: 'inherit', padding: '0 24px' }}
-    >
+    <Motion style={{ height: 'inherit', padding: '0 24px' }}>
       <Box
         height="inherit"
         display="flex"
@@ -102,6 +98,6 @@ export const Login = () => {
           </Link>
         </Box>
       </Box>
-    </motion.main>
+    </Motion>
   )
 }

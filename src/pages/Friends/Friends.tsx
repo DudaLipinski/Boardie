@@ -1,14 +1,12 @@
-import { motion } from 'framer-motion'
 import { Typography } from '@mui/material'
-import { animationProps } from '../../styles/animation'
+import { Motion } from '../../components/Motion'
 
 export const Friends = () => {
   return (
-    <motion.div
-      {...animationProps}
+    <Motion
       style={{
-        width: '100%',
         display: 'flex',
+        width: '100%',
         flexDirection: 'column',
         alignSelf: 'center',
       }}
@@ -16,6 +14,6 @@ export const Friends = () => {
       <Typography align="center" variant="body2" component="p" marginTop="8px">
         Friends coming soon
       </Typography>
-    </motion.div>
+    </Motion>
   )
 }

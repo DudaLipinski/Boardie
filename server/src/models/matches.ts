@@ -26,16 +26,18 @@ export function create(
     .executeTakeFirstOrThrow()
 }
 
-export const update = (
+export function update(
+  this: { transaction?: Transaction },
   matchId: number,
   match: Omit<Match, 'id' | 'authorId' | 'createdAt' | 'deletedAt'>
-) =>
-  kysely
+) {
+  return (this.transaction ?? kysely)
     .updateTable('match')
     .set(match)
     .where('id', '==', matchId)
     .executeTakeFirst()
     .then((result) => result.numUpdatedRows === 1n)
+}
 
 export const getHydratedById = async ({ id }: { id: number }) => {
   const match = await kysely

@@ -7,16 +7,15 @@ import { authDataSchema } from '../schemas/auth'
 import * as userModel from '../models/user'
 import { endpoint } from '../utils/endpoint'
 
-export const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
+const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
   async (req, res) => {
     const user = req.body
 
-    const userWithSameEmail = await userModel.getByEmail(user.email)
-    if (userWithSameEmail) {
+    const id = await userModel.create(user)
+    if (!id) {
       return res.sendStatus(409)
     }
 
-    const id = await userModel.create(user)
     res.status(201).send({
       id,
       ...omit(user, 'password'),
@@ -42,7 +41,7 @@ export const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
   }
 )
 
-export const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
+const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
   async (req, res) => {
     const user = await userModel.getById(req.userId)
     if (!user) {
@@ -79,7 +78,7 @@ export const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
  * The front-end will then have to have a specific route to handle that, that
  * will basically call a "confirm unregistering" endpoint passing the token
  */
-export const unregisterLoggedUser = endpoint.POST('/me/unregister')<
+const unregisterLoggedUser = endpoint.POST('/me/unregister')<
   void,
   AuthData,
   void
@@ -107,3 +106,9 @@ export const unregisterLoggedUser = endpoint.POST('/me/unregister')<
     },
   }
 )
+
+export const endpoints = {
+  create,
+  getLoggedUser,
+  unregisterLoggedUser,
+}

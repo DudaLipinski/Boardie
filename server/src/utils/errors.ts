@@ -29,3 +29,7 @@ export const INVALID_REQUEST_BODY_SCHEMA = {
     additionalProperties: false,
   },
 } as const
+
+export const UNAUTHORIZED_SCHEMA = {
+  description: 'Unauthorized',
+}

@@ -6,7 +6,7 @@ import type { AuthData } from '../schemas/auth'
 import { userAuthDTOSchema } from '../schemas/auth'
 import { userDTOSchema } from '../schemas/user'
 
-export const auth = endpoint.POST('/auth')<
+const auth = endpoint.POST('/auth')<
   void,
   AuthData,
   {
@@ -51,3 +51,7 @@ export const auth = endpoint.POST('/auth')<
     },
   }
 )
+
+export const endpoints = {
+  auth,
+}

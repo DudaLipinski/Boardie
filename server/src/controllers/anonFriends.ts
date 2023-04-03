@@ -13,13 +13,20 @@ import * as anonFriendsModel from '../models/anonFriends'
 import { FriendType } from '../models/utils'
 import { endpoint } from '../utils/endpoint'
 
-export const createForLoggedUser = endpoint.POST('/me/anonfriends')<
+const checkAccess = {
+  update: (userId: number, anonFriend: anonFriendsModel.AnonFriend) =>
+    anonFriend.userId === userId,
+  delete: (userId: number, anonFriend: anonFriendsModel.AnonFriend) =>
+    anonFriend.userId === userId,
+}
+
+const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   void,
   AnonFriendCreationData,
   AnonFriendDTO
 >(
   async (req, res) => {
-    const id = await anonFriendsModel.create({
+    const { id } = await anonFriendsModel.create({
       ...req.body,
       userId: req.userId,
     })
@@ -44,7 +51,7 @@ export const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   }
 )
 
-export const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
+const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
   { anonFriendId: string },
   AnonFriendUpdateData,
   AnonFriendDTO
@@ -53,14 +60,11 @@ export const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
     const anonFriendUpdateData = req.body
     const anonFriendId = parseInt(req.params.anonFriendId, 10)
 
-    const canUpdateAnonFriend = await anonFriendsModel.checkUpdatePermission({
-      id: anonFriendId,
-      userId: req.userId,
-    })
-    if (canUpdateAnonFriend === undefined) {
+    const anonFriend = await anonFriendsModel.getById(anonFriendId)
+    if (!anonFriend) {
       return res.sendStatus(404)
     }
-    if (!canUpdateAnonFriend) {
+    if (!checkAccess.update(req.userId, anonFriend)) {
       return res.sendStatus(403)
     }
 
@@ -96,7 +100,7 @@ export const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
   }
 )
 
-export const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
+const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
   { anonFriendId: string },
   void,
   void
@@ -104,14 +108,11 @@ export const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
   async (req, res) => {
     const anonFriendId = parseInt(req.params.anonFriendId, 10)
 
-    const canDeleteAnonFriend = await anonFriendsModel.checkDeletePermission({
-      id: anonFriendId,
-      userId: req.userId,
-    })
-    if (canDeleteAnonFriend === undefined) {
+    const anonFriend = await anonFriendsModel.getById(anonFriendId)
+    if (!anonFriend) {
       return res.sendStatus(404)
     }
-    if (!canDeleteAnonFriend) {
+    if (!checkAccess.delete(req.userId, anonFriend)) {
       return res.sendStatus(403)
     }
 
@@ -145,3 +146,9 @@ export const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
     },
   }
 )
+
+export const endpoints = {
+  createForLoggedUser,
+  update,
+  deleteById,
+}

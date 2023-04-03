@@ -1,0 +1,118 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:../database.db"
+}
+
+generator kysely {
+    provider = "prisma-kysely"
+    output = "../src/database"
+    fileName = "types.ts"
+    dateTimeTypeOverride = "string"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+  includeRelationFields = false
+}
+
+model User {
+  @@map("user")
+
+  id                   Int      @id @default(autoincrement())
+  email                String   @unique
+  firstName            String
+  middleAndSurname     String
+  age                  Int?
+  password             String
+  createdAt            DateTime            @default(now())
+  unregisteredAt       DateTime?
+
+  // --- Relations
+  authoredMatches  Match[]
+  playedMatches    Player[]
+  anonFriends          AnonFriend[]
+  // addressId            Int?
+  // address              Address? @relation(fields: [addressId], references: [id])
+  sentFriendshipRequests   FriendshipRequest[] @relation("sentFriendshipRequests")
+  receivedFriendshipRequests   FriendshipRequest[] @relation("receivedFriendshipRequests")
+
+  @@index ([email])
+}
+
+// model Address {
+//   id      Int     @id @default(autoincrement())
+//   address String
+//   users   User[]
+// }
+
+model AnonFriend {
+  @@map("anon_friend")
+
+  id        Int     @id @default(autoincrement())
+  fullName  String
+
+  // --- Relations
+  playedMatches   Player[]
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Match {
+  @@map("match")
+
+  id                  Int                 @id @default(autoincrement())
+  boardgameName       String
+  startedAt           DateTime              // @db.DateTime(utc)
+  endedAt             DateTime?             // @db.DateTime(utc)
+  location            String?
+  notes               String?
+  createdAt           DateTime            @default(now()) // @db.DateTime(utc)
+  deletedAt           DateTime?             // @db.DateTime(utc)
+  players             Player[]
+
+  // --- Relations
+  authorId            Int?
+  author              User?                @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([authorId])
+}
+
+model Player {
+  @@map("player")
+
+  id            Int         @id @default(autoincrement())
+  score         Int?
+  isWinner      Boolean?
+
+  // --- Relations
+  matchId       Int
+  match         Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId        Int?
+  user          User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  anonFriendId  Int?
+  anonFriend    AnonFriend? @relation(fields: [anonFriendId], references: [id], onDelete: Cascade)
+
+  @@index([matchId])
+}
+
+// model Friendship {
+//   userAId  Int @@id
+//   userBId  Int @@id
+//   userA    User  @relation(fields: [userAId], references: [id])
+//   userB    User  @relation(fields: [userBId], references: [id])
+
+//   @@id([userAId, userBId])
+// }
+
+model FriendshipRequest {
+  @@map("friendship_request")
+
+  requestingUserId  Int
+  requestingUser    User  @relation("sentFriendshipRequests", fields: [requestingUserId], references: [id], onDelete: Cascade)
+  requestedUserId   Int
+  requestedUser     User  @relation("receivedFriendshipRequests", fields: [requestedUserId], references: [id], onDelete: Cascade)
+
+  @@id([requestingUserId, requestedUserId])
+}

@@ -1,56 +1,19 @@
-import sqlite3 from 'sqlite3'
+import Database from 'better-sqlite3'
+import type { Transaction as KyselyTransaction } from 'kysely'
+import { Kysely, SqliteDialect } from 'kysely'
+import type { DB } from './types'
 
-const sqlite3Cli = sqlite3.verbose()
+const database = new Database('./database.db')
+database.pragma('journal_mode = WAL')
+database.pragma('foreign_keys = ON')
 
-const dbCli = new sqlite3Cli.Database('./database.db', (error) => {
-  if (error) {
-    console.error(error)
-  }
+export type Transaction = KyselyTransaction<DB>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TransactionableContext = { transaction?: Transaction } | any
 
-  console.log('Connected to database')
+export default new Kysely<DB>({
+  // Use MysqlDialect for MySQL and SqliteDialect for SQLite.
+  dialect: new SqliteDialect({
+    database,
+  }),
 })
-
-/**
- * Those dorky addons are meant to go away once we migrate to MySQL.
- */
-function asyncGet<ResponseT>(statement: string) {
-  return new Promise<ResponseT>((resolve, reject) => {
-    dbCli.get(statement, function (err, result) {
-      if (err) {
-        return reject(err)
-      }
-      resolve(result)
-    })
-  })
-}
-function asyncRun(statement: string) {
-  return new Promise<boolean>((resolve, reject) => {
-    dbCli.run(statement, function (err) {
-      if (err) {
-        return reject(err)
-      }
-      resolve(true)
-    })
-  })
-}
-function asyncExec(statement: string) {
-  return new Promise<boolean>((resolve, reject) => {
-    dbCli.exec(statement, function (err) {
-      if (err) {
-        return reject(err)
-      }
-      resolve(true)
-    })
-  })
-}
-interface Addons {
-  asyncGet: typeof asyncGet
-  asyncRun: typeof asyncRun
-  asyncExec: typeof asyncExec
-}
-const modifiedDbCli: typeof dbCli & Partial<Addons> = dbCli
-modifiedDbCli.asyncGet = asyncGet
-modifiedDbCli.asyncRun = asyncRun
-modifiedDbCli.asyncExec = asyncExec
-
-export default modifiedDbCli as typeof dbCli & Addons

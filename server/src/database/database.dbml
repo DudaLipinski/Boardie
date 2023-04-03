@@ -33,7 +33,7 @@ Table match {
 }
 Ref: match.authorId > user.id [delete: no action, update: no action]
 
-Table matchParticipant {
+Table player {
   matchId INTEGER [not null]
   userId INTEGER
   anonFriendId INTEGER
@@ -53,9 +53,9 @@ Table matchParticipant {
   //   OR (userId IS NULL AND anonFriendId IS NOT NULL)
   // )
 }
-Ref: matchParticipant.matchId > match.id [delete: cascade, update: no action]
-Ref: matchParticipant.userId > user.id [delete: cascade, update: no action]
-Ref: matchParticipant.anonFriendId > anonFriend.id [delete: cascade, update: no action]
+Ref: player.matchId > match.id [delete: cascade, update: no action]
+Ref: player.userId > user.id [delete: cascade, update: no action]
+Ref: player.anonFriendId > anonFriend.id [delete: cascade, update: no action]
 
 
 // --------------

@@ -1,18 +1,13 @@
+import type z from 'zod'
 import * as userModel from '../models/user'
-import { generateAccessToken, jwtTokenSchema } from '../utils/auth'
-import type { User } from '../models/user'
+import { generateAccessToken } from '../utils/auth'
 import { endpoint } from '../utils/endpoint'
-import type { AuthData } from '../schemas/auth'
-import { userAuthDTOSchema } from '../schemas/auth'
-import { userDTOSchema } from '../schemas/user'
+import { authSchema, authDTOSchema } from '../schemas/auth'
 
 const auth = endpoint.POST('/auth')<
   void,
-  AuthData,
-  {
-    user: Omit<User, 'password'>
-    token: string
-  }
+  z.infer<typeof authDTOSchema>,
+  z.infer<typeof authSchema>
 >(
   async (req, res) => {
     const loggedUser = await userModel.auth(req.body)
@@ -31,20 +26,9 @@ const auth = endpoint.POST('/auth')<
     summary: 'Authenticates a user',
     tags: ['auth'],
     params: null,
-    body: userAuthDTOSchema,
+    body: authDTOSchema,
     responses: {
-      200: {
-        description:
-          "The logged in user's data along with the generated JWT token",
-        schema: {
-          type: 'object',
-          properties: {
-            user: userDTOSchema,
-            token: jwtTokenSchema,
-          },
-          required: ['user', 'token'],
-        },
-      },
+      200: authSchema,
       401: {
         description: "Provided credentials doesn't match any valid user",
       },

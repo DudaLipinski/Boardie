@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "yarn init_db && yarn generate_open_api_docs && yarn generate_jwt_token && nodemon --esm --experimental-specifier-resolution=node src/index.ts",
+    "start": "yarn init_db && yarn generate_jwt_token && nodemon --esm --experimental-specifier-resolution=node src/index.ts",
     "generate_jwt_token": "ts-node --esm --experimental-specifier-resolution=node scripts/generateJwtTokenSecret",
     "generate_open_api_docs": "ts-node --esm --experimental-specifier-resolution=node src/scripts/generateOpenApiDocs",
     "init_db": "prisma migrate dev",
@@ -15,7 +15,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.9",
-    "ajv": "^8.11.0",
     "better-sqlite3": "^8.2.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.7",
@@ -28,7 +27,8 @@
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "prisma-kysely": "^1.0.8",
-    "swagger-ui-express": "^4.5.0"
+    "swagger-ui-express": "^4.5.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.3",

@@ -1,10 +1,11 @@
-import type { JSONSchemaType, ValidateFunction } from 'ajv'
 import type { RequestHandler, Express } from 'express'
 import type { OpenAPIV3_1 } from 'openapi-types'
-import ajv from '../schemas/ajv'
-import { getErrorMessage } from './validation'
+import type { z } from 'zod'
+import {
+  INTERNAL_ERROR_SCHEMA,
+  INVALID_REQUEST_BODY_SCHEMA,
+} from '../schemas/errors'
 import { logInternalError } from './log'
-import { INTERNAL_ERROR_SCHEMA, INVALID_REQUEST_BODY_SCHEMA } from './errors'
 
 type HttpMethod = 'get' | 'post' | 'put' | 'delete'
 type ContentType =
@@ -23,9 +24,9 @@ type ParameterObject = Pick<OpenAPIV3_1.ParameterObject, 'description'> &
 type Params = Record<string, string | number> | void
 
 interface Response<ContentSchema> {
-  description: string
+  description?: string
   contentType?: ContentType
-  schema?: JSONSchemaType<ContentSchema>
+  schema?: z.ZodType<ContentSchema>
 }
 interface MessageBody {
   message: string
@@ -58,8 +59,7 @@ interface OperationDefinition<
     ? null
     : Record<keyof ParamsDict, ParameterObject>
   // TODO: find a way to make this required if RequestBody is not void
-  // TODO: understand why ajv is accepting properties that shouldn't be on the provided type
-  body: RequestBody extends void ? null : JSONSchemaType<RequestBody>
+  body: RequestBody extends void ? null : z.ZodType<RequestBody>
   responses: PathResponses<ResponseBody>
 }
 
@@ -84,8 +84,7 @@ export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
   private summary: string
   private tags: string[]
   private params: Record<keyof ParamsDict, ParameterObject> | null
-  private body: JSONSchemaType<RequestBody> | null
-  private validateBody?: ValidateFunction<RequestBody>
+  private body: z.ZodType<RequestBody> | null
   private responses: PathResponses<ResponseBody>
   private allowedStatusCodes: Set<number>
   private handler: RequestHandler<
@@ -108,7 +107,6 @@ export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
     this.tags = def.tags
     this.params = def.params
     this.body = def.body
-    this.validateBody = this.body ? ajv.compile(this.body) : undefined
     this.responses = {
       ...def.responses,
       500: INTERNAL_ERROR_SCHEMA,
@@ -151,11 +149,14 @@ export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
         },
       }
 
-      if (this.validateBody) {
-        const validBody = this.validateBody(req.body)
+      if (this.body) {
+        const bodyParseResult = this.body.safeParse(req.body)
 
-        if (!validBody) {
-          const errorMessage = getErrorMessage(this.validateBody)
+        if (!bodyParseResult.success) {
+          const errorMessage = JSON.stringify(
+            bodyParseResult.error.format()
+          ).replace(/"/g, "'")
+
           return statusCheckedRes.status(400).send({ message: errorMessage })
         }
       }

@@ -1,13 +1,16 @@
 import omit from 'lodash.omit'
 
-import type { UserCreationData, UserDTO } from '../schemas/user'
-import { userCreationDataSchema, userDTOSchema } from '../schemas/user'
-import type { AuthData } from '../schemas/auth'
-import { authDataSchema } from '../schemas/auth'
+import type z from 'zod'
 import * as userModel from '../models/user'
 import { endpoint } from '../utils/endpoint'
+import { userCreationDataSchema, userDTOSchema } from '../schemas/user'
+import { authDTOSchema } from '../schemas/auth'
 
-const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
+const create = endpoint.POST('/me')<
+  void,
+  z.infer<typeof userCreationDataSchema>,
+  z.infer<typeof userDTOSchema>
+>(
   async (req, res) => {
     const user = req.body
 
@@ -41,7 +44,11 @@ const create = endpoint.POST('/me')<void, UserCreationData, UserDTO>(
   }
 )
 
-const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
+const getLoggedUser = endpoint.GET('/me')<
+  void,
+  void,
+  z.infer<typeof userDTOSchema>
+>(
   async (req, res) => {
     const user = await userModel.getById(req.userId)
     if (!user) {
@@ -80,7 +87,7 @@ const getLoggedUser = endpoint.GET('/me')<void, void, UserDTO>(
  */
 const unregisterLoggedUser = endpoint.POST('/me/unregister')<
   void,
-  AuthData,
+  z.infer<typeof authDTOSchema>,
   void
 >(
   async (req, res) => {
@@ -95,7 +102,7 @@ const unregisterLoggedUser = endpoint.POST('/me/unregister')<
     summary: 'Unregisters the logged user',
     tags: ['auth'],
     params: null,
-    body: authDataSchema,
+    body: authDTOSchema,
     responses: {
       200: {
         description: 'The logged user was unregistered',

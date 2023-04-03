@@ -1173,7 +1173,8 @@
                 "type": "object",
                 "properties": {
                   "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Meeple Catanicus"
                   }
                 },
                 "required": [
@@ -1195,10 +1196,12 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "number"
+                      "type": "number",
+                      "example": 28
                     },
                     "fullName": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Meeple Catanicus"
                     },
                     "type": {
                       "type": "string",
@@ -1336,7 +1339,8 @@
                 "type": "object",
                 "properties": {
                   "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Meeple Catanicus"
                   }
                 },
                 "required": [
@@ -1358,10 +1362,12 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "number"
+                      "type": "number",
+                      "example": 28
                     },
                     "fullName": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Meeple Catanicus"
                     },
                     "type": {
                       "type": "string",

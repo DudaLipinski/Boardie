@@ -3,8 +3,8 @@ import pick from 'lodash.pick'
 import type { AnonFriend } from '../models/anonFriends'
 
 const anonFriendProperties = {
-  id: { type: 'number' },
-  fullName: { type: 'string' },
+  id: { type: 'number', example: 28 },
+  fullName: { type: 'string', example: 'Meeple Catanicus' },
   type: { type: 'string', enum: ['ANON_FRIEND'] },
 } as const
 

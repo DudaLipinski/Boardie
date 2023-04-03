@@ -13,6 +13,8 @@ export const checkFriendshipExists = ({
   const { id, type } = friend
   if (type === FriendType.ANON_FRIEND) {
     return anonFriendsModel.checkFriendshipExists({ userId, id })
+  } else {
+    return id === userId
   }
 
   // return friendsModel.confirmFriendship({ userId, id })

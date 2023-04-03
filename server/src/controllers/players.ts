@@ -43,7 +43,6 @@ const checkAccess = {
   delete: matchesController.checkAccess.update,
 }
 
-// TODO: implement access logic
 const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
   { matchId: string },
   void,

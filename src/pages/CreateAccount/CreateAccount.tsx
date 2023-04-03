@@ -1,15 +1,13 @@
 import { Link } from 'react-router-dom'
-
-import { motion } from 'framer-motion'
 import { TextField, Box, Typography, Button } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 
-import { animationProps } from '../../styles/animation'
 import { LOGIN } from '../../routes/routeSpecs'
 import { useUserCreation } from '../../queries/user'
 import { User } from '../../types/User'
 import { Alert } from '../../components/Alert'
 import { getErrorMessage } from '../../utils/api'
+import { Motion } from '../../components/Motion'
 
 interface FormUser extends Omit<User, 'age' | 'token' | 'id'> {
   age: string
@@ -47,7 +45,7 @@ export const CreateAccount = () => {
   }
 
   return (
-    <motion.div {...animationProps} style={{ height: 'inherit' }}>
+    <Motion style={{ height: 'inherit' }}>
       <Box
         height="inherit"
         display="flex"
@@ -146,6 +144,6 @@ export const CreateAccount = () => {
           <Link to={LOGIN}>Login</Link>
         </Box>
       </Box>
-    </motion.div>
+    </Motion>
   )
 }

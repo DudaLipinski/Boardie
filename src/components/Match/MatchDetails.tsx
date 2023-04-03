@@ -60,7 +60,7 @@ export const MatchDetails = ({ control }: Props) => {
               render={({ field }) => (
                 <MobileDateTimePicker
                   {...field}
-                  value={field.value || null}
+                  value={field.value || undefined}
                   label="Ended at"
                   renderInput={renderDateInput}
                 />

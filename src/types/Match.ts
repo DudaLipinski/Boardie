@@ -1,6 +1,7 @@
 import { Dayjs } from 'dayjs'
 import { GenericUser } from './GenericUser'
 export interface Participant {
+  id?: number
   score?: number
   isWinner?: boolean
   friend: GenericUser

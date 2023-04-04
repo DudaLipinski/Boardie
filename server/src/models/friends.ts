@@ -23,7 +23,7 @@ export const getFriendshipRequests = async (userId: number) =>
   kysely
     .selectFrom('friendship_request')
     .leftJoin('user', 'user.id', 'requestingUserId')
-    .select(['user.id', 'user.firstName', 'user.middleAndSurname'])
+    .select(['user.id as userId', 'user.firstName', 'user.middleAndSurname'])
     .where('requestedUserId', '==', userId)
     .execute()
 

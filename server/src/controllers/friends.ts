@@ -112,7 +112,7 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
   async (req, res) => {
     const requests = (await friendsModel.getFriendshipRequests(req.userId)).map(
       (request) => ({
-        id: request.id as number,
+        userId: request.userId as number,
         fullName: `${request.firstName} ${request.middleAndSurname}`,
       })
     )

@@ -1048,7 +1048,7 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": {
+                      "userId": {
                         "type": "number"
                       },
                       "fullName": {
@@ -1056,7 +1056,7 @@
                       }
                     },
                     "required": [
-                      "id",
+                      "userId",
                       "fullName"
                     ],
                     "additionalProperties": false

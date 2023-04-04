@@ -45,6 +45,6 @@ export const acceptFriendshipRequestSchema = z
   .describe('Data used to accept a friendship request')
 
 export const existentFriendshipRequestSchema = z.object({
-  id: z.number(),
+  userId: z.number(),
   fullName: z.string(),
 })

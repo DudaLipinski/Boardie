@@ -948,6 +948,45 @@
             "description": "An unexpected internal error"
           }
         }
+      },
+      "post": {
+        "summary": "Accepts a friendship request",
+        "tags": [
+          "friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "userId"
+                ],
+                "additionalProperties": false,
+                "description": "Data used to accept a friendship request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request was accepted"
+          },
+          "400": {
+            "description": "The request body is invalid"
+          },
+          "404": {
+            "description": "The friendship request does not exist"
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        }
       }
     },
     "/me/friends/request": {
@@ -970,7 +1009,8 @@
                     "type": "number"
                   }
                 },
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data used to send a friendship request"
               }
             }
           }

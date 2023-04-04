@@ -2,12 +2,14 @@ import z from 'zod'
 import * as anonFriendsModel from '../models/anonFriends'
 import * as friendsModel from '../models/friends'
 import * as usersModel from '../models/users'
+import kysely from '../database'
 
 import { endpoint } from '../utils/endpoint'
 import {
   genericFriendDTOSchema,
   FriendType,
   friendshipRequestSchema,
+  acceptFriendshipRequestSchema,
 } from '../schemas/friends'
 
 type GenericFriend = z.infer<typeof genericFriendDTOSchema>
@@ -94,7 +96,45 @@ const sendRequest = endpoint.POST('/me/friends/request')<
   }
 )
 
+const acceptRequest = endpoint.POST('/me/friends')<
+  void,
+  z.infer<typeof acceptFriendshipRequestSchema>,
+  void
+>(
+  async (req, res) => {
+    const { userId: requestingUserId } = req.body
+    if (requestingUserId === req.userId) {
+      return res.sendStatus(400)
+    }
+
+    const requestExists = await friendsModel.acceptRequest({
+      requestingUserId,
+      requestedUserId: req.userId,
+    })
+    if (!requestExists) {
+      return res.sendStatus(404)
+    }
+
+    res.sendStatus(200)
+  },
+  {
+    summary: 'Accepts a friendship request',
+    tags: ['friends'],
+    params: null,
+    body: acceptFriendshipRequestSchema,
+    responses: {
+      200: {
+        description: 'The request was accepted',
+      },
+      404: {
+        description: 'The friendship request does not exist',
+      },
+    },
+  }
+)
+
 export const endpoints = {
   getAllByLoggedUser,
   sendRequest,
+  acceptRequest,
 }

@@ -36,3 +36,10 @@ export const friendshipRequestSchema = z
     (data) => !(data.userEmail && data.userId),
     'You must provide only an userEmail, or an userId, not both'
   )
+  .describe('Data used to send a friendship request')
+
+export const acceptFriendshipRequestSchema = z
+  .object({
+    userId: z.number(),
+  })
+  .describe('Data used to accept a friendship request')

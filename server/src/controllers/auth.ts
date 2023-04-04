@@ -1,5 +1,5 @@
 import type z from 'zod'
-import * as userModel from '../models/user'
+import * as userModel from '../models/users'
 import { generateAccessToken } from '../utils/auth'
 import { endpoint } from '../utils/endpoint'
 import { authSchema, authDTOSchema } from '../schemas/auth'

@@ -31,7 +31,8 @@
                     "nullable": true
                   },
                   "email": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "email"
                   },
                   "password": {
                     "type": "string"
@@ -74,7 +75,8 @@
                       "nullable": true
                     },
                     "email": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "email"
                     }
                   },
                   "required": [
@@ -130,7 +132,8 @@
                       "nullable": true
                     },
                     "email": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "email"
                     }
                   },
                   "required": [
@@ -168,7 +171,8 @@
                 "type": "object",
                 "properties": {
                   "email": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "email"
                   },
                   "password": {
                     "type": "string"
@@ -213,7 +217,8 @@
                 "type": "object",
                 "properties": {
                   "email": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "email"
                   },
                   "password": {
                     "type": "string"
@@ -938,6 +943,50 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        }
+      }
+    },
+    "/me/friends/request": {
+      "post": {
+        "summary": "Sends a friendship request to another user",
+        "tags": [
+          "friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userEmail": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "userId": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request was sent"
+          },
+          "400": {
+            "description": "The request body is invalid"
+          },
+          "404": {
+            "description": "The requested user does not exist"
+          },
+          "409": {
+            "description": "The friendship request already exists"
           },
           "500": {
             "description": "An unexpected internal error"

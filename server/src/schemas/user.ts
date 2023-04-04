@@ -5,7 +5,7 @@ export const userSchema = z.object({
   firstName: z.string(),
   middleAndSurname: z.string(),
   age: z.number().min(1).max(120).nullable(),
-  email: z.string(),
+  email: z.string().email(),
   password: z.string(),
 })
 

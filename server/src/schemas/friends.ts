@@ -21,3 +21,18 @@ export const genericFriendIdDTOSchema = genericFriendSchema
   })
   .strict()
   .describe('Generic friend identification data')
+
+export const friendshipRequestSchema = z
+  .object({
+    userEmail: z.string().email(),
+    userId: z.number(),
+  })
+  .partial()
+  .refine(
+    (data) => data.userEmail || data.userId,
+    'You must provide at least an userEmail or a userId'
+  )
+  .refine(
+    (data) => !(data.userEmail && data.userId),
+    'You must provide only an userEmail, or an userId, not both'
+  )

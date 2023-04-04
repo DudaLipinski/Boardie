@@ -1,7 +1,7 @@
 import omit from 'lodash.omit'
 
 import type z from 'zod'
-import * as userModel from '../models/user'
+import * as userModel from '../models/users'
 import { endpoint } from '../utils/endpoint'
 import { userCreationDataSchema, userDTOSchema } from '../schemas/user'
 import { authDTOSchema } from '../schemas/auth'

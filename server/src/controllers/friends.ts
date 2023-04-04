@@ -1,8 +1,14 @@
 import z from 'zod'
 import * as anonFriendsModel from '../models/anonFriends'
+import * as friendsModel from '../models/friends'
+import * as usersModel from '../models/users'
 
 import { endpoint } from '../utils/endpoint'
-import { genericFriendDTOSchema, FriendType } from '../schemas/friends'
+import {
+  genericFriendDTOSchema,
+  FriendType,
+  friendshipRequestSchema,
+} from '../schemas/friends'
 
 type GenericFriend = z.infer<typeof genericFriendDTOSchema>
 
@@ -32,6 +38,63 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
   }
 )
 
+const sendRequest = endpoint.POST('/me/friends/request')<
+  void,
+  z.infer<typeof friendshipRequestSchema>,
+  void
+>(
+  async (req, res) => {
+    const { userEmail, userId: reqUserId } = req.body
+
+    let requestedUserId
+    if (userEmail) {
+      const requestedUser = await usersModel.getByEmail(userEmail)
+      if (!requestedUser) {
+        return res.sendStatus(404)
+      }
+
+      requestedUserId = requestedUser.id
+    } else if (reqUserId) {
+      const userExists = await usersModel.checkExistsById(reqUserId)
+      if (!userExists) {
+        return res.sendStatus(404)
+      }
+
+      requestedUserId = reqUserId
+    } else {
+      return res.sendStatus(400)
+    }
+
+    const requestCreated = await friendsModel.createFriendshipRequest({
+      requestingUserId: req.userId,
+      requestedUserId,
+    })
+    if (!requestCreated) {
+      return res.sendStatus(409)
+    }
+
+    res.sendStatus(200)
+  },
+  {
+    summary: 'Sends a friendship request to another user',
+    tags: ['friends'],
+    params: null,
+    body: friendshipRequestSchema,
+    responses: {
+      200: {
+        description: 'The request was sent',
+      },
+      404: {
+        description: 'The requested user does not exist',
+      },
+      409: {
+        description: 'The friendship request already exists',
+      },
+    },
+  }
+)
+
 export const endpoints = {
   getAllByLoggedUser,
+  sendRequest,
 }

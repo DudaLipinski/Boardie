@@ -10,6 +10,14 @@ export interface User {
   password: string
 }
 
+const allWithoutPassword = [
+  'id',
+  'firstName',
+  'middleAndSurname',
+  'age',
+  'email',
+] as const
+
 export const create = async (user: Omit<User, 'id'>) => {
   const result = await kysely
     .insertInto('user')
@@ -44,7 +52,7 @@ export const unregister = async (
 export const getById = (id: number) =>
   kysely
     .selectFrom('user')
-    .select(['id', 'firstName', 'middleAndSurname', 'age', 'email'])
+    .select(allWithoutPassword)
     .where('id', '==', id)
     .where('unregisteredAt', 'is', null)
     .executeTakeFirst()
@@ -52,7 +60,7 @@ export const getById = (id: number) =>
 export const getByEmail = (email: string) =>
   kysely
     .selectFrom('user')
-    .select(['id', 'firstName', 'middleAndSurname', 'age', 'email'])
+    .select(allWithoutPassword)
     .where('email', '==', email)
     .where('unregisteredAt', 'is', null)
     .limit(1)
@@ -61,9 +69,19 @@ export const getByEmail = (email: string) =>
 export const auth = (auth: Pick<User, 'email' | 'password'>) =>
   kysely
     .selectFrom('user')
-    .select(['id', 'firstName', 'middleAndSurname', 'age', 'email'])
+    .select(allWithoutPassword)
     .where('email', '==', auth.email)
     .where('password', '==', auth.password)
     .where('unregisteredAt', 'is', null)
     .limit(1)
     .executeTakeFirst()
+
+export const checkExistsById = (id: number) =>
+  kysely
+    .selectFrom('user')
+    .select('id')
+    .where('id', '==', id)
+    .where('unregisteredAt', 'is', null)
+    .limit(1)
+    .executeTakeFirst()
+    .then((result) => result !== undefined)

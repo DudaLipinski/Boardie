@@ -47,9 +47,16 @@ export const useMatchDeletion = () => {
   )
 }
 
-const UPDATE_MATCH_KEY = 'updateMatchDetails'
+const UPDATE_MATCH_KEY = 'updateMatch'
+
 export const useMatchUpdate = () => {
-  return useMutation(UPDATE_MATCH_KEY, matchesService.updateMatchDetails)
+  const queryClient = useQueryClient()
+
+  return useMutation(UPDATE_MATCH_KEY, matchesService.updateMatch, {
+    onSettled: () => {
+      queryClient.invalidateQueries(MATCH_KEY)
+    },
+  })
 }
 
 const CREATE_MATCH_PLAYER_KEY = 'createPlayer'

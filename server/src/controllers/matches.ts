@@ -181,7 +181,7 @@ const handlePlayersCRUD = async (
   players: z.infer<typeof playersCRUDSchema>,
   transaction: Transaction
 ) => {
-  if (players?.create) {
+  if (players?.create?.length) {
     const digestedPlayers = players.create.map((player) => ({
       ...playerDtoToDbModel(player),
       matchId,
@@ -189,7 +189,7 @@ const handlePlayersCRUD = async (
     await playerModel.createMultiple.call({ transaction }, digestedPlayers)
   }
 
-  if (players?.update) {
+  if (players?.update?.length) {
     const digestedPlayers = players.update.map((player) => ({
       ...playerDtoToDbModel(player),
       id: player.id,
@@ -199,7 +199,7 @@ const handlePlayersCRUD = async (
     }
   }
 
-  if (players?.delete) {
+  if (players?.delete?.length) {
     await playerModel.deleteMultiple({ ids: players.delete }, transaction)
   }
 }

@@ -19,10 +19,11 @@ const checkPlayerFriendship = (
   userId: number,
   player: PlayerCreationData | PlayerUpdateData
 ) =>
-  friendsModel.checkFriendshipExists({
+  friendsModel.genericCheckFriendshipExistsWith(
     userId,
-    friend: player.friend,
-  })
+    player.friend.id,
+    player.friend.type
+  )
 
 const checkAccess = {
   create: async (

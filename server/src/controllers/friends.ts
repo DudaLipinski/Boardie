@@ -2,7 +2,6 @@ import z from 'zod'
 import * as anonFriendsModel from '../models/anonFriends'
 import * as friendsModel from '../models/friends'
 import * as usersModel from '../models/users'
-import kysely from '../database'
 
 import { endpoint } from '../utils/endpoint'
 import {
@@ -20,11 +19,19 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
   GenericFriend[]
 >(
   async (req, res) => {
-    const anonFriends = (
-      await anonFriendsModel.getAllByUserId({ userId: req.userId })
-    ).map((friend) => ({ ...friend, type: FriendType.ANON_FRIEND }))
+    const anonFriends = (await anonFriendsModel.getAllByUserId(req.userId)).map(
+      (friend) => ({ ...friend, type: FriendType.ANON_FRIEND })
+    )
 
-    res.status(200).send(anonFriends)
+    const friends = (await friendsModel.getAllByUserId(req.userId)).map(
+      (friend) => ({
+        id: friend.id as number,
+        fullName: `${friend.firstName} ${friend.middleAndSurname}`,
+        type: FriendType.USER,
+      })
+    )
+
+    res.status(200).send([...friends, ...anonFriends])
   },
   {
     summary: 'Gets all friends for the logged user',

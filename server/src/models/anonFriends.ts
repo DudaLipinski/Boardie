@@ -41,11 +41,11 @@ export const deleteById = (id: AnonFriend['id']) =>
     .executeTakeFirst()
     .then((result) => result.numDeletedRows === 1n)
 
-export const getAllByUserId = (params: { userId: number }) =>
+export const getAllByUserId = (userId: number) =>
   kysely
     .selectFrom('anon_friend')
     .select(['id', 'fullName'])
-    .where('userId', '==', params.userId)
+    .where('userId', '==', userId)
     .execute()
 
 export const checkFriendshipExists = async (params: {

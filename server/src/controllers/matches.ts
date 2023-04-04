@@ -22,11 +22,13 @@ type MatchUpdateData = z.infer<typeof matchUpdateDataSchema>
 export const checkAccess = {
   create: async (userId: number, matchCreationData: MatchCreationData) => {
     for (const player of matchCreationData.players) {
-      const friendExists = await friendsModel.checkFriendshipExists({
-        friend: player.friend,
-        userId,
-      })
-      if (!friendExists) {
+      const friendshipExists =
+        await friendsModel.genericCheckFriendshipExistsWith(
+          userId,
+          player.friend.id,
+          player.friend.type
+        )
+      if (!friendshipExists) {
         return false
       }
     }

@@ -1,8 +1,7 @@
-import type z from 'zod'
-import type { genericFriendIdDTOSchema } from '../schemas/friends'
-import { FriendType } from '../schemas/friends'
+import { sql } from 'kysely'
 import kysely from '../database'
-import * as anonFriendsModel from './anonFriends'
+import { FriendType } from '../schemas/friends'
+import { checkFriendshipExists as checkAnonFriendshipExists } from './anonFriends'
 
 interface FriendshipRequest {
   requestingUserId: number
@@ -11,23 +10,6 @@ interface FriendshipRequest {
 interface Friendship {
   userAId: number
   userBId: number
-}
-
-export const checkFriendshipExists = ({
-  userId,
-  friend,
-}: {
-  userId: number
-  friend: z.infer<typeof genericFriendIdDTOSchema>
-}) => {
-  const { id, type } = friend
-  if (type === FriendType.ANON_FRIEND) {
-    return anonFriendsModel.checkFriendshipExists({ userId, id })
-  } else {
-    return id === userId
-  }
-
-  // return friendsModel.confirmFriendship({ userId, id })
 }
 
 export const createFriendshipRequest = (request: FriendshipRequest) =>
@@ -79,4 +61,68 @@ export const acceptRequest = (request: FriendshipRequest) => {
       .onConflict((f) => f.doNothing())
       .execute()
   })
+}
+
+export const getAllByUserId = async (userId: number) => {
+  const usersA = await kysely
+    .selectFrom('friendship')
+    .leftJoin('user', 'user.id', 'userBId')
+    .select(['user.id', 'user.firstName', 'user.middleAndSurname'])
+    .where('userAId', '==', userId)
+    .execute()
+
+  const usersB = await kysely
+    .selectFrom('friendship')
+    .leftJoin('user', 'user.id', 'userAId')
+    .select(['user.id', 'user.firstName', 'user.middleAndSurname'])
+    .where('userBId', '==', userId)
+    .execute()
+
+  return [...usersA, ...usersB]
+}
+
+export const checkFriendshipExists = ({
+  userId,
+  id,
+}: {
+  userId: number
+  id: number
+}) =>
+  kysely
+    .selectFrom('friendship')
+    .select('userAId')
+    .where((qb) => qb.where('userAId', '==', userId).where('userBId', '==', id))
+    .orWhere((qb) =>
+      qb.where('userAId', '==', id).where('userBId', '==', userId)
+    )
+    .limit(1)
+    .executeTakeFirst()
+    .then((result) => result?.userAId !== undefined)
+
+export const genericCheckFriendshipExistsWith = async (
+  userId: number,
+  friendId: number,
+  friendType: FriendType
+) => {
+  if (friendType === FriendType.ANON_FRIEND) {
+    const friendshipExists = await checkAnonFriendshipExists({
+      userId,
+      id: friendId,
+    })
+    if (!friendshipExists) {
+      return false
+    }
+
+    return true
+  }
+
+  const friendExists = await checkFriendshipExists({
+    id: friendId,
+    userId,
+  })
+  if (!friendExists) {
+    return false
+  }
+
+  return true
 }

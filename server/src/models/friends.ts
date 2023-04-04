@@ -1,4 +1,3 @@
-import { sql } from 'kysely'
 import kysely from '../database'
 import { FriendType } from '../schemas/friends'
 import { checkFriendshipExists as checkAnonFriendshipExists } from './anonFriends'
@@ -19,6 +18,14 @@ export const createFriendshipRequest = (request: FriendshipRequest) =>
     .onConflict((f) => f.doNothing())
     .executeTakeFirst()
     .then((result) => result.numInsertedOrUpdatedRows === 1n)
+
+export const getFriendshipRequests = async (userId: number) =>
+  kysely
+    .selectFrom('friendship_request')
+    .leftJoin('user', 'user.id', 'requestingUserId')
+    .select(['user.id', 'user.firstName', 'user.middleAndSurname'])
+    .where('requestedUserId', '==', userId)
+    .execute()
 
 /**
  * We are doing this ordering to avoid having duplicate friendships

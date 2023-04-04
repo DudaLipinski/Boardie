@@ -989,7 +989,7 @@
         }
       }
     },
-    "/me/friends/request": {
+    "/me/friends/requests": {
       "post": {
         "summary": "Sends a friendship request to another user",
         "tags": [
@@ -1027,6 +1027,43 @@
           },
           "409": {
             "description": "The friendship request already exists"
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all friendship requests for the logged user",
+        "tags": [
+          "friends"
+        ],
+        "responses": {
+          "200": {
+            "description": "The logged user's friendship requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "fullName": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "fullName"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "An unexpected internal error"

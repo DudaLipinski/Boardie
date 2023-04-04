@@ -9,6 +9,7 @@ import {
   FriendType,
   friendshipRequestSchema,
   acceptFriendshipRequestSchema,
+  existentFriendshipRequestSchema,
 } from '../schemas/friends'
 
 type GenericFriend = z.infer<typeof genericFriendDTOSchema>
@@ -47,7 +48,7 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
   }
 )
 
-const sendRequest = endpoint.POST('/me/friends/request')<
+const sendRequest = endpoint.POST('/me/friends/requests')<
   void,
   z.infer<typeof friendshipRequestSchema>,
   void
@@ -103,6 +104,35 @@ const sendRequest = endpoint.POST('/me/friends/request')<
   }
 )
 
+const getAllRequests = endpoint.GET('/me/friends/requests')<
+  void,
+  void,
+  z.infer<typeof existentFriendshipRequestSchema>[]
+>(
+  async (req, res) => {
+    const requests = (await friendsModel.getFriendshipRequests(req.userId)).map(
+      (request) => ({
+        id: request.id as number,
+        fullName: `${request.firstName} ${request.middleAndSurname}`,
+      })
+    )
+
+    res.status(200).send(requests)
+  },
+  {
+    summary: 'Gets all friendship requests for the logged user',
+    tags: ['friends'],
+    params: null,
+    body: null,
+    responses: {
+      200: {
+        description: "The logged user's friendship requests",
+        schema: z.array(existentFriendshipRequestSchema),
+      },
+    },
+  }
+)
+
 const acceptRequest = endpoint.POST('/me/friends')<
   void,
   z.infer<typeof acceptFriendshipRequestSchema>,
@@ -144,4 +174,5 @@ export const endpoints = {
   getAllByLoggedUser,
   sendRequest,
   acceptRequest,
+  getAllRequests,
 }

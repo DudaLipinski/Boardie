@@ -49,6 +49,15 @@ Table friendship_request {
   }
 }
 
+Table friendship {
+  userAId Int [not null]
+  userBId Int [not null]
+
+  indexes {
+    (userAId, userBId) [pk]
+  }
+}
+
 Ref: anon_friend.userId > user.id [delete: Cascade]
 
 Ref: match.authorId > user.id [delete: Set Null]
@@ -62,3 +71,7 @@ Ref: player.anonFriendId > anon_friend.id [delete: Cascade]
 Ref: friendship_request.requestingUserId > user.id [delete: Cascade]
 
 Ref: friendship_request.requestedUserId > user.id [delete: Cascade]
+
+Ref: friendship.userAId > user.id [delete: Cascade]
+
+Ref: friendship.userBId > user.id [delete: Cascade]

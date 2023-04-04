@@ -8,6 +8,10 @@ export type AnonFriend = {
   fullName: string
   userId: number
 }
+export type Friendship = {
+  userAId: number
+  userBId: number
+}
 export type FriendshipRequest = {
   requestingUserId: number
   requestedUserId: number
@@ -43,6 +47,7 @@ export type User = {
 }
 export type DB = {
   anon_friend: AnonFriend
+  friendship: Friendship
   friendship_request: FriendshipRequest
   match: Match
   player: Player

@@ -33,8 +33,10 @@ model User {
   anonFriends          AnonFriend[]
   // addressId            Int?
   // address              Address? @relation(fields: [addressId], references: [id])
-  sentFriendshipRequests   FriendshipRequest[] @relation("sentFriendshipRequests")
-  receivedFriendshipRequests   FriendshipRequest[] @relation("receivedFriendshipRequests")
+  friendsA             Friendship[] @relation("friendA")
+  friendsB             Friendship[] @relation("friendB")
+  sentFriendshipRequests   FriendshipRequest[] @relation("requestingUser")
+  receivedFriendshipRequests   FriendshipRequest[] @relation("requestedUser")
 
   @@index ([email])
 }
@@ -97,22 +99,28 @@ model Player {
   @@index([matchId])
 }
 
-// model Friendship {
-//   userAId  Int @@id
-//   userBId  Int @@id
-//   userA    User  @relation(fields: [userAId], references: [id])
-//   userB    User  @relation(fields: [userBId], references: [id])
-
-//   @@id([userAId, userBId])
-// }
-
 model FriendshipRequest {
   @@map("friendship_request")
 
   requestingUserId  Int
-  requestingUser    User  @relation("sentFriendshipRequests", fields: [requestingUserId], references: [id], onDelete: Cascade)
   requestedUserId   Int
-  requestedUser     User  @relation("receivedFriendshipRequests", fields: [requestedUserId], references: [id], onDelete: Cascade)
+
+  // --- Relations
+  requestingUser    User  @relation("requestingUser", fields: [requestingUserId], references: [id], onDelete: Cascade)
+  requestedUser     User  @relation("requestedUser", fields: [requestedUserId], references: [id], onDelete: Cascade)
 
   @@id([requestingUserId, requestedUserId])
+}
+
+model Friendship {
+  @@map("friendship")
+
+  userAId  Int
+  userBId  Int
+
+  // --- Relations
+  userA    User  @relation("friendA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB    User  @relation("friendB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@id([userAId, userBId])
 }

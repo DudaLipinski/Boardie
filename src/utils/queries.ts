@@ -9,7 +9,7 @@ import { useQueryClient } from 'react-query'
  * @returns An object with the onMutate and onError functions to pass to the useMutation hook.
  */
 export const useOptimisticUpdate = <MutationParams = unknown, T = unknown>(
-  queryKey: string,
+  queryKey: string | (string | number)[],
   doOptimisticUpdate: (params: MutationParams) => (oldValue: T | undefined) => T
 ) => {
   const queryClient = useQueryClient()

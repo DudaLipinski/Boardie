@@ -112,7 +112,7 @@ export const deleteMatch = (matchId: number): Promise<void> =>
       }
     })
 
-export const updateMatch = (matchPayload: MatchDetails): Promise<void> =>
+export const updateMatch = (matchPayload: MatchDetails): Promise<Match> =>
   axios({
     method: 'put',
     url: `/matches/${matchPayload.id}`,

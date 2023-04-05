@@ -1,3 +1,4 @@
+import type { Transaction } from '../database'
 import kysely from '../database'
 import { FriendType } from '../schemas/friends'
 import { checkFriendshipExists as checkAnonFriendshipExists } from './anonFriends'
@@ -40,34 +41,28 @@ const resolveFriendshipUsers = ({
     requestingUserId > requestedUserId ? requestingUserId : requestedUserId,
 })
 
-export const acceptRequest = (request: FriendshipRequest) => {
-  const { requestingUserId, requestedUserId } = request
+export function deleteRequest(
+  this: { transaction?: Transaction },
+  { requestingUserId, requestedUserId }: FriendshipRequest
+) {
+  return (this.transaction ?? kysely)
+    .deleteFrom('friendship_request')
+    .where('requestedUserId', '==', requestedUserId)
+    .where('requestingUserId', '==', requestingUserId)
+    .executeTakeFirst()
+    .then((result) => result.numDeletedRows > 0)
+}
 
-  return kysely.transaction().execute(async (tx) => {
-    const requestExists = await tx
-      .deleteFrom('friendship_request')
-      .where((qb) =>
-        qb
-          .where('requestedUserId', '==', requestedUserId)
-          .where('requestingUserId', '==', requestingUserId)
-      )
-      .orWhere((qb) =>
-        qb
-          .where('requestedUserId', '==', requestingUserId)
-          .where('requestingUserId', '==', requestedUserId)
-      )
-      .executeTakeFirst()
-      .then((result) => result.numDeletedRows > 0)
-    if (!requestExists) {
-      return false
-    }
-
-    return tx
-      .insertInto('friendship')
-      .values([resolveFriendshipUsers(request)])
-      .onConflict((f) => f.doNothing())
-      .execute()
-  })
+export function createFriendship(
+  this: { transaction?: Transaction },
+  request: FriendshipRequest
+) {
+  return (this.transaction ?? kysely)
+    .insertInto('friendship')
+    .values([resolveFriendshipUsers(request)])
+    .onConflict((f) => f.doNothing())
+    .executeTakeFirst()
+    .then((result) => result.numInsertedOrUpdatedRows === 1n)
 }
 
 export const getAllByUserId = async (userId: number) => {

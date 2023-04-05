@@ -189,7 +189,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
     res.sendStatus(200)
   },
   {
-    summary: 'Accepts a friendship request',
+    summary: 'Answers a friendship request',
     tags: ['friends'],
     params: {
       requestingUserId: {

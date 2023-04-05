@@ -1034,7 +1034,7 @@
     },
     "/me/friends/requests/:requestingUserId": {
       "put": {
-        "summary": "Accepts a friendship request",
+        "summary": "Answers a friendship request",
         "tags": [
           "friends"
         ],

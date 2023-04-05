@@ -36,21 +36,15 @@ export const MatchInfo = ({ boardgameName, date, highestScore }: Props) => {
         >
           {day}
         </Typography>
-        <Typography
-          variant="body1"
-          fontSize="13px"
-          fontWeight="600"
-          color="secondary.darker"
-        >
+        <Typography variant="body1" fontWeight="600" color="secondary.darker">
           {month}
         </Typography>
       </Box>
       <Box borderLeft="2px solid #eeeeee" height="45px" paddingRight="12px" />
       <Box>
         <Typography
-          variant="h3"
+          variant="h6"
           margin="5px 0 2px 0"
-          fontSize="16px"
           fontWeight="700"
           color="primary.darker"
           display="-webkit-box"

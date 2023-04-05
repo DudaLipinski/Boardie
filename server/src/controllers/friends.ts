@@ -62,6 +62,9 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
       if (!requestedUser) {
         return res.sendStatus(404)
       }
+      if (requestedUser.id === req.userId) {
+        return res.sendStatus(400)
+      }
 
       requestedUserId = requestedUser.id
     } else if (reqUserId) {

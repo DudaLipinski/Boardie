@@ -34,7 +34,7 @@ export const MatchCard = ({ match }: { match: Match }) => {
     <>
       {isError && <Alert severity={'error'} message={message} />}
       <ListItem sx={{ ...styledListItem }}>
-        <Box width="92%" paddingTop="6px">
+        <Box width="100%" paddingTop="6px">
           <Link
             to={`${MATCH_DETAILS.replace(':id', id.toString())}`}
             style={{ textDecoration: 'none' }}

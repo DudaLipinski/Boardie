@@ -16,7 +16,7 @@ export const Alert = ({ severity, message, sx, onClose }: Props) => {
 
   useEffect(() => {
     const wordsCount = message.split(' ').length
-    setTimeout(() => setOpen(false), wordsCount * 700)
+    setTimeout(() => setOpen(false), Math.max(wordsCount * 800, 3000))
   }, [message])
 
   useEffect(() => {

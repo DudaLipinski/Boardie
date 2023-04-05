@@ -45,7 +45,7 @@ export const CreateAccount = () => {
   }
 
   return (
-    <Motion style={{ height: 'inherit' }}>
+    <Motion style={{ height: 'inherit', padding: '0 24px' }}>
       <Box
         height="inherit"
         display="flex"

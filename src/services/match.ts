@@ -24,7 +24,7 @@ const normalizeMatchData = (match: Omit<Match, 'id'> | MatchDetails) => ({
           friend,
         })
       )
-    : [],
+    : null,
 })
 
 export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
@@ -112,11 +112,11 @@ export const deleteMatch = (matchId: number): Promise<void> =>
       }
     })
 
-export const updateMatchDetails = (matchPayload: MatchDetails): Promise<void> =>
+export const updateMatch = (matchPayload: MatchDetails): Promise<Match> =>
   axios({
     method: 'put',
     url: `/matches/${matchPayload.id}`,
-    data: normalizeMatchData(omit(matchPayload, 'id')),
+    data: { ...omit(matchPayload, 'id'), location: null },
   })
     .then((response) => {
       return response.data

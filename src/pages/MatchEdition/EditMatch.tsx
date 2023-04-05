@@ -4,6 +4,7 @@ import { Box, Stack } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import pick from 'lodash.pick'
+import omit from 'lodash.omit'
 import { Match as MatchType } from '../../types/Match'
 import { useMatch, useMatchUpdate } from '../../queries/match'
 
@@ -23,7 +24,7 @@ export const MatchEdition = () => {
   const [isReady, setIsReady] = useState(false)
 
   const { data, isLoading: isLoadingMatch, isError, error } = useMatch(matchId)
-  const { mutate: mutateMatchDetails } = useMatchUpdate()
+  const { mutate: mutateMatch } = useMatchUpdate()
 
   const { handleSubmit, control, reset } = useForm<MatchType>({
     defaultValues: {
@@ -69,35 +70,50 @@ export const MatchEdition = () => {
       endedAt: formattedEndedAt,
     }
 
-    mutateMatchDetails(matchDetails)
+    const updatedPlayers = receivedPlayers
+      .filter((receivedPlayer) => {
+        const oldPlayer = initialPlayers?.find(
+          (player) => player.id === receivedPlayer.id
+        )
+        return (
+          oldPlayer &&
+          JSON.stringify(receivedPlayer) !== JSON.stringify(oldPlayer)
+        )
+      })
+      .map((player) => {
+        const friend = omit(player.friend, 'fullName')
 
-    if (!receivedPlayers || !initialPlayers) {
-      return
-    }
-
-    const deletedPlayers = initialPlayers?.filter(
-      (oldPlayer) =>
-        !receivedPlayers.find((newPlayer) => newPlayer.id === oldPlayer.id)
-    )
-
-    const updatedPlayers = receivedPlayers.filter((receivedPlayer) => {
-      const oldPlayer = initialPlayers.find(
-        (player) => player.id === receivedPlayer.id
-      )
-      return (
-        oldPlayer &&
-        JSON.stringify(receivedPlayer) !== JSON.stringify(oldPlayer)
-      )
-    })
+        return { ...player, friend: friend }
+      })
 
     const newPlayers = receivedPlayers
       .filter((player) => !('id' in player))
       .map((player) => {
+        const friend = omit(player.friend, 'fullName')
+
         return {
-          ...player,
-          matchId: matchId,
+          ...omit(player, 'id'),
+          friend: friend,
         }
       })
+
+    const deletedPlayers = initialPlayers
+      ?.filter(
+        (oldPlayer) =>
+          !receivedPlayers.find((newPlayer) => newPlayer.id === oldPlayer.id)
+      )
+      .map((player) => player.id)
+
+    const matchWithUpdatedPlayers = {
+      ...matchDetails,
+      players: {
+        create: newPlayers.length ? [...newPlayers] : [],
+        update: updatedPlayers.length ? [...updatedPlayers] : [],
+        delete: deletedPlayers?.length ? [...deletedPlayers] : [],
+      },
+    }
+
+    mutateMatch(matchWithUpdatedPlayers)
   }
 
   return (

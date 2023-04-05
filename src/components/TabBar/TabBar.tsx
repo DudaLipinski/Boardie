@@ -35,7 +35,6 @@ export const TabBar = ({ user }: { user: User }) => {
             padding: '4px 24px',
           }}
           variant="text"
-          aria-label=""
         >
           <IconButton
             sx={{ ...styledIconProps }}

@@ -6,7 +6,7 @@ import { useOptimisticUpdate } from '../utils/queries'
 const MATCHES_KEY = 'matches'
 export const useMatches = () => {
   const matchesQuery = useQuery(MATCHES_KEY, matchesService.getMatches, {
-    staleTime: 120 * 100,
+    staleTime: 120 * 1000,
   })
 
   return matchesQuery
@@ -47,9 +47,21 @@ export const useMatchDeletion = () => {
   )
 }
 
-const UPDATE_MATCH_KEY = 'updateMatchDetails'
+const UPDATE_MATCH_KEY = 'updateMatch'
+
 export const useMatchUpdate = () => {
-  return useMutation(UPDATE_MATCH_KEY, matchesService.updateMatchDetails)
+  const queryClient = useQueryClient()
+
+  return useMutation(UPDATE_MATCH_KEY, matchesService.updateMatch, {
+    onSuccess: (updatedMatch, { id }) => {
+      queryClient.setQueryData([MATCH_KEY, id], updatedMatch)
+      queryClient.setQueryData(MATCHES_KEY, (oldMatches: Match[] | undefined) =>
+        oldMatches
+          ? oldMatches.map((match) => (match.id === id ? updatedMatch : match))
+          : []
+      )
+    },
+  })
 }
 
 const CREATE_MATCH_PLAYER_KEY = 'createPlayer'

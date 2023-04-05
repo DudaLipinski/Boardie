@@ -38,9 +38,9 @@ export const friendshipRequestSchema = z
   )
   .describe('Data used to send a friendship request')
 
-export const acceptFriendshipRequestSchema = z
+export const answerFriendshipRequestSchema = z
   .object({
-    userId: z.number(),
+    accept: z.boolean(),
   })
   .describe('Data used to accept a friendship request')
 

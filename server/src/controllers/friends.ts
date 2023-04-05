@@ -8,9 +8,10 @@ import {
   genericFriendDTOSchema,
   FriendType,
   friendshipRequestSchema,
-  acceptFriendshipRequestSchema,
+  answerFriendshipRequestSchema,
   existentFriendshipRequestSchema,
 } from '../schemas/friends'
+import kysely from '../database'
 
 type GenericFriend = z.infer<typeof genericFriendDTOSchema>
 
@@ -136,32 +137,68 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
   }
 )
 
-const acceptRequest = endpoint.POST('/me/friends')<
-  void,
-  z.infer<typeof acceptFriendshipRequestSchema>,
+const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
+  { requestingUserId: number },
+  z.infer<typeof answerFriendshipRequestSchema>,
   void
 >(
   async (req, res) => {
-    const { userId: requestingUserId } = req.body
+    const { requestingUserId } = req.params
+    const { accept } = req.body
+
     if (requestingUserId === req.userId) {
       return res.sendStatus(400)
     }
 
-    const requestExists = await friendsModel.acceptRequest({
+    const friendRequest = {
       requestingUserId,
       requestedUserId: req.userId,
-    })
-    if (!requestExists) {
-      return res.sendStatus(404)
     }
+
+    await kysely.transaction().execute(async (transaction) => {
+      const requestWasFound = await friendsModel.deleteRequest.call(
+        { transaction },
+        friendRequest
+      )
+      if (!requestWasFound) {
+        return res.sendStatus(404)
+      }
+
+      // If the request was found, also delete the inverse request
+      await friendsModel.deleteRequest.call(
+        { transaction },
+        {
+          requestingUserId: friendRequest.requestedUserId,
+          requestedUserId: friendRequest.requestingUserId,
+        }
+      )
+
+      if (!accept) {
+        return
+      }
+
+      const friendshipCreated = await friendsModel.createFriendship.call(
+        { transaction },
+        friendRequest
+      )
+      if (!friendshipCreated) {
+        return res.sendStatus(409)
+      }
+    })
 
     res.sendStatus(200)
   },
   {
     summary: 'Accepts a friendship request',
     tags: ['friends'],
-    params: null,
-    body: acceptFriendshipRequestSchema,
+    params: {
+      requestingUserId: {
+        type: 'number',
+        description:
+          "The id of the user requesting to be the logged user's friend",
+      },
+    },
+    body: answerFriendshipRequestSchema,
     responses: {
       200: {
         description: 'The request was accepted',
@@ -176,6 +213,6 @@ const acceptRequest = endpoint.POST('/me/friends')<
 export const endpoints = {
   getAllByLoggedUser,
   sendRequest,
-  acceptRequest,
+  answerRequest,
   getAllRequests,
 }

@@ -50,11 +50,11 @@ Table friendship_request {
 }
 
 Table friendship {
-  userAId Int [not null]
-  userBId Int [not null]
+  smallerUserId Int [not null]
+  biggerUserId Int [not null]
 
   indexes {
-    (userAId, userBId) [pk]
+    (smallerUserId, biggerUserId) [pk]
   }
 }
 
@@ -72,6 +72,6 @@ Ref: friendship_request.requestingUserId > user.id [delete: Cascade]
 
 Ref: friendship_request.requestedUserId > user.id [delete: Cascade]
 
-Ref: friendship.userAId > user.id [delete: Cascade]
+Ref: friendship.smallerUserId > user.id [delete: Cascade]
 
-Ref: friendship.userBId > user.id [delete: Cascade]
+Ref: friendship.biggerUserId > user.id [delete: Cascade]

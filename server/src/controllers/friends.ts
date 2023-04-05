@@ -179,7 +179,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
 
       const friendshipCreated = await friendsModel.createFriendship.call(
         { transaction },
-        friendRequest
+        [friendRequest.requestingUserId, friendRequest.requestedUserId]
       )
       if (!friendshipCreated) {
         return res.sendStatus(409)
@@ -210,9 +210,53 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
   }
 )
 
+const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
+  { friendUserId: number },
+  void,
+  void
+>(
+  async (req, res) => {
+    const { friendUserId } = req.params
+
+    if (friendUserId === req.userId) {
+      return res.sendStatus(400)
+    }
+
+    const friendshipDeleted = await friendsModel.deleteFriendship([
+      req.userId,
+      friendUserId,
+    ])
+    if (!friendshipDeleted) {
+      return res.sendStatus(404)
+    }
+
+    res.sendStatus(200)
+  },
+  {
+    summary: 'Deletes a friendship',
+    tags: ['friends'],
+    params: {
+      friendUserId: {
+        type: 'number',
+        description: 'The id of the user to delete the friendship with',
+      },
+    },
+    body: null,
+    responses: {
+      200: {
+        description: 'The friendship was deleted',
+      },
+      404: {
+        description: 'The friendship does not exist',
+      },
+    },
+  }
+)
+
 export const endpoints = {
   getAllByLoggedUser,
   sendRequest,
   answerRequest,
   getAllRequests,
+  deleteFriend,
 }

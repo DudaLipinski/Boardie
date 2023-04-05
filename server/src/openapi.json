@@ -1083,6 +1083,35 @@
         }
       }
     },
+    "/me/friends/:friendUserId": {
+      "delete": {
+        "summary": "Deletes a friendship",
+        "tags": [
+          "friends"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "friendUserId",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The friendship was deleted"
+          },
+          "404": {
+            "description": "The friendship does not exist"
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        }
+      }
+    },
     "/me/anonfriends": {
       "post": {
         "summary": "Creates an anonymous friend for the logged user",

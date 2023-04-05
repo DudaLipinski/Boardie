@@ -115,12 +115,12 @@ model FriendshipRequest {
 model Friendship {
   @@map("friendship")
 
-  userAId  Int
-  userBId  Int
+  smallerUserId  Int
+  biggerUserId  Int
 
   // --- Relations
-  userA    User  @relation("friendA", fields: [userAId], references: [id], onDelete: Cascade)
-  userB    User  @relation("friendB", fields: [userBId], references: [id], onDelete: Cascade)
+  userA    User  @relation("friendA", fields: [smallerUserId], references: [id], onDelete: Cascade)
+  userB    User  @relation("friendB", fields: [biggerUserId], references: [id], onDelete: Cascade)
 
-  @@id([userAId, userBId])
+  @@id([smallerUserId, biggerUserId])
 }

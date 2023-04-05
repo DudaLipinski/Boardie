@@ -55,6 +55,16 @@ CREATE TABLE "friendship_request" (
     CONSTRAINT "friendship_request_requestedUserId_fkey" FOREIGN KEY ("requestedUserId") REFERENCES "user" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- CreateTable
+CREATE TABLE "friendship" (
+    "smallerUserId" INTEGER NOT NULL,
+    "biggerUserId" INTEGER NOT NULL,
+
+    PRIMARY KEY ("smallerUserId", "biggerUserId"),
+    CONSTRAINT "friendship_smallerUserId_fkey" FOREIGN KEY ("smallerUserId") REFERENCES "user" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "friendship_biggerUserId_fkey" FOREIGN KEY ("biggerUserId") REFERENCES "user" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 

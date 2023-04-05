@@ -9,8 +9,8 @@ export type AnonFriend = {
   userId: number
 }
 export type Friendship = {
-  userAId: number
-  userBId: number
+  smallerUserId: number
+  biggerUserId: number
 }
 export type FriendshipRequest = {
   requestingUserId: number

@@ -10,6 +10,31 @@ export const createAnonymous = (fullName: string) =>
     return response.data
   })
 
+export const createFriendRequest = (userEmail: string) =>
+  axios({
+    method: 'post',
+    url: `/me/friends/requests`,
+    data: { userEmail },
+  })
+    .then((response) => {
+      return response.data
+    })
+    .catch((err) => {
+      if (err.response.status === 404) {
+        throw new Error('User not found.')
+      }
+
+      if (err.response.status === 409) {
+        throw new Error('You already sent a request for this user.')
+      }
+
+      if (err.response.status !== 200) {
+        throw new Error(
+          'We were unable to perform this action. Try again in a few minutes.'
+        )
+      }
+    })
+
 export const getFriends = (): Promise<GenericUser[]> =>
   axios({
     method: 'get',

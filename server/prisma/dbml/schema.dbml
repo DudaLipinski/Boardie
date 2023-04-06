@@ -64,9 +64,9 @@ Ref: match.authorId > user.id [delete: Set Null]
 
 Ref: player.matchId > match.id [delete: Cascade]
 
-Ref: player.userId > user.id [delete: Cascade]
+Ref: player.userId > user.id [delete: Set Null]
 
-Ref: player.anonFriendId > anon_friend.id [delete: Cascade]
+Ref: player.anonFriendId > anon_friend.id [delete: Set Null]
 
 Ref: friendship_request.requestingUserId > user.id [delete: Cascade]
 

@@ -165,6 +165,8 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
       }
 
       // If the request was found, also delete the inverse request
+      // in the case where the requested user had also sent a request
+      // to the requesting user
       await friendsModel.deleteRequest.call(
         { transaction },
         {

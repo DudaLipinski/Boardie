@@ -1,7 +1,6 @@
 export const styledListItem = {
   display: 'flex',
   flexDirection: 'row',
-  justifyContent: 'space-between',
   alignItems: 'start',
   width: 'inherit',
   margin: '0 auto 16px',

@@ -33,8 +33,8 @@ export const Players = ({ control }: Props) => {
 
   return (
     <>
-      <Box display="flex" justifyContent={'space-between'}>
-        <Typography variant="h3" component={'h2'}>
+      <Box display="flex" justifyContent="space-between">
+        <Typography variant="h3" component="h2">
           Players
         </Typography>
         <Button

@@ -38,3 +38,20 @@ export const useFriendRequestCreation = () => {
     friendsService.createFriendshipRequest
   )
 }
+
+const ANSWER_FRIENDSHIP_REQUEST_KEY = 'answerFriendshipRequest'
+export const useAnswerFriendshipRequest = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    ANSWER_FRIENDSHIP_REQUEST_KEY,
+    friendsService.answerFriendshipRequest,
+
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(FRIENDS_KEY)
+        queryClient.invalidateQueries(FRIENDSHIP_REQUEST_KEY)
+      },
+    }
+  )
+}

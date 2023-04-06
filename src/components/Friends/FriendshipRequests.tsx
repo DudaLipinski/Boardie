@@ -1,9 +1,9 @@
 import { AvatarGroup, Box, Typography, IconButton } from '@mui/material'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { Link, useNavigate } from 'react-router-dom'
-import { GenericUser } from '../../types/GenericUser'
 import { Avatar } from '../Avatar'
 import { FRIENDSHIP_REQUESTS } from '../../routes/routeSpecs'
+import { FriendshipRequest } from '../../types/Friend'
 
 export const styledListItem = {
   display: 'flex',
@@ -18,14 +18,19 @@ export const styledListItem = {
   margin: '0 auto 16px',
 }
 
-interface Props {
-  friendshipRequest: Omit<GenericUser, 'type'>[]
-}
-
-export const FriendshipRequests = ({ friendshipRequest }: Props) => {
+export const FriendshipRequests = ({
+  friendshipRequest,
+}: {
+  friendshipRequest: FriendshipRequest[]
+}) => {
   const navigate = useNavigate()
-  const avatars = friendshipRequest.map((friendship) => (
-    <Avatar user={{ ...friendship, type: 'USER' }} size={'sm'}></Avatar>
+
+  const avatars = friendshipRequest.map((friendship: any) => (
+    <Avatar
+      key={friendship.userId}
+      user={{ ...friendship, type: 'USER', id: friendship.userId }}
+      size={'sm'}
+    ></Avatar>
   ))
 
   return (

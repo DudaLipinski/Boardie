@@ -3,31 +3,22 @@ import { IconButton, Menu, MenuItem } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { EDIT_MATCH } from '../../routes/routeSpecs'
-import { DeleteDialog } from './DeleteDialog'
+import { DeleteDialog } from '../DeleteDialog'
 
 interface Props {
   id: number
   handleDeleteMatch: () => void
-  isDeleteDialogOpen: boolean
-  setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void
 }
 
-export const MenuButton = ({
-  id,
-  handleDeleteMatch,
-  isDeleteDialogOpen,
-  setIsDeleteDialogOpen,
-}: Props) => {
+export const MenuButton = ({ id, handleDeleteMatch }: Props) => {
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const open = Boolean(anchorEl)
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
   }
 
   return (
@@ -55,7 +46,7 @@ export const MenuButton = ({
         id="menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => setAnchorEl(null)}
         MenuListProps={{
           'aria-labelledby': 'fade-button',
         }}
@@ -72,15 +63,13 @@ export const MenuButton = ({
         >
           Edit
         </MenuItem>
-        <MenuItem onClick={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}>
-          Delete
-        </MenuItem>
+        <MenuItem onClick={() => setIsDeleteDialogOpen(true)}>Delete</MenuItem>
       </Menu>
       <DeleteDialog
         isDeleteDialogOpen={isDeleteDialogOpen}
         setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-        handleDeleteMatch={handleDeleteMatch}
-        setAnchorEl={setAnchorEl}
+        handleDelete={handleDeleteMatch}
+        title="Delete this match?"
       />
     </>
   )

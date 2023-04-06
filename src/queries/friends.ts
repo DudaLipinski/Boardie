@@ -21,10 +21,20 @@ export const useAnonFriendCreation = () => {
   })
 }
 
-const CREATE_FRIEND_REQUEST_KEY = 'createFriendRequest'
+const FRIENDSHIP_REQUEST_KEY = 'friendshipRequests'
+export const useFriendshipRequests = () => {
+  const friendsQuery = useQuery(
+    FRIENDSHIP_REQUEST_KEY,
+    friendsService.getFriendshipRequests
+  )
+
+  return friendsQuery
+}
+
+const CREATE_FRIEND_REQUEST_KEY = 'createFriendshipRequest'
 export const useFriendRequestCreation = () => {
   return useMutation(
     CREATE_FRIEND_REQUEST_KEY,
-    friendsService.createFriendRequest
+    friendsService.createFriendshipRequest
   )
 }

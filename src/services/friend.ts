@@ -10,7 +10,7 @@ export const createAnonymous = (fullName: string) =>
     return response.data
   })
 
-export const createFriendRequest = (userEmail: string) =>
+export const createFriendshipRequest = (userEmail: string) =>
   axios({
     method: 'post',
     url: `/me/friends/requests`,
@@ -39,6 +39,14 @@ export const getFriends = (): Promise<GenericUser[]> =>
   axios({
     method: 'get',
     url: `/me/friends`,
+  }).then((response) => {
+    return response.data
+  })
+
+export const getFriendshipRequests = (): Promise<Omit<GenericUser, 'type'>[]> =>
+  axios({
+    method: 'get',
+    url: `/me/friends/requests`,
   }).then((response) => {
     return response.data
   })

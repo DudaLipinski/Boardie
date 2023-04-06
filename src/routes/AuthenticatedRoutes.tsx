@@ -5,6 +5,7 @@ import { Dashboard } from '../pages/Dashboard/Dashboard'
 import { MatchList } from '../pages/MatchList/MatchList'
 import { MatchEdition } from '../pages/MatchEdition/EditMatch'
 import { Friends } from '../pages/Friends/Friends'
+import { FriendsRequests } from '../pages/FriendsRequests/FriendsRequests'
 import {
   CREATE_MATCH,
   DASHBOARD,
@@ -13,6 +14,7 @@ import {
   MATCH_DETAILS,
   EDIT_MATCH,
   FRIENDS,
+  FRIENDSHIP_REQUESTS,
 } from './routeSpecs'
 
 export const AuthenticatedRoutes = () => {
@@ -25,6 +27,7 @@ export const AuthenticatedRoutes = () => {
       <Route path={EDIT_MATCH} element={<MatchEdition />} />
       <Route path={PROFILE} element={<Profile />} />
       <Route path={FRIENDS} element={<Friends />} />
+      <Route path={FRIENDSHIP_REQUESTS} element={<FriendsRequests />} />
       <Route path="*" element={<Dashboard />} />
     </Routes>
   )

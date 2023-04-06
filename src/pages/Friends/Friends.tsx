@@ -1,15 +1,18 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { Motion } from '../../components/Motion'
-import { useFriends } from '../../queries/friends'
-import { FriendCard } from '../../components/FriendCard/FriendCard'
-import { SendFriendRequestModal } from '../../components/SendFriendRequestModal/SendFriendRequestModal'
+import { useFriends, useFriendshipRequests } from '../../queries/friends'
+import { FriendCard } from '../../components/Friends/FriendCard'
+import { SendFriendRequestModal } from '../../components/Friends/SendFriendRequestModal'
+
+import { FriendshipRequests } from '../../components/Friends/FriendshipRequests'
 
 export const Friends = () => {
   const [open, setOpen] = useState(false)
   const { data: friends } = useFriends()
+  const { data: friendsRequests } = useFriendshipRequests()
 
-  const listItems = useMemo(
+  const friendsCards = useMemo(
     () =>
       friends?.map((friend) => <FriendCard key={friend.id} friend={friend} />),
     [friends]
@@ -23,21 +26,32 @@ export const Friends = () => {
         flexDirection: 'column',
       }}
     >
-      <Box display="flex" justifyContent="space-between" margin="20px 0">
-        <Typography variant="body2" component="p">
+      <Box>
+        <Typography
+          variant="h2"
+          component="h2"
+          margin="20px 0"
+          fontWeight="600"
+        >
           Friends
         </Typography>
+        {friendsRequests?.length ? (
+          <FriendshipRequests friendshipRequest={friendsRequests} />
+        ) : null}
+      </Box>
+      <Box display="block" margin="20px 0">
         <Button
-          variant="outlined"
+          variant="contained"
           size="small"
           type="button"
+          sx={{ float: 'right' }}
           onClick={() => setOpen(true)}
         >
           Add new +
         </Button>
       </Box>
       <SendFriendRequestModal setOpen={setOpen} open={open} />
-      {listItems}
+      {friendsCards}
     </Motion>
   )
 }

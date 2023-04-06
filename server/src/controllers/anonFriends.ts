@@ -83,7 +83,7 @@ const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
     body: anonFriendUpdateDataSchema,
     responses: {
       200: {
-        description: 'The updated anonymous friend',
+        description: 'The updated anonymous friend data',
         schema: anonFriendDTOSchema,
       },
       403: {

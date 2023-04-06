@@ -262,6 +262,7 @@ const update = endpoint.PUT('/matches/:matchId')<
     responses: {
       200: {
         description: 'The match was updated',
+        schema: matchDTOSchema,
       },
       403: {
         description: 'The logged user is not the author of the match',

@@ -203,7 +203,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
     body: answerFriendshipRequestSchema,
     responses: {
       200: {
-        description: 'The request was accepted',
+        description: 'The request answer has been processed',
       },
       404: {
         description: 'The friendship request does not exist',

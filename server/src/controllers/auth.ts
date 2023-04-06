@@ -28,7 +28,10 @@ const auth = endpoint.POST('/auth')<
     params: null,
     body: authDTOSchema,
     responses: {
-      200: authSchema,
+      200: {
+        description: 'The authenticated user',
+        schema: authSchema,
+      },
       401: {
         description: "Provided credentials doesn't match any valid user",
       },

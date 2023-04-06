@@ -235,7 +235,59 @@
           }
         },
         "responses": {
-          "200": {},
+          "200": {
+            "description": "The authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "middleAndSurname": {
+                          "type": "string"
+                        },
+                        "age": {
+                          "type": "number",
+                          "minimum": 1,
+                          "maximum": 120,
+                          "nullable": true
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "firstName",
+                        "middleAndSurname",
+                        "age",
+                        "email"
+                      ],
+                      "additionalProperties": false,
+                      "description": "Data that represents a user"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "user",
+                    "token"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
           "400": {
             "description": "The request body is invalid"
           },
@@ -855,7 +907,113 @@
         },
         "responses": {
           "200": {
-            "description": "The match was updated"
+            "description": "The match was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "authorId": {
+                      "type": "number",
+                      "nullable": true
+                    },
+                    "boardgameName": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "startedAt": {
+                      "type": "string"
+                    },
+                    "endedAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "deletedAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "notes": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "players": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "friend": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "ANON_FRIEND",
+                                  "USER"
+                                ]
+                              },
+                              "fullName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "fullName"
+                            ],
+                            "additionalProperties": false,
+                            "description": "Generic friend"
+                          },
+                          "score": {
+                            "type": "number",
+                            "nullable": true
+                          },
+                          "isWinner": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "friend",
+                          "score",
+                          "isWinner"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Data that represents an existent player"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "authorId",
+                    "boardgameName",
+                    "location",
+                    "startedAt",
+                    "endedAt",
+                    "createdAt",
+                    "deletedAt",
+                    "notes",
+                    "players"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Match data with its players"
+                }
+              }
+            }
           },
           "400": {
             "description": "The request body is invalid"
@@ -1069,7 +1227,7 @@
         },
         "responses": {
           "200": {
-            "description": "The request was accepted"
+            "description": "The request answer has been processed"
           },
           "400": {
             "description": "The request body is invalid"
@@ -1215,7 +1373,7 @@
         },
         "responses": {
           "200": {
-            "description": "The updated anonymous friend",
+            "description": "The updated anonymous friend data",
             "content": {
               "application/json": {
                 "schema": {

@@ -48,7 +48,6 @@ export const useMatchDeletion = () => {
 }
 
 const UPDATE_MATCH_KEY = 'updateMatch'
-
 export const useMatchUpdate = () => {
   const queryClient = useQueryClient()
 

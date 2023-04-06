@@ -6,16 +6,36 @@ import { FriendCard } from '../../components/Friends/FriendCard'
 import { SendFriendRequestModal } from '../../components/Friends/SendFriendRequestModal'
 
 import { FriendshipRequests } from '../../components/Friends/FriendshipRequests'
+import { AnonFriendCard } from '../../components/Friends/AnonFriendCard'
 
 export const Friends = () => {
   const [open, setOpen] = useState(false)
   const { data: friends } = useFriends()
   const { data: friendsRequests } = useFriendshipRequests()
 
-  const friendsCards = useMemo(
-    () =>
-      friends?.map((friend) => <FriendCard key={friend.id} friend={friend} />),
+  const anonFriends = useMemo(
+    () => friends?.filter((friend) => friend.type === 'ANON_FRIEND'),
     [friends]
+  )
+  const userFriends = useMemo(
+    () => friends?.filter((friend) => friend.type === 'USER'),
+    [friends]
+  )
+
+  const userFriendsCards = useMemo(
+    () =>
+      userFriends?.map((friend) => (
+        <FriendCard key={friend.id} friend={friend} />
+      )),
+    [userFriends]
+  )
+
+  const anonFriendsCards = useMemo(
+    () =>
+      anonFriends?.map((friend) => (
+        <AnonFriendCard key={friend.id} friend={friend} />
+      )),
+    [anonFriends]
   )
 
   return (
@@ -39,7 +59,7 @@ export const Friends = () => {
           <FriendshipRequests friendshipRequest={friendsRequests} />
         ) : null}
       </Box>
-      <Box display="block" margin="20px 0">
+      <Box display="block" marginTop="20px ">
         <Button
           variant="contained"
           size="small"
@@ -51,7 +71,32 @@ export const Friends = () => {
         </Button>
       </Box>
       <SendFriendRequestModal setOpen={setOpen} open={open} />
-      {friendsCards}
+      {userFriendsCards && (
+        <Box>
+          <Typography
+            variant="h3"
+            component="h3"
+            margin="20px 0"
+            fontWeight="600"
+          >
+            Friends
+          </Typography>
+          {userFriendsCards}
+        </Box>
+      )}
+      {anonFriendsCards && (
+        <Box>
+          <Typography
+            variant="h3"
+            component="h3"
+            margin="20px 0"
+            fontWeight="600"
+          >
+            Anonymous friends
+          </Typography>
+          {anonFriendsCards}
+        </Box>
+      )}
     </Motion>
   )
 }

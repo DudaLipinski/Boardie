@@ -9,11 +9,10 @@ export const FriendCard = ({ friend }: { friend: GenericUser }) => {
       <ListItem sx={{ ...styledListItem }}>
         <Avatar user={friend} size={'sm'} />
         <Typography
-          variant="h6"
+          variant="body1"
           component="h3"
-          margin="5px 0 2px 14px"
-          fontWeight="700"
-          color={friend.type === 'USER' ? 'primary.darker' : 'secondary.darker'}
+          margin="5px 0 2px 22px"
+          color="var(--adm-color-neutral-800)"
         >
           {friend.fullName}
         </Typography>

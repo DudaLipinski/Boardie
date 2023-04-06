@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import * as friendsService from '../services/friend'
+import { MATCHES_KEY } from './match'
 
 const FRIENDS_KEY = 'friends'
 export const useFriends = () => {
@@ -51,6 +52,23 @@ export const useAnswerFriendshipRequest = () => {
       onSettled: () => {
         queryClient.invalidateQueries(FRIENDS_KEY)
         queryClient.invalidateQueries(FRIENDSHIP_REQUEST_KEY)
+      },
+    }
+  )
+}
+
+const UPDATE_ANON_FRIEND = 'updateAnonFriend'
+export const useUpdateAnonFriend = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    UPDATE_ANON_FRIEND,
+    friendsService.updateAnonFriend,
+
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(FRIENDS_KEY)
+        queryClient.invalidateQueries(MATCHES_KEY)
       },
     }
   )

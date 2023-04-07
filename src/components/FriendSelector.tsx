@@ -119,12 +119,7 @@ export const FriendSelector = ({
             {option.fullName}
 
             {isLoggedUser(option) ? (
-              <Chip
-                label="You"
-                size="small"
-                color="info"
-                sx={{ marginLeft: 'auto' }}
-              />
+              <Chip label="You" size="small" sx={{ marginLeft: 'auto' }} />
             ) : null}
           </li>
         )}
@@ -135,7 +130,6 @@ export const FriendSelector = ({
           <TextField
             required
             {...params}
-            color="info"
             size="small"
             label="Add player"
             placeholder="Select a friend or create one"

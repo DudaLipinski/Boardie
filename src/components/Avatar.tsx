@@ -8,8 +8,8 @@ interface SizeDef {
 }
 
 const placeholderStyle = {
-  background: 'rgba(0,0,0,0.04)',
-  border: '2px dashed rgba(0,0,0,0.12)',
+  background: 'rgba(255,255,255,0.07)',
+  border: '2px dashed rgba(255,255,255,0.12)',
 }
 
 const sizes: Record<Size, SizeDef> = {
@@ -48,6 +48,8 @@ export const Avatar = ({
     textTransform: 'uppercase',
     boxSizing: 'border-box',
     fontSize: sizeDef.fontSize,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderColor: 'rgba(255,255,255,0.7)',
   }
   const avatarSx = user?.fullName
     ? { ...sizeSx, ...sx }

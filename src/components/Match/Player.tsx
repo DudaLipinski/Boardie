@@ -80,7 +80,6 @@ export const Player = ({ index, control, onRemove, isUniquePlayer }: Props) => {
             <FormControlLabel
               color="primary"
               sx={{
-                color: '#7e7e7e',
                 fontSize: '12px',
               }}
               labelPlacement="end"

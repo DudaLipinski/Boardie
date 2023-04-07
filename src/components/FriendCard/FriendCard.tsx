@@ -13,7 +13,6 @@ export const FriendCard = ({ friend }: { friend: GenericUser }) => {
           component="h3"
           margin="5px 0 2px 14px"
           fontWeight="700"
-          color={friend.type === 'USER' ? 'primary.darker' : 'secondary.darker'}
         >
           {friend.fullName}
         </Typography>

@@ -32,7 +32,7 @@ export const Alert = ({ severity, message, sx, onClose }: Props) => {
         zIndex: 2,
         marginBottom: '14px',
         boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-        borderRadius: '4px',
+        borderRadius: '8px',
         ...sx,
         '.MuiCollapse-wrapper, .MuiCollapse-wrapperInner, .MuiPaper-root': {
           borderRadius: 'inherit',
@@ -44,7 +44,6 @@ export const Alert = ({ severity, message, sx, onClose }: Props) => {
         action={
           <IconButton
             aria-label="close"
-            color="inherit"
             size="small"
             onClick={() => {
               setOpen(false)

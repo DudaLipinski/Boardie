@@ -19,12 +19,7 @@ export const MatchInfo = ({ boardgameName, date, highestScore }: Props) => {
       width="initial"
     >
       <Box textAlign="center" paddingRight="8px" minWidth="28px">
-        <Typography
-          variant="body1"
-          fontSize="13px"
-          fontWeight="600"
-          color="secondary.darker"
-        >
+        <Typography variant="body1" fontSize="13px" fontWeight="600">
           {weekDay}
         </Typography>
         <Typography
@@ -32,7 +27,6 @@ export const MatchInfo = ({ boardgameName, date, highestScore }: Props) => {
           margin="-5px 0"
           fontSize="18px"
           fontWeight="700"
-          color="primary.darker"
         >
           {day}
         </Typography>
@@ -46,7 +40,6 @@ export const MatchInfo = ({ boardgameName, date, highestScore }: Props) => {
           variant="h6"
           margin="5px 0 2px 0"
           fontWeight="700"
-          color="primary.darker"
           display="-webkit-box"
           textOverflow="ellipsis"
           overflow="hidden"

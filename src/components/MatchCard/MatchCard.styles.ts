@@ -6,7 +6,7 @@ export const styledListItem = {
   margin: '0 auto 16px',
   bgcolor: 'background.paper',
   boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-  borderRadius: '4px',
+  borderRadius: '8px',
 }
 
 export const styledAvatarGroup = {

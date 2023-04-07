@@ -1,23 +1,6 @@
 import { createTheme } from '@mui/material'
 
 declare module '@mui/material/styles' {
-  interface Palette {
-    neutral: Palette['primary']
-    gold: Palette['primary']
-  }
-
-  interface PaletteOptions {
-    neutral: PaletteOptions['primary']
-    gold: PaletteOptions['primary']
-  }
-  interface Palette {
-    gold: Palette['primary']
-  }
-
-  interface PaletteOptions {
-    gold: PaletteOptions['primary']
-  }
-
   interface PaletteColor {
     darker?: string
   }
@@ -71,20 +54,41 @@ export const theme = createTheme({
     danger: '#e53e3e',
   },
   palette: {
+    mode: 'dark',
     primary: {
-      main: '#794dfd',
-      darker: '#280987',
+      main: '#FF79C6',
     },
     secondary: {
-      main: '#f8f8f8',
-      darker: '#7c7c7c',
+      main: '#BD93F9',
     },
-    neutral: {
-      main: '#64748B',
-      contrastText: '#fff',
+    info: {
+      main: '#8BE9FD',
     },
-    gold: {
-      main: '#ffd700',
+    success: {
+      main: '#50FA7B',
+    },
+    warning: {
+      main: '#F1FA8C',
+    },
+    error: {
+      main: '#FF5555',
+    },
+    background: {
+      default: '#282A36',
+      paper: '#414558',
     },
   },
+  shape: {
+    borderRadius: 8,
+  },
 })
+
+// "primary": "#FF79C6",
+// "secondary": "#BD93F9",
+// "accent": "#FFB86C",
+// "neutral": "#414558",
+// "base-100": "#282A36",
+// "info": "#8BE9FD",
+// "success": "#50FA7B",
+// "warning": "#F1FA8C",
+// "error": "#FF5555",

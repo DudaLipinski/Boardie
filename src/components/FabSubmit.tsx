@@ -14,7 +14,7 @@ const fabProps = {
 const fabTextProps = {
   variant: 'button' as const,
   fontSize: 14,
-  component: 'h2' as const,
+  component: 'p' as const,
   sx: { mr: 0.5 },
 }
 

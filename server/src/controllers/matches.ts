@@ -3,7 +3,12 @@ import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
 import * as playerModel from '../models/players'
 import { FriendType } from '../schemas/friends'
-import type { playersCRUDSchema } from '../schemas/match'
+import type {
+  MatchCreationData,
+  MatchDTO,
+  MatchUpdateData,
+  Players,
+} from '../schemas/match'
 import {
   matchUpdateDataSchema,
   matchCreationDataSchema,
@@ -15,18 +20,12 @@ import type { Transaction } from '../database'
 import kysely from '../database'
 import { genericCheckFriendshipExistsWith } from '../models/friends'
 
-type MatchDTO = z.infer<typeof matchDTOSchema>
-type MatchCreationData = z.infer<typeof matchCreationDataSchema>
-type MatchUpdateData = z.infer<typeof matchUpdateDataSchema>
-type Players = MatchCreationData['players']
-type Friend = Players[number]['friend']
-
 export const getUniqueFriendsFromPlayers = (
   players: MatchCreationData['players']
 ) => {
   const friends = players.map((player) => player.friend)
 
-  const uniqueFriends: Friend[] = []
+  const uniqueFriends: Players[number]['friend'][] = []
   friends.forEach((friend) => {
     if (
       !uniqueFriends.find(
@@ -155,9 +154,7 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
 
 const getAllByLoggedUser = endpoint.GET('/me/matches')<void, void, MatchDTO[]>(
   async (req, res) => {
-    const matches = await matchesModel.getHydratedByAuthor({
-      authorId: req.userId,
-    })
+    const matches = await matchesModel.getHydratedByUser(req.userId)
     res.status(200).send(matches)
   },
   {
@@ -221,7 +218,7 @@ const getById = endpoint.GET('/matches/:matchId')<
 // TODO: add friendship validation
 const handlePlayersCRUD = async (
   matchId: number,
-  players: z.infer<typeof playersCRUDSchema>,
+  players: MatchUpdateData['players'],
   transaction: Transaction
 ) => {
   if (players?.create?.length) {

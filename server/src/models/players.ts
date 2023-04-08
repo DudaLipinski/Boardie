@@ -26,6 +26,7 @@ const dbPlayerToDtoModel = (player: HydratedPlayer) => ({
   },
   score: player.score,
   isWinner: !!player.isWinner,
+  matchId: player.matchId,
 })
 
 const queryHydrated = kysely
@@ -51,9 +52,14 @@ export const getById = ({ id }: { id: number }) =>
       (player) => (player ? dbPlayerToDtoModel(player) : null) // TODO: separate dbPlayerToDtoModel
     )
 
-export const getAllByMatchId = (params: { matchId: number }) =>
+export const getAllByMatchId = (params: { matchId: number | number[] }) =>
   queryHydrated
-    .where('player.matchId', '==', params.matchId)
+    .$if(Array.isArray(params.matchId), (query) =>
+      query.where('player.matchId', 'in', params.matchId)
+    )
+    .$if(!Array.isArray(params.matchId), (query) =>
+      query.where('player.matchId', '==', params.matchId)
+    )
     .execute()
     .then((players) => players.map(dbPlayerToDtoModel)) // TODO: separate dbPlayerToDtoModel
 

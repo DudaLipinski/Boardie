@@ -58,30 +58,40 @@ export const getHydratedById = async ({ id }: { id: number }) => {
   }
 }
 
-export const getHydratedByAuthor = async (params: { authorId: number }) => {
+export const getHydratedByUser = async (userId: number) => {
   const matches = await kysely
     .selectFrom('match')
     .selectAll()
-    .where('authorId', '==', params.authorId)
+    .where((qb) =>
+      qb
+        .where('authorId', '==', userId)
+        .orWhereExists((qb) =>
+          qb
+            .selectFrom('player')
+            .select('id')
+            .whereRef('player.matchId', '==', 'match.id')
+            .where('player.userId', '==', userId)
+            .limit(1)
+        )
+    )
     .where('deletedAt', 'is', null)
     .execute()
 
-  /**
-   * We are fine with this N+1 query since the server and the database
-   * will be running within the same machine, with low latency
-   */
-  const result = []
-  for (const match of matches) {
-    if (!match) {
-      continue
-    }
+  const players = await getAllByMatchId({ matchId: matches.map((m) => m.id) })
 
-    const players = await getAllByMatchId({ matchId: match.id })
-    result.push({
-      ...match,
-      players,
-    })
-  }
+  const playersByMatchId = players.reduce((acc, player) => {
+    if (acc[player.matchId]) {
+      acc[player.matchId].push(player)
+    } else {
+      acc[player.matchId] = [player]
+    }
+    return acc
+  }, {} as Record<number, typeof players>)
+
+  const result = matches.map((match) => ({
+    ...match,
+    players: playersByMatchId[match.id] ?? [],
+  }))
 
   return result
 }

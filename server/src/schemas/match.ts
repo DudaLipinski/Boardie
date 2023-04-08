@@ -36,7 +36,7 @@ export const matchDTOSchema = matchSchema
   .strict()
   .describe('Match data with its players')
 
-export const playersCRUDSchema = z
+const playersCRUDSchema = z
   .object({
     create: z.array(playerCreationDataSchema),
     update: z.array(playerUpdateDataSchema.extend({ id: z.number() })),
@@ -57,3 +57,9 @@ export const matchUpdateDataSchema = matchSchema
   })
   .strict()
   .describe('Match data with its players')
+
+export type MatchDTO = z.infer<typeof matchDTOSchema>
+export type MatchCreationData = z.infer<typeof matchCreationDataSchema>
+export type MatchUpdateData = z.infer<typeof matchUpdateDataSchema>
+export type PlayersCrud = z.infer<typeof playersCRUDSchema>
+export type Players = MatchCreationData['players']

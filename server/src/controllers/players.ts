@@ -10,6 +10,7 @@ import {
 } from '../schemas/player'
 import { endpoint } from '../utils/endpoint'
 import { FriendType } from '../schemas/friends'
+import type { MatchDTO } from '../schemas/match'
 
 type PlayerDTO = z.infer<typeof playerDTOSchema>
 type PlayerCreationData = z.infer<typeof playerCreationDataSchema>
@@ -41,8 +42,12 @@ const checkAccess = {
     player: PlayerCreationData
   ) =>
     match.authorId === userId && (await checkPlayerFriendship(userId, player)),
-  read: (userId: number, match: matchesModel.Match) =>
-    match.authorId === userId,
+  read: (userId: number, match: MatchDTO) =>
+    match.authorId === userId ||
+    match.players.some(
+      (player) =>
+        player.friend.type === FriendType.USER && player.friend.id === userId
+    ),
   update: async (
     userId: number,
     match: matchesModel.Match,

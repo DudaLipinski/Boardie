@@ -9,21 +9,30 @@ import {
   playerUpdateDataSchema,
 } from '../schemas/player'
 import { endpoint } from '../utils/endpoint'
-import * as matchesController from './matches'
+import { FriendType } from '../schemas/friends'
 
 type PlayerDTO = z.infer<typeof playerDTOSchema>
 type PlayerCreationData = z.infer<typeof playerCreationDataSchema>
 type PlayerUpdateData = z.infer<typeof playerUpdateDataSchema>
+export type PlayerData = PlayerCreationData
 
-const checkPlayerFriendship = (
+export const checkPlayerFriendship = (
   userId: number,
   player: PlayerCreationData | PlayerUpdateData
-) =>
-  friendsModel.genericCheckFriendshipExistsWith(
+) => {
+  const { friend } = player
+
+  const isUserItself = friend.type === FriendType.USER && friend.id === userId
+  if (isUserItself) {
+    return true
+  }
+
+  return friendsModel.genericCheckFriendshipExistsWith(
     userId,
-    player.friend.id,
-    player.friend.type
+    friend.id,
+    friend.type
   )
+}
 
 const checkAccess = {
   create: async (
@@ -31,17 +40,17 @@ const checkAccess = {
     match: matchesModel.Match,
     player: PlayerCreationData
   ) =>
-    matchesController.checkAccess.update(userId, match) &&
-    (await checkPlayerFriendship(userId, player)),
-  read: matchesController.checkAccess.read,
+    match.authorId === userId && (await checkPlayerFriendship(userId, player)),
+  read: (userId: number, match: matchesModel.Match) =>
+    match.authorId === userId,
   update: async (
     userId: number,
     match: matchesModel.Match,
     player: PlayerUpdateData
   ) =>
-    matchesController.checkAccess.update(userId, match) &&
-    (await checkPlayerFriendship(userId, player)),
-  delete: matchesController.checkAccess.update,
+    match.authorId === userId && (await checkPlayerFriendship(userId, player)),
+  delete: (userId: number, match: matchesModel.Match) =>
+    match.authorId === userId,
 }
 
 const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<

@@ -2,7 +2,6 @@ import z from 'zod'
 import omit from 'lodash.omit'
 import * as matchesModel from '../models/matches'
 import * as playerModel from '../models/players'
-import * as friendsModel from '../models/friends'
 import { FriendType } from '../schemas/friends'
 import type { playersCRUDSchema } from '../schemas/match'
 import {
@@ -14,35 +13,77 @@ import { playerDtoToDbModel } from '../schemas/player'
 import { endpoint } from '../utils/endpoint'
 import type { Transaction } from '../database'
 import kysely from '../database'
+import { genericCheckFriendshipExistsWith } from '../models/friends'
 
 type MatchDTO = z.infer<typeof matchDTOSchema>
 type MatchCreationData = z.infer<typeof matchCreationDataSchema>
 type MatchUpdateData = z.infer<typeof matchUpdateDataSchema>
+type Players = MatchCreationData['players']
+type Friend = Players[number]['friend']
+
+export const getUniqueFriendsFromPlayers = (
+  players: MatchCreationData['players']
+) => {
+  const friends = players.map((player) => player.friend)
+
+  const uniqueFriends: Friend[] = []
+  friends.forEach((friend) => {
+    if (
+      !uniqueFriends.find(
+        (uniqueFriend) =>
+          friend.id === uniqueFriend.id && friend.type === uniqueFriend.type
+      )
+    ) {
+      uniqueFriends.push(friend)
+    }
+  })
+
+  return uniqueFriends
+}
+
+const checkPlayersFriendship = async (
+  userId: number,
+  players: MatchCreationData['players'] | undefined
+) => {
+  if (!players?.length) {
+    return true
+  }
+
+  const uniqueFriends = getUniqueFriendsFromPlayers(players)
+  for (const friend of uniqueFriends) {
+    const isUserItself = friend.type === FriendType.USER && friend.id === userId
+
+    if (
+      !isUserItself &&
+      !(await genericCheckFriendshipExistsWith(userId, friend.id, friend.type))
+    ) {
+      return false
+    }
+  }
+
+  return true
+}
 
 export const checkAccess = {
-  create: async (userId: number, matchCreationData: MatchCreationData) => {
-    for (const player of matchCreationData.players) {
-      const friendshipExists =
-        await friendsModel.genericCheckFriendshipExistsWith(
-          userId,
-          player.friend.id,
-          player.friend.type
-        )
-      if (!friendshipExists) {
-        return false
-      }
-    }
-
-    return true
-  },
+  create: (userId: number, players: Players) =>
+    checkPlayersFriendship(userId, players),
   read: (userId: number, match: MatchDTO) =>
     match.authorId === userId ||
     match.players.some(
       (player) =>
         player.friend.type === FriendType.USER && player.friend.id === userId
     ),
-  update: (userId: number, match: matchesModel.Match) =>
-    match.authorId === userId,
+  update: async (
+    userId: number,
+    authorId: number | null,
+    involvedPlayers: Players
+  ) => {
+    if (authorId !== userId) {
+      return false
+    }
+
+    return checkPlayersFriendship(userId, involvedPlayers)
+  },
   delete: (userId: number, match: matchesModel.Match) =>
     match.authorId === userId,
 }
@@ -55,7 +96,7 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
   async (req, res) => {
     const { body: matchCreationData, userId } = req
 
-    if (!(await checkAccess.create(userId, matchCreationData))) {
+    if (!(await checkAccess.create(userId, matchCreationData.players))) {
       return res.sendStatus(403)
     }
 
@@ -219,7 +260,13 @@ const update = endpoint.PUT('/matches/:matchId')<
       return res.sendStatus(404)
     }
 
-    if (!checkAccess.update(req.userId, match)) {
+    const involvedPlayers = [
+      ...(req.body.players.create ?? []),
+      ...(req.body.players.update ?? []),
+    ]
+    if (
+      !(await checkAccess.update(req.userId, match.authorId, involvedPlayers))
+    ) {
       return res.sendStatus(403)
     }
 

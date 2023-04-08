@@ -113,11 +113,6 @@ export const genericCheckFriendshipExistsWith = async (
     return true
   }
 
-  // study lifting this check up, it might not be suited for this method
-  if (userId === friendId) {
-    return true
-  }
-
   const friendExists = await checkFriendshipExists([userId, friendId])
   if (!friendExists) {
     return false

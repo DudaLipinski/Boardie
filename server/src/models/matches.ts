@@ -63,16 +63,15 @@ export const getHydratedByUser = async (userId: number) => {
     .selectFrom('match')
     .selectAll()
     .where((qb) =>
-      qb
-        .where('authorId', '==', userId)
-        .orWhereExists((qb) =>
-          qb
-            .selectFrom('player')
-            .select('id')
-            .whereRef('player.matchId', '==', 'match.id')
-            .where('player.userId', '==', userId)
-            .limit(1)
-        )
+      qb.where('authorId', '==', userId).orWhereExists((qb) =>
+        // TODO: solve this n + 1 problem
+        qb
+          .selectFrom('player')
+          .select('id')
+          .whereRef('player.matchId', '==', 'match.id')
+          .where('player.userId', '==', userId)
+          .limit(1)
+      )
     )
     .where('deletedAt', 'is', null)
     .execute()

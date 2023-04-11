@@ -71,7 +71,7 @@ export const Friends = () => {
         </Button>
       </Box>
       <SendFriendRequestModal setOpen={setOpen} open={open} />
-      {userFriendsCards && (
+      {userFriendsCards?.length ? (
         <Box>
           <Typography
             variant="h3"
@@ -83,8 +83,8 @@ export const Friends = () => {
           </Typography>
           {userFriendsCards}
         </Box>
-      )}
-      {anonFriendsCards && (
+      ) : null}
+      {anonFriendsCards?.length ? (
         <Box>
           <Typography
             variant="h3"
@@ -96,7 +96,7 @@ export const Friends = () => {
           </Typography>
           {anonFriendsCards}
         </Box>
-      )}
+      ) : null}
     </Motion>
   )
 }

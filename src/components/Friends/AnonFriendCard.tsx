@@ -3,11 +3,12 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import { Controller, useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
 import { Avatar } from '../Avatar'
 import { GenericUser } from '../../types/GenericUser'
-import { useUpdateAnonFriend } from '../../queries/friends'
+import { useDeleteAnonFriend, useUpdateAnonFriend } from '../../queries/friends'
+import { DeleteDialog } from '../DeleteDialog'
 
 const styledListItem = {
   display: 'flex',
@@ -36,7 +37,12 @@ interface FormValues {
 
 export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const { mutate: mutateUpdateFriend } = useUpdateAnonFriend()
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
+  const { mutate: mutateUpdateFriend, isSuccess: isSuccessUpdateFriend } =
+    useUpdateAnonFriend()
+  const { mutate: mutateDeleteFriend, isLoading: isLoadingDeleteFriend } =
+    useDeleteAnonFriend()
 
   const { handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
@@ -46,8 +52,17 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
 
   const updateAnonFriend = (value: FormValues) => {
     mutateUpdateFriend({ ...value, anonFriendId: friend.id })
-    setIsEditing(false)
     return
+  }
+
+  useEffect(() => {
+    if (isSuccessUpdateFriend) {
+      setIsEditing(false)
+    }
+  }, [isSuccessUpdateFriend])
+
+  const handleDelete = () => {
+    mutateDeleteFriend(friend.id)
   }
 
   return (
@@ -96,11 +111,22 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
             <IconButton aria-label="invite" size="small">
               <EmailOutlinedIcon fontSize="inherit" />
             </IconButton>
-            <IconButton aria-label="delete" size="small">
+            <IconButton
+              aria-label="delete"
+              size="small"
+              onClick={() => setIsDeleteDialogOpen(true)}
+            >
               <DeleteOutlinedIcon fontSize="inherit" />
             </IconButton>
           </Stack>
         </Box>
+        <DeleteDialog
+          isDeleteDialogOpen={isDeleteDialogOpen}
+          setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+          handleDelete={handleDelete}
+          isLoading={isLoadingDeleteFriend}
+          title={'Delete this friend?'}
+        />
       </ListItem>
     </>
   )

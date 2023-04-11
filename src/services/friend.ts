@@ -3,11 +3,10 @@ import { GenericUser } from '../types/GenericUser'
 import { FriendshipRequest } from '../types/Friend'
 import { genericError } from '../utils/api'
 
-export const createAnonymous = (fullName: string) =>
-  axios<GenericUser>({
-    method: 'post',
-    url: `/me/anonfriends`,
-    data: { fullName },
+export const getFriends = (): Promise<GenericUser[]> =>
+  axios({
+    method: 'get',
+    url: `/me/friends`,
   }).then((response) => {
     return response.data
   })
@@ -34,14 +33,6 @@ export const createFriendshipRequest = (userEmail: string) =>
         throw new Error(genericError)
       }
     })
-
-export const getFriends = (): Promise<GenericUser[]> =>
-  axios({
-    method: 'get',
-    url: `/me/friends`,
-  }).then((response) => {
-    return response.data
-  })
 
 export const getFriendshipRequests = (): Promise<FriendshipRequest[]> =>
   axios({
@@ -72,6 +63,15 @@ export const answerFriendshipRequest = ({
       }
     })
 
+export const createAnonFriend = (fullName: string) =>
+  axios<GenericUser>({
+    method: 'post',
+    url: `/me/anonfriends`,
+    data: { fullName },
+  }).then((response) => {
+    return response.data
+  })
+
 export const updateAnonFriend = ({
   anonFriendId,
   fullName,
@@ -88,6 +88,30 @@ export const updateAnonFriend = ({
       return response.data
     })
     .catch((err) => {
+      if (err.status !== 200) {
+        throw new Error(genericError)
+      }
+    })
+
+export const deleteAnonFriend = (anonFriendId: number): Promise<void> =>
+  axios({
+    method: 'delete',
+    url: `/me/anonfriends/${anonFriendId}`,
+  })
+    .then((response) => {
+      return response.data
+    })
+    .catch((err) => {
+      if (err.status === 403) {
+        throw new Error(
+          "You don't have the needed permissions to delete this friend."
+        )
+      }
+
+      if (err.status === 404) {
+        throw new Error('We were unable to find the friend with the given ID.')
+      }
+
       if (err.status !== 200) {
         throw new Error(genericError)
       }

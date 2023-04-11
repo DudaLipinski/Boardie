@@ -4,7 +4,7 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 import { useEffect, useRef } from 'react'
 import { Alert } from '../Alert'
 import { getErrorMessage } from '../../utils/api'
-import { useFriendRequestCreation } from '../../queries/friends'
+import { useFriendshipRequestCreation } from '../../queries/friends'
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -35,7 +35,7 @@ export const SendFriendRequestModal = ({ setOpen, open }: Props) => {
     isError,
     error,
     reset: resetMutation,
-  } = useFriendRequestCreation()
+  } = useFriendshipRequestCreation()
 
   const {
     handleSubmit,

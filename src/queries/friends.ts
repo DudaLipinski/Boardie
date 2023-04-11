@@ -15,7 +15,7 @@ const CREATE_ANON_FRIEND_KEY = 'createAnonFriend'
 export const useAnonFriendCreation = () => {
   const queryClient = useQueryClient()
 
-  return useMutation(CREATE_ANON_FRIEND_KEY, friendsService.createAnonymous, {
+  return useMutation(CREATE_ANON_FRIEND_KEY, friendsService.createAnonFriend, {
     onSettled: () => {
       queryClient.invalidateQueries(FRIENDS_KEY)
     },
@@ -32,10 +32,10 @@ export const useFriendshipRequests = () => {
   return friendsQuery
 }
 
-const CREATE_FRIEND_REQUEST_KEY = 'createFriendshipRequest'
-export const useFriendRequestCreation = () => {
+const CREATE_FRIENDSHIP_REQUEST_KEY = 'createFriendshipRequest'
+export const useFriendshipRequestCreation = () => {
   return useMutation(
-    CREATE_FRIEND_REQUEST_KEY,
+    CREATE_FRIENDSHIP_REQUEST_KEY,
     friendsService.createFriendshipRequest
   )
 }
@@ -72,4 +72,16 @@ export const useUpdateAnonFriend = () => {
       },
     }
   )
+}
+
+const DELETE_ANON_FRIEND = 'deleteMatch'
+export const useDeleteAnonFriend = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(DELETE_ANON_FRIEND, friendsService.deleteAnonFriend, {
+    onSettled: () => {
+      queryClient.invalidateQueries(FRIENDS_KEY)
+      queryClient.invalidateQueries(MATCHES_KEY)
+    },
+  })
 }

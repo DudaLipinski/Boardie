@@ -3,7 +3,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import { Controller, useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
 import { Avatar } from '../Avatar'
 import { GenericUser } from '../../types/GenericUser'
@@ -39,8 +39,10 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-  const { mutate: mutateUpdateFriend } = useUpdateAnonFriend()
-  const { mutate: mutateDeleteFriend } = useDeleteAnonFriend()
+  const { mutate: mutateUpdateFriend, isSuccess: isSuccessUpdateFriend } =
+    useUpdateAnonFriend()
+  const { mutate: mutateDeleteFriend, isLoading: isLoadingDeleteFriend } =
+    useDeleteAnonFriend()
 
   const { handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
@@ -50,9 +52,14 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
 
   const updateAnonFriend = (value: FormValues) => {
     mutateUpdateFriend({ ...value, anonFriendId: friend.id })
-    setIsEditing(false)
     return
   }
+
+  useEffect(() => {
+    if (isSuccessUpdateFriend) {
+      setIsEditing(false)
+    }
+  }, [isSuccessUpdateFriend])
 
   const handleDelete = () => {
     mutateDeleteFriend(friend.id)
@@ -117,6 +124,7 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
           isDeleteDialogOpen={isDeleteDialogOpen}
           setIsDeleteDialogOpen={setIsDeleteDialogOpen}
           handleDelete={handleDelete}
+          isLoading={isLoadingDeleteFriend}
           title={'Delete this friend?'}
         />
       </ListItem>

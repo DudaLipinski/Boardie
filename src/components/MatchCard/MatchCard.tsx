@@ -13,7 +13,7 @@ import { MenuButton } from './MenuButton'
 
 export const MatchCard = ({ match }: { match: Match }) => {
   const { id, boardgameName, players, startedAt } = match
-  const { mutate, isError, error } = useMatchDeletion()
+  const { mutate, isError, error, isLoading } = useMatchDeletion()
 
   const playersByScore = useMemo(
     () =>
@@ -46,7 +46,11 @@ export const MatchCard = ({ match }: { match: Match }) => {
           </Link>
         </Box>
         <Box width="8%" height="auto">
-          <MenuButton id={id} handleDeleteMatch={handleDeleteMatch} />
+          <MenuButton
+            id={id}
+            handleDeleteMatch={handleDeleteMatch}
+            isLoading={isLoading}
+          />
         </Box>
       </ListItem>
     </>

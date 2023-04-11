@@ -32,10 +32,10 @@ export const useFriendshipRequests = () => {
   return friendsQuery
 }
 
-const CREATE_FRIEND_REQUEST_KEY = 'createFriendshipRequest'
-export const useFriendRequestCreation = () => {
+const CREATE_FRIENDSHIP_REQUEST_KEY = 'createFriendshipRequest'
+export const useFriendshipRequestCreation = () => {
   return useMutation(
-    CREATE_FRIEND_REQUEST_KEY,
+    CREATE_FRIENDSHIP_REQUEST_KEY,
     friendsService.createFriendshipRequest
   )
 }

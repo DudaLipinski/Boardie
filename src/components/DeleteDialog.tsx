@@ -3,12 +3,14 @@ import {
   Dialog as MuiDialog,
   DialogActions,
   DialogTitle,
+  CircularProgress,
 } from '@mui/material'
 
 interface Props {
   isDeleteDialogOpen: boolean
   setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void
   handleDelete: () => void
+  isLoading: boolean
   title: string
 }
 
@@ -16,6 +18,7 @@ export const DeleteDialog = ({
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
   handleDelete,
+  isLoading,
   title,
 }: Props) => {
   const handleNoClick = () => {
@@ -37,11 +40,17 @@ export const DeleteDialog = ({
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogActions>
         <Button variant="outlined" onClick={handleNoClick}>
-          No
+          Cancel
         </Button>
-        <Button variant="contained" onClick={handleYesClick} autoFocus>
-          Yes
-        </Button>
+        {isLoading ? (
+          <Button variant="contained" autoFocus disabled>
+            <CircularProgress size="24px" />
+          </Button>
+        ) : (
+          <Button variant="contained" onClick={handleYesClick} autoFocus>
+            Confirm
+          </Button>
+        )}
       </DialogActions>
     </MuiDialog>
   )

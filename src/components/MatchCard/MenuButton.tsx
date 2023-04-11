@@ -8,9 +8,10 @@ import { DeleteDialog } from '../DeleteDialog'
 interface Props {
   id: number
   handleDeleteMatch: () => void
+  isLoading: boolean
 }
 
-export const MenuButton = ({ id, handleDeleteMatch }: Props) => {
+export const MenuButton = ({ id, handleDeleteMatch, isLoading }: Props) => {
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -70,6 +71,7 @@ export const MenuButton = ({ id, handleDeleteMatch }: Props) => {
         setIsDeleteDialogOpen={setIsDeleteDialogOpen}
         handleDelete={handleDeleteMatch}
         title="Delete this match?"
+        isLoading={isLoading}
       />
     </>
   )

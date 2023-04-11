@@ -23,7 +23,7 @@ export const Players = ({ players }: { players: Player[] }) => {
           },
         }}
       >
-        <Avatar user={player.friend} size="sm" />
+        <Avatar user={player.friend} size="sm" sx={{ border: '0px' }} />
       </Badge>
     )
   })

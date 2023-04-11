@@ -1,7 +1,6 @@
 import { Box, IconButton, ListItem, Stack, TextField } from '@mui/material'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import { Controller, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
@@ -27,7 +26,7 @@ const styledDisabledInput = {
     border: '0px',
   },
   '& .MuiInputBase-input.Mui-disabled': {
-    WebkitTextFillColor: 'var(--adm-color-neutral-800)',
+    WebkitTextFillColor: 'var(--color-text-body)',
   },
 }
 
@@ -108,9 +107,6 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
                 <ModeEditOutlinedIcon fontSize="inherit" />
               </IconButton>
             )}
-            <IconButton aria-label="invite" size="small">
-              <EmailOutlinedIcon fontSize="inherit" />
-            </IconButton>
             <IconButton
               aria-label="delete"
               size="small"

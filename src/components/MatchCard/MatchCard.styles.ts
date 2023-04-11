@@ -12,7 +12,7 @@ export const styledListItem = {
 export const styledAvatarGroup = {
   justifyContent: 'flex-end',
   margin: '16px 0 8px 0',
-  gap: '8px',
+  gap: '12px',
   '& .MuiBadge-badge': {
     padding: '0',
     bottom: '0px',
@@ -22,12 +22,12 @@ export const styledAvatarGroup = {
     boxSizing: 'content-box',
     borderRadius: '8px',
   },
-  '& .MuiAvatar-root': {
-    width: '32px',
-    height: '32px',
-    fontSize: '14px',
-  },
+
   '.MuiBadge-root:last-child': {
     marginLeft: '8px',
+  },
+
+  '.MuiAvatar-root': {
+    border: '0px',
   },
 }

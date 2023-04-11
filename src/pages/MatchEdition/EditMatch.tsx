@@ -16,6 +16,7 @@ import { getErrorMessage } from '../../utils/api'
 import { Alert } from '../../components/Alert'
 import { FullScreenLoader } from '../../components/FullScreenLoader'
 import { Motion } from '../../components/Motion'
+import { Title } from '../../components/Title'
 
 export const MatchEdition = () => {
   const { id } = useParams()
@@ -24,7 +25,12 @@ export const MatchEdition = () => {
   const [isReady, setIsReady] = useState(false)
 
   const { data, isLoading: isLoadingMatch, isError, error } = useMatch(matchId)
-  const { mutate: mutateMatch } = useMatchUpdate()
+  const {
+    mutate: mutateMatch,
+    isError: isErrorMatchUpdate,
+    error: errorMatchUpdate,
+    isLoading: isLoadingMatchUpdate,
+  } = useMatchUpdate()
 
   const { handleSubmit, control, reset } = useForm<MatchType>({
     defaultValues: {
@@ -130,10 +136,17 @@ export const MatchEdition = () => {
             <Alert severity="error" message={getErrorMessage(error)} />
           )}
           <Stack spacing={2} overflow="hidden auto" height="inherit">
+            {isErrorMatchUpdate && (
+              <Alert
+                severity="error"
+                message={getErrorMessage(errorMatchUpdate)}
+              />
+            )}
+            <Title title="Edit Match" />
             <MatchDetails control={control} />
             <Players control={control} />
           </Stack>
-          <FabSubmit isLoading={false} />
+          <FabSubmit isLoading={isLoadingMatchUpdate} />
         </Box>
       ) : (
         <FullScreenLoader />

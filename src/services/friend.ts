@@ -71,3 +71,24 @@ export const answerFriendshipRequest = ({
         throw new Error(genericError)
       }
     })
+
+export const updateAnonFriend = ({
+  anonFriendId,
+  fullName,
+}: {
+  anonFriendId: number
+  fullName: string
+}): Promise<void> =>
+  axios({
+    method: 'put',
+    url: `/me/anonfriends/${anonFriendId}`,
+    data: { fullName: fullName },
+  })
+    .then((response) => {
+      return response.data
+    })
+    .catch((err) => {
+      if (err.status !== 200) {
+        throw new Error(genericError)
+      }
+    })

@@ -63,6 +63,7 @@ export const SendFriendRequestModal = ({ setOpen, open }: Props) => {
     mutate(value.email)
     return
   }
+
   return (
     <Modal
       open={open}

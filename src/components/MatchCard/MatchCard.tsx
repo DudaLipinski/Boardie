@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ListItem, Box } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Match } from '../../types/Match'
 import { getErrorMessage } from '../../utils/api'
 import { useMatchDeletion } from '../../queries/match'
@@ -13,7 +13,6 @@ import { MenuButton } from './MenuButton'
 
 export const MatchCard = ({ match }: { match: Match }) => {
   const { id, boardgameName, players, startedAt } = match
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const { mutate, isError, error } = useMatchDeletion()
 
   const playersByScore = useMemo(
@@ -25,7 +24,6 @@ export const MatchCard = ({ match }: { match: Match }) => {
 
   const handleDeleteMatch = () => {
     mutate(id)
-    setIsDeleteDialogOpen(!isDeleteDialogOpen)
   }
 
   const message = getErrorMessage(error)
@@ -48,12 +46,7 @@ export const MatchCard = ({ match }: { match: Match }) => {
           </Link>
         </Box>
         <Box width="8%" height="auto">
-          <MenuButton
-            id={id}
-            handleDeleteMatch={handleDeleteMatch}
-            isDeleteDialogOpen={isDeleteDialogOpen}
-            setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-          />
+          <MenuButton id={id} handleDeleteMatch={handleDeleteMatch} />
         </Box>
       </ListItem>
     </>

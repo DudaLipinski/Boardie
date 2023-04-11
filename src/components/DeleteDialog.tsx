@@ -8,24 +8,22 @@ import {
 interface Props {
   isDeleteDialogOpen: boolean
   setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void
-  handleDeleteMatch: () => void
-  setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>
+  handleDelete: () => void
+  title: string
 }
 
 export const DeleteDialog = ({
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
-  handleDeleteMatch,
-  setAnchorEl,
+  handleDelete,
+  title,
 }: Props) => {
   const handleNoClick = () => {
     setIsDeleteDialogOpen(!isDeleteDialogOpen)
-    setAnchorEl(null)
   }
 
   const handleYesClick = () => {
-    handleDeleteMatch()
-    setAnchorEl(null)
+    handleDelete()
   }
 
   return (
@@ -36,10 +34,12 @@ export const DeleteDialog = ({
       aria-describedby="alert-dialog-description"
       sx={{ width: 'inherit' }}
     >
-      <DialogTitle id="alert-dialog-title">{'Delete this match?'}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogActions>
-        <Button onClick={handleNoClick}>No</Button>
-        <Button onClick={handleYesClick} autoFocus>
+        <Button variant="outlined" onClick={handleNoClick}>
+          No
+        </Button>
+        <Button variant="contained" onClick={handleYesClick} autoFocus>
           Yes
         </Button>
       </DialogActions>

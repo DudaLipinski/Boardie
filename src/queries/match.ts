@@ -3,7 +3,7 @@ import * as matchesService from '../services/match'
 import { Match } from '../types/Match'
 import { useOptimisticUpdate } from '../utils/queries'
 
-const MATCHES_KEY = 'matches'
+export const MATCHES_KEY = 'matches'
 export const useMatches = () => {
   const matchesQuery = useQuery(MATCHES_KEY, matchesService.getMatches, {
     staleTime: 120 * 1000,

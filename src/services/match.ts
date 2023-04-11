@@ -1,7 +1,7 @@
 import omit from 'lodash.omit'
 import { axios } from '../utils/axios'
 import { Match, Player } from '../types/Match'
-import { catchInternalError } from '../utils/api'
+import { catchInternalError, genericError } from '../utils/api'
 
 interface MatchDetails extends Omit<Match, 'authorId' | 'players' | 'id'> {
   id?: number
@@ -10,9 +10,6 @@ interface MatchDetails extends Omit<Match, 'authorId' | 'players' | 'id'> {
 interface PlayerDetails extends Player {
   matchId: number
 }
-
-const genericError =
-  'We were unable to perfom this action. Try again in a few minutes.'
 
 const normalizeMatchData = (match: Omit<Match, 'id'> | MatchDetails) => ({
   ...match,

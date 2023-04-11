@@ -21,10 +21,37 @@ export const useAnonFriendCreation = () => {
   })
 }
 
-const CREATE_FRIEND_REQUEST_KEY = 'createFriendRequest'
+const FRIENDSHIP_REQUEST_KEY = 'friendshipRequests'
+export const useFriendshipRequests = () => {
+  const friendsQuery = useQuery(
+    FRIENDSHIP_REQUEST_KEY,
+    friendsService.getFriendshipRequests
+  )
+
+  return friendsQuery
+}
+
+const CREATE_FRIEND_REQUEST_KEY = 'createFriendshipRequest'
 export const useFriendRequestCreation = () => {
   return useMutation(
     CREATE_FRIEND_REQUEST_KEY,
-    friendsService.createFriendRequest
+    friendsService.createFriendshipRequest
+  )
+}
+
+const ANSWER_FRIENDSHIP_REQUEST_KEY = 'answerFriendshipRequest'
+export const useAnswerFriendshipRequest = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    ANSWER_FRIENDSHIP_REQUEST_KEY,
+    friendsService.answerFriendshipRequest,
+
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(FRIENDS_KEY)
+        queryClient.invalidateQueries(FRIENDSHIP_REQUEST_KEY)
+      },
+    }
   )
 }

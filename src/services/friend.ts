@@ -1,5 +1,7 @@
 import { axios } from '../utils/axios'
 import { GenericUser } from '../types/GenericUser'
+import { FriendshipRequest } from '../types/Friend'
+import { genericError } from '../utils/api'
 
 export const createAnonymous = (fullName: string) =>
   axios<GenericUser>({
@@ -10,7 +12,7 @@ export const createAnonymous = (fullName: string) =>
     return response.data
   })
 
-export const createFriendRequest = (userEmail: string) =>
+export const createFriendshipRequest = (userEmail: string) =>
   axios({
     method: 'post',
     url: `/me/friends/requests`,
@@ -29,9 +31,7 @@ export const createFriendRequest = (userEmail: string) =>
       }
 
       if (err.response.status !== 200) {
-        throw new Error(
-          'We were unable to perform this action. Try again in a few minutes.'
-        )
+        throw new Error(genericError)
       }
     })
 
@@ -42,3 +42,32 @@ export const getFriends = (): Promise<GenericUser[]> =>
   }).then((response) => {
     return response.data
   })
+
+export const getFriendshipRequests = (): Promise<FriendshipRequest[]> =>
+  axios({
+    method: 'get',
+    url: `/me/friends/requests`,
+  }).then((response) => {
+    return response.data
+  })
+
+export const answerFriendshipRequest = ({
+  requestingUserId,
+  accept,
+}: {
+  requestingUserId: number
+  accept: boolean
+}): Promise<void> =>
+  axios({
+    method: 'put',
+    url: `/me/friends/requests/${requestingUserId}`,
+    data: { accept: accept },
+  })
+    .then((response) => {
+      return response.data
+    })
+    .catch((err) => {
+      if (err.status !== 200) {
+        throw new Error(genericError)
+      }
+    })

@@ -1,6 +1,9 @@
 import Cookies from 'js-cookie'
 import { axios } from './axios'
 
+export const genericError =
+  'We were unable to perfom this action. Try again in a few minutes.'
+
 export const catchInternalError = (err: any) => {
   if (err.status === 500) {
     throw new Error('Unexpected internal error')

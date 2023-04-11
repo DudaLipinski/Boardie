@@ -8,6 +8,7 @@ import { getErrorMessage } from '../../utils/api'
 import { MatchCard } from '../../components/MatchCard/MatchCard'
 import { Alert } from '../../components/Alert'
 import { Motion } from '../../components/Motion'
+import { Title } from '../../components/Title'
 
 export const MatchList = () => {
   const { data: matches, isError, error, isLoading } = useMatches()
@@ -23,7 +24,7 @@ export const MatchList = () => {
   const listMatches = useMemo(
     () =>
       matches?.length ? (
-        <List>{matchesCards}</List>
+        <List disablePadding>{matchesCards}</List>
       ) : (
         <Box
           display="flex"
@@ -51,6 +52,7 @@ export const MatchList = () => {
 
   return (
     <Motion style={{ width: '100%', position: 'relative' }}>
+      <Title title="Matches" />
       {isError && <Alert severity="error" message={getErrorMessage(error)} />}
       {content}
     </Motion>

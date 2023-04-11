@@ -7,6 +7,7 @@ import { SendFriendRequestModal } from '../../components/Friends/SendFriendReque
 
 import { FriendshipRequests } from '../../components/Friends/FriendshipRequests'
 import { AnonFriendCard } from '../../components/Friends/AnonFriendCard'
+import { Title } from '../../components/Title'
 
 export const Friends = () => {
   const [open, setOpen] = useState(false)
@@ -47,45 +48,35 @@ export const Friends = () => {
       }}
     >
       <Box>
-        <Typography
-          variant="h2"
-          component="h2"
-          margin="20px 0"
-          fontWeight="600"
-        >
-          Friends
-        </Typography>
+        <Title title="Friends" />
         {friendsRequests?.length ? (
           <FriendshipRequests friendshipRequest={friendsRequests} />
         ) : null}
-      </Box>
-      <Box display="block" marginTop="20px ">
-        <Button
-          variant="contained"
-          size="small"
-          type="button"
-          sx={{ float: 'right' }}
-          onClick={() => setOpen(true)}
+        <Box
+          sx={
+            friendsRequests?.length
+              ? { margin: '20px 0', float: 'right' }
+              : { margin: '0 0 20px 0', float: 'right' }
+          }
         >
-          Add new +
-        </Button>
+          <Button
+            variant="contained"
+            size="small"
+            type="button"
+            onClick={() => setOpen(true)}
+          >
+            Add new +
+          </Button>
+        </Box>
       </Box>
       <SendFriendRequestModal setOpen={setOpen} open={open} />
       {userFriendsCards?.length ? (
-        <Box>
-          <Typography
-            variant="h3"
-            component="h3"
-            margin="20px 0"
-            fontWeight="600"
-          >
-            Friends
-          </Typography>
+        <Box component="ul" sx={{ padding: 0, margin: 0 }}>
           {userFriendsCards}
         </Box>
       ) : null}
       {anonFriendsCards?.length ? (
-        <Box>
+        <Box component="ul" sx={{ padding: 0, margin: 0 }}>
           <Typography
             variant="h3"
             component="h3"

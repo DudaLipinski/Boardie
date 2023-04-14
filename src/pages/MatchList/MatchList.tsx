@@ -24,7 +24,9 @@ export const MatchList = () => {
   const listMatches = useMemo(
     () =>
       matches?.length ? (
-        <List disablePadding>{matchesCards}</List>
+        <List disablePadding sx={{ paddingBottom: '40px' }}>
+          {matchesCards}
+        </List>
       ) : (
         <Box
           display="flex"

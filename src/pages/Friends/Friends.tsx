@@ -60,20 +60,24 @@ export const Friends = () => {
             Add new +
           </Button>
         </Box>
+
         {friendsRequests?.length ? (
           <FriendshipRequests friendshipRequest={friendsRequests} />
         ) : null}
+
         <SendFriendRequestModal
           setOpen={setOpenFriendRequestModal}
           open={openFriendRequestModal}
         />
+
         {userFriendsCards?.length ? (
           <Box component="ul" sx={{ padding: 0, margin: 0 }}>
             {userFriendsCards}
           </Box>
         ) : null}
+
         {anonFriendsCards?.length ? (
-          <Box component="ul" sx={{ padding: '8px 0 0 0', margin: 0 }}>
+          <Box component="ul" sx={{ padding: '8px 0 40px 0', margin: 0 }}>
             <Typography
               variant="h3"
               component="h2"

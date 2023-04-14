@@ -55,10 +55,12 @@
     ]
   },
   "devDependencies": {
-    "@types/js-cookie": "^3.0.3",
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
+    "@testing-library/cypress": "^9.0.0",
+    "@types/js-cookie": "^3.0.3",
     "@types/react-query": "^1.2.9",
+    "cypress": "^12.9.0",
     "eslint-plugin-import": "^2.27.5",
     "husky": "^8.0.0",
     "lint-staged": "^13.1.2",

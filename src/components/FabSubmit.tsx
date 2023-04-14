@@ -14,12 +14,14 @@ const fabTextProps = {
   variant: 'button' as const,
   fontSize: 14,
   component: 'p' as const,
-  sx: { mr: 0.5 },
+  sx: { mr: 0.4 },
 }
 
 export const FabSubmit = ({ isLoading }: { isLoading: boolean }) => (
   <Fab disabled={isLoading} {...fabProps}>
-    {isLoading ? null : <CheckIcon />}
+    {isLoading ? null : (
+      <CheckIcon fontSize="small" sx={{ marginRight: '4px' }} />
+    )}
     {isLoading ? (
       <CircularProgress size="24px" />
     ) : (

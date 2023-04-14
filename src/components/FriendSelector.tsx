@@ -119,7 +119,12 @@ export const FriendSelector = ({
             {option.fullName}
 
             {isLoggedUser(option) ? (
-              <Chip label="You" size="small" sx={{ marginLeft: 'auto' }} />
+              <Chip
+                label="You"
+                size="small"
+                sx={{ marginLeft: 'auto' }}
+                color="secondary"
+              />
             ) : null}
           </li>
         )}

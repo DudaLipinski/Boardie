@@ -25,7 +25,7 @@ export const AuthenticatedWrapper = () => {
     <Box height="inherit" display="flex" flexDirection="column" width="inherit">
       <Box
         display="flex"
-        padding="24px"
+        padding="24px 24px 0 24px"
         flex="1"
         height="inherit"
         overflow="hidden auto"

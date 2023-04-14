@@ -33,7 +33,12 @@ export const Players = ({ control }: Props) => {
 
   return (
     <>
-      <Box display="flex" justifyContent="space-between">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        paddingTop="14px"
+      >
         <Typography variant="h3" component="h3">
           Players
         </Typography>

@@ -6,6 +6,18 @@ import {
   CircularProgress,
 } from '@mui/material'
 
+const styledDialog = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '344px',
+  margin: 0,
+  borderRadius: 'var(--border-radius)',
+  bgcolor: 'background.paper',
+  backgroundImage: 'none',
+}
+
 interface Props {
   isDeleteDialogOpen: boolean
   setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void
@@ -35,7 +47,7 @@ export const DeleteDialog = ({
       onClose={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      sx={{ width: 'inherit' }}
+      sx={{ width: 'inherit', '.MuiPaper-root': { ...styledDialog } }}
     >
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogActions>

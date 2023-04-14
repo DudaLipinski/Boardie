@@ -2,6 +2,7 @@ import { Modal, Typography, TextField, Button, Box } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 import { useEffect, useRef } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 import { Alert } from '../Alert'
 import { getErrorMessage } from '../../utils/api'
 import { useFriendshipRequestCreation } from '../../queries/friends'
@@ -13,8 +14,7 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 344,
   bgcolor: 'background.paper',
-  boxShadow: 24,
-  bordeRadius: '4px',
+  borderRadius: 'var(--border-radius)',
   padding: '24px 32px',
 }
 
@@ -29,6 +29,7 @@ interface FormValues {
 
 export const SendFriendRequestModal = ({ setOpen, open }: Props) => {
   const emailInput = useRef<HTMLDivElement | null>(null)
+
   const {
     mutate,
     isSuccess,
@@ -76,16 +77,29 @@ export const SendFriendRequestModal = ({ setOpen, open }: Props) => {
       aria-describedby="modal-modal-description"
     >
       <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ ...style }}>
-        <Typography
-          variant="h5"
-          component="h3"
-          fontWeight="700"
-          align="center"
-          margin="0 0 20px 0"
-          color="primary.darker"
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom="22px"
         >
-          Add a new friend
-        </Typography>
+          <Typography
+            variant="h5"
+            component="h3"
+            fontWeight="700"
+            color="primary.darker"
+          >
+            Add a new friend
+          </Typography>
+          <Button
+            aria-label="Close"
+            onClick={() => setOpen(false)}
+            variant="outlined"
+            sx={{ minWidth: '20px', padding: '6px' }}
+          >
+            <CloseIcon />
+          </Button>
+        </Box>
         {isError && <Alert severity="error" message={getErrorMessage(error)} />}
         {isSuccess && <Alert severity="success" message="Request sent!" />}
         <Box sx={{ display: 'flex', gap: '12px' }}>

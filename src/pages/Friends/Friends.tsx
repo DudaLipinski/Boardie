@@ -10,7 +10,7 @@ import { AnonFriendCard } from '../../components/Friends/AnonFriendCard'
 import { Title } from '../../components/Title'
 
 export const Friends = () => {
-  const [open, setOpen] = useState(false)
+  const [openFriendRequestModal, setOpenFriendRequestModal] = useState(false)
   const { data: friends } = useFriends()
   const { data: friendsRequests } = useFriendshipRequests()
 
@@ -18,6 +18,7 @@ export const Friends = () => {
     () => friends?.filter((friend) => friend.type === 'ANON_FRIEND'),
     [friends]
   )
+
   const userFriends = useMemo(
     () => friends?.filter((friend) => friend.type === 'USER'),
     [friends]
@@ -40,54 +41,51 @@ export const Friends = () => {
   )
 
   return (
-    <Motion
-      style={{
-        display: 'flex',
-        width: '100%',
-        flexDirection: 'column',
-      }}
-    >
+    <Motion>
       <Box>
-        <Title title="Friends" />
-        {friendsRequests?.length ? (
-          <FriendshipRequests friendshipRequest={friendsRequests} />
-        ) : null}
         <Box
-          sx={
-            friendsRequests?.length
-              ? { margin: '20px 0', float: 'right' }
-              : { margin: '0 0 20px 0', float: 'right' }
-          }
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+          padding="20px 0 30px"
         >
+          <Title title="Friends" sx={{ margin: 0 }} />
           <Button
             variant="contained"
-            size="small"
+            size="medium"
             type="button"
-            onClick={() => setOpen(true)}
+            onClick={() => setOpenFriendRequestModal(true)}
           >
             Add new +
           </Button>
         </Box>
+        {friendsRequests?.length ? (
+          <FriendshipRequests friendshipRequest={friendsRequests} />
+        ) : null}
+        <SendFriendRequestModal
+          setOpen={setOpenFriendRequestModal}
+          open={openFriendRequestModal}
+        />
+        {userFriendsCards?.length ? (
+          <Box component="ul" sx={{ padding: 0, margin: 0 }}>
+            {userFriendsCards}
+          </Box>
+        ) : null}
+        {anonFriendsCards?.length ? (
+          <Box component="ul" sx={{ padding: '8px 0 0 0', margin: 0 }}>
+            <Typography
+              variant="h3"
+              component="h2"
+              margin="20px 0"
+              fontWeight="600"
+            >
+              Anonymous friends
+            </Typography>
+            {anonFriendsCards}
+          </Box>
+        ) : null}
       </Box>
-      <SendFriendRequestModal setOpen={setOpen} open={open} />
-      {userFriendsCards?.length ? (
-        <Box component="ul" sx={{ padding: 0, margin: 0 }}>
-          {userFriendsCards}
-        </Box>
-      ) : null}
-      {anonFriendsCards?.length ? (
-        <Box component="ul" sx={{ padding: 0, margin: 0 }}>
-          <Typography
-            variant="h3"
-            component="h3"
-            margin="20px 0"
-            fontWeight="600"
-          >
-            Anonymous friends
-          </Typography>
-          {anonFriendsCards}
-        </Box>
-      ) : null}
     </Motion>
   )
 }

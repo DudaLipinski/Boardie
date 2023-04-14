@@ -1,14 +1,3 @@
-export const styledListItem = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'start',
-  width: 'inherit',
-  margin: '0 auto 16px',
-  bgcolor: 'background.paper',
-  boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-  borderRadius: '8px',
-}
-
 export const styledAvatarGroup = {
   justifyContent: 'flex-end',
   margin: '16px 0 8px 0',
@@ -20,14 +9,18 @@ export const styledAvatarGroup = {
     marginTop: '6px',
     border: '2.5px solid white',
     boxSizing: 'content-box',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius)',
   },
 
   '.MuiBadge-root:last-child': {
-    marginLeft: '8px',
+    marginLeft: 'var(--border-radius)',
   },
 
-  '.MuiAvatar-root': {
+  '& .MuiAvatar-root': {
     border: '0px',
+    width: '38px',
+    height: '38px',
+    fontSize: '14px',
+    bgcolor: 'var(--color-secondary)',
   },
 }

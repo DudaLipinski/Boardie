@@ -4,18 +4,7 @@ import { useAnswerFriendshipRequest } from '../../queries/friends'
 import { FriendshipRequest } from '../../types/Friend'
 import { Alert } from '../Alert'
 import { getErrorMessage } from '../../utils/api'
-
-export const styledListItem = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'start',
-  width: 'inherit',
-  margin: '0 auto 16px',
-  bgcolor: 'background.paper',
-  boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-  borderRadius: '4px',
-  padding: '18px 15px',
-}
+import { styledCard } from '../../styles/card'
 
 export const FriendshipRequestCard = ({
   friendshipRequest,
@@ -33,7 +22,9 @@ export const FriendshipRequestCard = ({
   return (
     <>
       {isError && <Alert severity="error" message={getErrorMessage(error)} />}
-      <ListItem sx={{ ...styledListItem }}>
+      <ListItem
+        sx={{ ...styledCard, padding: '18px 15px', alignItems: 'center' }}
+      >
         <Avatar
           user={{
             ...friendshipRequest,
@@ -61,20 +52,10 @@ export const FriendshipRequestCard = ({
             gap="12px"
             margin="0 0 0 14px"
           >
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={handleAccept}
-            >
+            <Button variant="contained" color="primary" onClick={handleAccept}>
               Accept
             </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              onClick={handleIgnore}
-            >
+            <Button variant="outlined" color="primary" onClick={handleIgnore}>
               Ignore
             </Button>
           </Box>

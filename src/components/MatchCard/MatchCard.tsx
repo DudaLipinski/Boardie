@@ -6,9 +6,9 @@ import { getErrorMessage } from '../../utils/api'
 import { useMatchDeletion } from '../../queries/match'
 import { MATCH_DETAILS } from '../../routes/routeSpecs'
 import { Alert } from '../Alert'
+import { styledCard } from '../../styles/card'
 import { Players } from './Players'
 import { MatchInfo } from './MatchInfo'
-import { styledListItem } from './MatchCard.styles'
 import { MenuButton } from './MenuButton'
 
 export const MatchCard = ({ match }: { match: Match }) => {
@@ -31,7 +31,7 @@ export const MatchCard = ({ match }: { match: Match }) => {
   return (
     <>
       {isError && <Alert severity={'error'} message={message} />}
-      <ListItem sx={{ ...styledListItem }}>
+      <ListItem sx={{ ...styledCard }}>
         <Box width="100%" paddingTop="6px">
           <Link
             to={`${MATCH_DETAILS.replace(':id', id.toString())}`}

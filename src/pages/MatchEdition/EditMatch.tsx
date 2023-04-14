@@ -89,7 +89,7 @@ export const MatchEdition = () => {
       .map((player) => {
         const friend = omit(player.friend, 'fullName')
 
-        return { ...player, friend: friend }
+        return { ...omit(player, 'matchId'), friend: friend }
       })
 
     const newPlayers = receivedPlayers

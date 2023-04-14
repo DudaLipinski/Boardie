@@ -8,14 +8,14 @@ interface SizeDef {
 }
 
 const placeholderStyle = {
-  background: 'rgba(255,255,255,0.07)',
+  background: 'var(--color-secondary)',
   border: '2px dashed rgba(255,255,255,0.12)',
 }
 
 const sizes: Record<Size, SizeDef> = {
-  sm: { side: 32, fontSize: '14px' },
-  md: { side: 62, fontSize: '16px' },
-  lg: { side: 92, fontSize: '16px' },
+  sm: { side: 38, fontSize: '14px' },
+  md: { side: 62, fontSize: '18px' },
+  lg: { side: 92, fontSize: '22px' },
 }
 
 const getInitials = (fullName?: string) => {
@@ -48,7 +48,7 @@ export const Avatar = ({
     textTransform: 'uppercase',
     boxSizing: 'border-box',
     fontSize: sizeDef.fontSize,
-    backgroundColor: 'rgba(255,255,255,0.7)',
+    backgroundColor: 'var(--color-secondary)',
   }
   const avatarSx = user?.fullName
     ? { ...sizeSx, ...sx }

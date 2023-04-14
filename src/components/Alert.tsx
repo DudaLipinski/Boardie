@@ -31,8 +31,8 @@ export const Alert = ({ severity, message, sx, onClose }: Props) => {
       sx={{
         zIndex: 2,
         marginBottom: '14px',
-        boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-        borderRadius: '8px',
+        boxShadow: 'var(--box-shadow)',
+        borderRadius: 'var(--border-radius)',
         ...sx,
         '.MuiCollapse-wrapper, .MuiCollapse-wrapperInner, .MuiPaper-root': {
           borderRadius: 'inherit',

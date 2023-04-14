@@ -21,7 +21,7 @@ export const MatchDetails = ({ control }: Props) => {
       bgcolor="background.paper"
       padding="16px"
       marginTop="0!important"
-      borderRadius="8px"
+      borderRadius="var(--border-radius)"
     >
       <Stack spacing={2}>
         <Controller

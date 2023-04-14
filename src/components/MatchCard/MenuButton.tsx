@@ -52,11 +52,7 @@ export const MenuButton = ({ id, handleDeleteMatch, isLoading }: Props) => {
           'aria-labelledby': 'fade-button',
         }}
         sx={{
-          boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-          '.MuiList-root': {
-            paddingTop: '0',
-            paddingBottom: '0',
-          },
+          boxShadow: 'var(--box-shadow)',
         }}
       >
         <MenuItem

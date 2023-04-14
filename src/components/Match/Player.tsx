@@ -34,7 +34,7 @@ export const Player = ({ index, control, onRemove, isUniquePlayer }: Props) => {
     <Box
       bgcolor="background.paper"
       padding="16px"
-      borderRadius="8px"
+      borderRadius="var(--border-radius)"
       display="flex"
       justifyContent="space-between"
       gap="12px"

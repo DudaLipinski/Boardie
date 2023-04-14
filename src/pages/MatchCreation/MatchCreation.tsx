@@ -1,8 +1,9 @@
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
-import { Box, Stack } from '@mui/material'
+import { Box, Button, Stack } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 import { Match as MatchType } from '../../types/Match'
 import { useMatchCreation } from '../../queries/match'
 
@@ -20,9 +21,10 @@ import { Title } from '../../components/Title'
 
 export const MatchCreation = () => {
   const navigate = useNavigate()
+  const { data: user } = useUser()
   const { mutate, isLoading, isError, error, isSuccess, data } =
     useMatchCreation()
-  const { data: user } = useUser()
+
   const emptyPlayer = {
     score: 0,
     isWinner: false,
@@ -76,8 +78,23 @@ export const MatchCreation = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         {isError && <Alert severity="error" message={getErrorMessage(error)} />}
-        <Stack spacing={2} overflow="hidden auto" height="inherit">
-          <Title title="Create Match" />
+        <Stack spacing={2} height="inherit" overflow="hidden auto">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            marginBottom="12px"
+          >
+            <Title title="Create Match" />
+            <Button
+              aria-label="Close"
+              onClick={() => navigate(-1)}
+              variant="outlined"
+              sx={{ minWidth: '20px', padding: '8px 8px' }}
+            >
+              <CloseIcon />
+            </Button>
+          </Box>
           <MatchDetails control={control} />
           <Players control={control} />
         </Stack>

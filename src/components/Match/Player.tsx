@@ -100,14 +100,14 @@ export const Player = ({ index, control, onRemove, isUniquePlayer }: Props) => {
       <Box>
         {!isUniquePlayer ? (
           <IconButton
-            sx={{ padding: '5px 0' }}
+            sx={{ padding: '5px' }}
             aria-label="remove player"
             onClick={() => onRemove(index)}
           >
             <RemoveCircleOutlineIcon />
           </IconButton>
         ) : (
-          <Box width="24px" />
+          <Box width="34px" />
         )}
       </Box>
     </Box>

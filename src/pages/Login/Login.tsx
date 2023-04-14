@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Box, Typography, TextField, Button } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
-import { CREATE_ACCOUNT } from '../../routes/routeSpecs'
+import { SIGNUP } from '../../routes/routeSpecs'
 import { getErrorMessage } from '../../utils/api'
 import { User } from '../../types/User'
 import { useUserAuthenticator } from '../../queries/user'
@@ -93,7 +93,7 @@ export const Login = () => {
           margin="12px 0"
           gap="12px"
         >
-          <Link style={{ margin: '0 auto' }} to={CREATE_ACCOUNT}>
+          <Link style={{ margin: '0 auto' }} to={SIGNUP}>
             <Typography> Register now!</Typography>
           </Link>
         </Box>

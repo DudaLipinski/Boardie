@@ -20,7 +20,7 @@ const styledTextFieldProps = {
   variant: 'filled',
 } as const
 
-export const CreateAccount = () => {
+export const Signup = () => {
   const { mutate, isError, error } = useUserCreation()
 
   const { handleSubmit, control } = useForm({
@@ -68,7 +68,11 @@ export const CreateAccount = () => {
           gap="12px"
         >
           {isError && (
-            <Alert severity="error" message={getErrorMessage(error)} />
+            <Alert
+              severity="error"
+              message={getErrorMessage(error)}
+              testid="signup-error"
+            />
           )}
           <Controller
             name="firstName"

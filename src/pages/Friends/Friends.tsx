@@ -41,7 +41,7 @@ export const Friends = () => {
   )
 
   return (
-    <Motion>
+    <Motion style={{ width: '100%' }}>
       <Box>
         <Box
           display="flex"

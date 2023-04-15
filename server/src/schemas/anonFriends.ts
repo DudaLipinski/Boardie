@@ -19,3 +19,9 @@ export const anonFriendCreationDataSchema = anonFriendDTOSchema
 export const anonFriendUpdateDataSchema = anonFriendCreationDataSchema
   .omit({})
   .describe('Data used to update an anonymous friend')
+
+export type AnonFriendDTO = z.infer<typeof anonFriendDTOSchema>
+export type AnonFriendCreationData = z.infer<
+  typeof anonFriendCreationDataSchema
+>
+export type AnonFriendUpdateData = z.infer<typeof anonFriendUpdateDataSchema>

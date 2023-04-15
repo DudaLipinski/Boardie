@@ -1145,7 +1145,7 @@
             "description": "The requested user does not exist"
           },
           "409": {
-            "description": "The friendship request already exists"
+            "description": "The friendship already exists or the request was already sent"
           },
           "500": {
             "description": "An unexpected internal error"
@@ -1234,6 +1234,9 @@
           },
           "404": {
             "description": "The friendship request does not exist"
+          },
+          "409": {
+            "description": "The friendship already exists"
           },
           "500": {
             "description": "An unexpected internal error"

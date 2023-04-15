@@ -79,6 +79,14 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
       return res.sendStatus(400)
     }
 
+    const friendshipExists = await friendsModel.checkFriendshipExists([
+      req.userId,
+      requestedUserId,
+    ])
+    if (friendshipExists) {
+      return res.sendStatus(409)
+    }
+
     const requestCreated = await friendsModel.createFriendshipRequest({
       requestingUserId: req.userId,
       requestedUserId,
@@ -102,7 +110,8 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
         description: 'The requested user does not exist',
       },
       409: {
-        description: 'The friendship request already exists',
+        description:
+          'The friendship already exists or the request was already sent',
       },
     },
   }
@@ -155,13 +164,13 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
       requestedUserId: req.userId,
     }
 
-    await kysely.transaction().execute(async (transaction) => {
+    const result = await kysely.transaction().execute(async (transaction) => {
       const requestWasFound = await friendsModel.deleteRequest.call(
         { transaction },
         friendRequest
       )
       if (!requestWasFound) {
-        return res.sendStatus(404)
+        return 'not-found' as const
       }
 
       // If the request was found, also delete the inverse request
@@ -184,9 +193,16 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
         [friendRequest.requestingUserId, friendRequest.requestedUserId]
       )
       if (!friendshipCreated) {
-        return res.sendStatus(409)
+        return 'conflict' as const
       }
     })
+
+    if (result === 'not-found') {
+      return res.sendStatus(404)
+    }
+    if (result === 'conflict') {
+      return res.sendStatus(409)
+    }
 
     res.sendStatus(200)
   },
@@ -207,6 +223,9 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
       },
       404: {
         description: 'The friendship request does not exist',
+      },
+      409: {
+        description: 'The friendship already exists',
       },
     },
   }

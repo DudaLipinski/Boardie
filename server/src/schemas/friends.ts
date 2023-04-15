@@ -48,3 +48,6 @@ export const existentFriendshipRequestSchema = z.object({
   userId: z.number(),
   fullName: z.string(),
 })
+
+export type GenericFriend = z.infer<typeof genericFriendSchema>
+export type FriendshipRequest = z.infer<typeof existentFriendshipRequestSchema>

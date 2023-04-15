@@ -22,3 +22,6 @@ export const userDTOSchema = userSchema
   })
   .strict()
   .describe('Data that represents a user')
+
+export type UserCreationData = z.infer<typeof userCreationDataSchema>
+export type UserDTO = z.infer<typeof userDTOSchema>

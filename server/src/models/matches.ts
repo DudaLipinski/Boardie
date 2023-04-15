@@ -74,6 +74,7 @@ export const getHydratedByUser = async (userId: number) => {
       )
     )
     .where('deletedAt', 'is', null)
+    .orderBy('createdAt', 'desc')
     .execute()
 
   const players = await getAllByMatchId({ matchId: matches.map((m) => m.id) })

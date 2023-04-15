@@ -13,3 +13,6 @@ export const authSchema = z.object({
   user: userDTOSchema,
   token: z.string(),
 })
+
+export type AuthDTO = z.infer<typeof authDTOSchema>
+export type Auth = z.infer<typeof authSchema>

@@ -21,7 +21,6 @@ const styledIconProps = { width: '48px', height: '48px' }
 
 export const TabBar = ({ user }: { user: User }) => {
   const navigate = useNavigate()
-
   const genericUser = userToGeneric(user)
 
   return (
@@ -63,7 +62,6 @@ export const TabBar = ({ user }: { user: User }) => {
               borderRadius: 34,
             }}
             sx={{
-              borderRadius: 34,
               width: 60,
               height: 60,
               marginTop: '-22px',

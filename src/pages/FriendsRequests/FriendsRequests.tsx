@@ -14,7 +14,10 @@ export const FriendsRequests = () => {
   const friendshipRequestsCards = useMemo(
     () =>
       friendsRequests?.map((friendshipRequest) => (
-        <FriendshipRequestCard friendshipRequest={friendshipRequest} />
+        <FriendshipRequestCard
+          key={friendshipRequest.userId}
+          friendshipRequest={friendshipRequest}
+        />
       )),
     [friendsRequests]
   )

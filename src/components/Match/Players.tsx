@@ -51,7 +51,12 @@ export const Players = ({ control }: Props) => {
           Add new +
         </Button>
       </Box>
-      <Stack spacing={2} paddingBottom="90px">
+      <Stack
+        spacing={2}
+        paddingBottom="90px"
+        component="ul"
+        sx={{ padding: 0 }}
+      >
         {players.map((player, index) => (
           <Player
             isUniquePlayer={isUniquePlayer}

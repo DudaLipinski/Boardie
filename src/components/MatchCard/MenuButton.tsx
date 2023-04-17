@@ -25,6 +25,7 @@ export const MenuButton = ({ id, handleDeleteMatch, isLoading }: Props) => {
   return (
     <>
       <IconButton
+        aria-label="fade-button"
         id="button"
         aria-controls={open ? 'menu' : undefined}
         aria-haspopup="true"
@@ -35,6 +36,7 @@ export const MenuButton = ({ id, handleDeleteMatch, isLoading }: Props) => {
         <MoreVertIcon />
       </IconButton>
       <Menu
+        aria-label="Menu item"
         elevation={2}
         anchorOrigin={{
           vertical: 'bottom',
@@ -48,19 +50,22 @@ export const MenuButton = ({ id, handleDeleteMatch, isLoading }: Props) => {
         anchorEl={anchorEl}
         open={open}
         onClose={() => setAnchorEl(null)}
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
         sx={{
           boxShadow: 'var(--box-shadow)',
         }}
       >
         <MenuItem
           onClick={() => navigate(EDIT_MATCH.replace(':id', id.toString()))}
+          aria-label="Edit match"
         >
           Edit
         </MenuItem>
-        <MenuItem onClick={() => setIsDeleteDialogOpen(true)}>Delete</MenuItem>
+        <MenuItem
+          onClick={() => setIsDeleteDialogOpen(true)}
+          aria-label="Delete match"
+        >
+          Delete
+        </MenuItem>
       </Menu>
       <DeleteDialog
         isDeleteDialogOpen={isDeleteDialogOpen}

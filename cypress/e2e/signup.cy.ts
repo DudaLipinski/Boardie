@@ -1,7 +1,7 @@
 describe('Signup test', () => {
   const randomNumber = Math.floor(Math.random() * 1000000)
 
-  it('Should create a new account', () => {
+  it('should create a new account', () => {
     cy.visit('signup')
     cy.get('input[name="firstName"]').type('Maria')
     cy.get('input[name="middleAndSurname"]').type('Lipinski')
@@ -11,7 +11,7 @@ describe('Signup test', () => {
     cy.findByRole('button', { name: 'Create account' }).click()
   })
 
-  it('Should login after creating account', () => {
+  it('should login after creating account', () => {
     cy.login(`${randomNumber}@test.com`, '12345678')
   })
 })

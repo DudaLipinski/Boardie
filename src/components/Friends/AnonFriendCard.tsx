@@ -2,7 +2,7 @@ import { Box, IconButton, ListItem, Stack, TextField } from '@mui/material'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
 import { Controller, useForm } from 'react-hook-form'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
 import { Avatar } from '../Avatar'
 import { GenericUser } from '../../types/GenericUser'
@@ -69,6 +69,11 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
     }
   }, [isSuccessUpdateFriend])
 
+  const fullNameTestId = useMemo(
+    () => friend.fullName.split(' ').join('-').toLocaleLowerCase(),
+    [friend.fullName]
+  )
+
   return (
     <>
       <ListItem
@@ -90,6 +95,7 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
             control={control}
             render={({ field }) => (
               <TextField
+                aria-label="Friend name"
                 required
                 disabled={!isEditing}
                 type="text"
@@ -100,7 +106,11 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
               />
             )}
           />
-          <Stack direction="row" spacing={0}>
+          <Stack
+            direction="row"
+            spacing={0}
+            data-testid={`menu-anonFriend-${fullNameTestId}`}
+          >
             {isEditing ? (
               <IconButton
                 aria-label="edit"

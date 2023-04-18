@@ -4,6 +4,7 @@ describe('Match functionality', () => {
   })
 
   it('should direct to page match creation when the + button is clicked', () => {
+    cy.visit('matches')
     cy.url().should('include', 'matches')
     cy.findByRole('button', { name: 'Create match' }).click()
     cy.url().should('include', 'create-match')
@@ -18,6 +19,7 @@ describe('Match functionality', () => {
   })
 
   it('should update the match', () => {
+    cy.visit('matches')
     cy.get('li').eq(0).findByRole('button', { name: 'fade-button' }).click()
     cy.findByRole('menuitem', { name: 'Edit match' }).click()
     cy.url().should('include', 'edit-match')
@@ -47,6 +49,7 @@ describe('Match functionality', () => {
   })
 
   it('should delete the match', () => {
+    cy.visit('matches')
     cy.get('li').eq(0).findByRole('button', { name: 'fade-button' }).click()
     cy.findByRole('menuitem', { name: 'Delete match' }).click()
     cy.findByRole('button', { name: 'Confirm' }).click()

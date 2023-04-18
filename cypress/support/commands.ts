@@ -9,8 +9,9 @@ declare global {
 }
 
 Cypress.Commands.add('login', (email: string, password: string) => {
-  cy.visit('login')
-  cy.get('input[name="email"]').type(email)
-  cy.get('input[name="password"]').type(password)
-  cy.findByRole('button', { name: 'Login' }).click()
+  cy.request('POST', `http://localhost:3007/auth`, { email, password }).then(
+    (response) => {
+      cy.setCookie('token', response.body.token)
+    }
+  )
 })

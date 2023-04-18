@@ -1,11 +1,11 @@
-describe('Friends functionality', () => {
+describe('Friends features', () => {
   const randomNumber = Math.floor(Math.random() * 1000000)
 
   beforeEach(() => {
     cy.login('duda@test.com', '12345678')
   })
 
-  it('should create an anonymous friend', () => {
+  it('should be able to create an anonymous friend', () => {
     cy.visit('create-match')
     cy.get('li')
       .eq(0)
@@ -18,14 +18,14 @@ describe('Friends functionality', () => {
       .should('have.value', 'Player test')
   })
 
-  it('should check with the new anonymous friend is in the page', () => {
+  it('should render the new anonymous friend in the page', () => {
     cy.visit('friends')
     cy.get('input[type="text"][value="Player test"]')
       .should('be.visible')
       .should('be.disabled')
   })
 
-  it('should edit an anonymous friend', () => {
+  it('should be able to edit an anonymous friend', () => {
     cy.visit('friends')
 
     cy.findByTestId('menu-anonFriend-player-test')

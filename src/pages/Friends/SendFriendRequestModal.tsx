@@ -3,9 +3,9 @@ import { Controller, useForm } from 'react-hook-form'
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 import { useEffect, useRef } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
-import { Alert } from '../Alert'
-import { getErrorMessage } from '../../utils/api'
-import { useFriendshipRequestCreation } from '../../queries/friends'
+import { Alert } from '@components/Alert'
+import { getErrorMessage } from '@src/utils/api'
+import { useFriendshipRequestCreation } from '@src/queries/friends'
 
 const style = {
   position: 'absolute' as 'absolute',

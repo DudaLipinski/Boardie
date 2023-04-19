@@ -1,9 +1,9 @@
 import { AvatarGroup, Typography, IconButton, Button } from '@mui/material'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { Link, useNavigate } from 'react-router-dom'
-import { Avatar } from '../Avatar'
-import { FRIENDSHIP_REQUESTS } from '../../routes/routeSpecs'
-import { FriendshipRequest } from '../../types/Friend'
+import { Avatar } from '@components/Avatar'
+import { FRIENDSHIP_REQUESTS } from '@src/routes/routeSpecs'
+import { FriendshipRequest } from '@src/types/Friend'
 
 export const styledListItem = {
   display: 'flex',

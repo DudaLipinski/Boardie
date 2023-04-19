@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { SIGNUP } from '../../routes/routeSpecs'
-import { getErrorMessage } from '../../utils/api'
-import { User } from '../../types/User'
-import { useUserAuthenticator } from '../../queries/user'
-import { Motion } from '../../components/Motion'
-import { Alert } from '../../components/Alert'
+import { SIGNUP } from '@src/routes/routeSpecs'
+import { User } from '@src/types/User'
+import { useUserAuthenticator } from '@src/queries/user'
+import { getErrorMessage } from '@src/utils/api'
 
-export const Login = () => {
+import { Motion } from '@components/Motion'
+import { Alert } from '@components/Alert'
+
+const Login = () => {
   const { mutate, isError, error } = useUserAuthenticator()
 
   const { handleSubmit, register } = useForm({
@@ -72,3 +73,5 @@ export const Login = () => {
     </Motion>
   )
 }
+
+export default Login

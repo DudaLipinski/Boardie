@@ -5,6 +5,7 @@ import {
   FilterOptionsState,
   Chip,
 } from '@mui/material'
+
 import React, { useMemo } from 'react'
 import { useAnonFriendCreation, useFriends } from '../queries/friends'
 import { GenericUser } from '../types/GenericUser'

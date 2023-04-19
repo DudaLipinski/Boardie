@@ -1,25 +1,26 @@
 import dayjs from 'dayjs'
-import { useForm } from 'react-hook-form'
-import { Box, Button, Stack } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+
+import { Match as MatchType } from '@src/types/Match'
+import { useMatchCreation } from '@src/queries/match'
+import { useUser } from '@src/queries/user'
+import { userToPlayer } from '@src/utils/friends'
+import { getErrorMessage } from '@src/utils/api'
+import { EDIT_MATCH } from '@src/routes/routeSpecs'
+
+import { Box, Button, Stack } from '@mui/material'
+import { Players } from '@components/Match/Players'
+import { MatchDetails } from '@components/Match/MatchDetails'
+import { Alert } from '@components/Alert'
+import { FabSubmit } from '@components/FabSubmit'
+import { Motion } from '@components/Motion'
+import { Title } from '@components/Title'
+
 import CloseIcon from '@mui/icons-material/Close'
-import { Match as MatchType } from '../../types/Match'
-import { useMatchCreation } from '../../queries/match'
 
-import { Players } from '../../components/Match/Players'
-import { MatchDetails } from '../../components/Match/MatchDetails'
-
-import { Alert } from '../../components/Alert'
-import { userToPlayer } from '../../utils/friends'
-import { FabSubmit } from '../../components/FabSubmit'
-import { getErrorMessage } from '../../utils/api'
-import { useUser } from '../../queries/user'
-import { EDIT_MATCH } from '../../routes/routeSpecs'
-import { Motion } from '../../components/Motion'
-import { Title } from '../../components/Title'
-
-export const MatchCreation = () => {
+const MatchCreation = () => {
   const navigate = useNavigate()
   const { data: user } = useUser()
   const { mutate, isLoading, isError, error, isSuccess, data } =
@@ -103,3 +104,5 @@ export const MatchCreation = () => {
     </Motion>
   )
 }
+
+export default MatchCreation

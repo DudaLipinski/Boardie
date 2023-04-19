@@ -1,16 +1,16 @@
+import { useMemo } from 'react'
+import { useMatches } from '@src/queries/match'
+import { Match } from '@src/types/Match'
+import { getErrorMessage } from '@src/utils/api'
+
 import { List, Box, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import { useMemo } from 'react'
-import { useMatches } from '../../queries/match'
-import { Match } from '../../types/Match'
-import { getErrorMessage } from '../../utils/api'
+import { Alert } from '@components/Alert'
+import { Motion } from '@components/Motion'
+import { Title } from '@components/Title'
+import { MatchCard } from './MatchCard'
 
-import { MatchCard } from '../../components/MatchCard/MatchCard'
-import { Alert } from '../../components/Alert'
-import { Motion } from '../../components/Motion'
-import { Title } from '../../components/Title'
-
-export const MatchList = () => {
+const MatchList = () => {
   const { data: matches, isError, error, isLoading } = useMatches()
 
   const matchesCards = useMemo(
@@ -60,3 +60,5 @@ export const MatchList = () => {
     </Motion>
   )
 }
+
+export default MatchList

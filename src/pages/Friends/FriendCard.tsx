@@ -1,7 +1,7 @@
 import { ListItem, Typography } from '@mui/material'
-import { GenericUser } from '../../types/GenericUser'
-import { Avatar } from '../Avatar'
-import { styledCard } from '../../styles/card'
+import { GenericUser } from '@src/types/GenericUser'
+import { Avatar } from '@components/Avatar'
+import { styledCard } from '@src/styles/card'
 
 export const FriendCard = ({ friend }: { friend: GenericUser }) => {
   return (

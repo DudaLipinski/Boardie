@@ -1,6 +1,6 @@
 import { useLocation, Routes, Route } from 'react-router-dom'
-import { Signup } from '../pages/Signup/Signup'
-import { Login } from '../pages/Login/Login'
+import Signup from '../pages/Signup'
+import Login from '../pages/Login'
 import { SIGNUP, LOGIN } from './routeSpecs'
 
 export const UnauthenticatedRoutes = () => {

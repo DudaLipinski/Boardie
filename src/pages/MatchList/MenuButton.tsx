@@ -1,9 +1,10 @@
-import { MoreVert as MoreVertIcon } from '@mui/icons-material'
-import { IconButton, Menu, MenuItem } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { EDIT_MATCH } from '../../routes/routeSpecs'
-import { DeleteDialog } from '../DeleteDialog'
+import { EDIT_MATCH } from '@src/routes/routeSpecs'
+
+import { IconButton, Menu, MenuItem } from '@mui/material'
+import { MoreVert as MoreVertIcon } from '@mui/icons-material'
+import { DeleteDialog } from '@components/DeleteDialog'
 
 interface Props {
   id: number

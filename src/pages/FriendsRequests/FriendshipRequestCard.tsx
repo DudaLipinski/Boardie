@@ -1,10 +1,10 @@
 import { Box, Button, ListItem, Typography } from '@mui/material'
-import { Avatar } from '../Avatar'
-import { useAnswerFriendshipRequest } from '../../queries/friends'
-import { FriendshipRequest } from '../../types/Friend'
-import { Alert } from '../Alert'
-import { getErrorMessage } from '../../utils/api'
-import { styledCard } from '../../styles/card'
+import { Avatar } from '@components/Avatar'
+import { Alert } from '@components/Alert'
+import { useAnswerFriendshipRequest } from '@src/queries/friends'
+import { FriendshipRequest } from '@src/types/Friend'
+import { getErrorMessage } from '@src/utils/api'
+import { styledCard } from '@src/styles/card'
 
 export const FriendshipRequestCard = ({
   friendshipRequest,

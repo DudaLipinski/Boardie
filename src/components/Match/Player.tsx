@@ -1,3 +1,6 @@
+import { Controller, Control } from 'react-hook-form'
+import { Match } from '@src/types/Match'
+
 import {
   TextField,
   FormControlLabel,
@@ -7,10 +10,8 @@ import {
   Box,
 } from '@mui/material'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
-import { Controller, Control } from 'react-hook-form'
-import { Avatar } from '../Avatar'
-import { Match } from '../../types/Match'
 import { FriendSelector } from '../FriendSelector'
+import { Avatar } from '../Avatar'
 
 const parseEventValueToInt = (
   event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

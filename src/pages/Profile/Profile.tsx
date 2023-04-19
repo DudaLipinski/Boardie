@@ -1,10 +1,11 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useUser } from '../../queries/user'
-import { useLogout } from '../../routes/useLogout'
-import { Motion } from '../../components/Motion'
-import { Title } from '../../components/Title'
+import { useUser } from '@src/queries/user'
+import { useLogout } from '@src/routes/useLogout'
 
-export const Profile = () => {
+import { Box, Button, Typography } from '@mui/material'
+import { Motion } from '@components/Motion'
+import { Title } from '@components/Title'
+
+const Profile = () => {
   const { data: user } = useUser()
   const logout = useLogout()
 
@@ -25,3 +26,5 @@ export const Profile = () => {
     </Motion>
   )
 }
+
+export default Profile

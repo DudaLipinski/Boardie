@@ -4,11 +4,11 @@ import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
 import { Controller, useForm } from 'react-hook-form'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
-import { Avatar } from '../Avatar'
-import { GenericUser } from '../../types/GenericUser'
-import { useDeleteAnonFriend, useUpdateAnonFriend } from '../../queries/friends'
-import { DeleteDialog } from '../DeleteDialog'
-import { styledCard } from '../../styles/card'
+import { Avatar } from '@components/Avatar'
+import { GenericUser } from '@src/types/GenericUser'
+import { useDeleteAnonFriend, useUpdateAnonFriend } from '@src/queries/friends'
+import { DeleteDialog } from '@components/DeleteDialog'
+import { styledCard } from '@src/styles/card'
 
 const styledDisabledInput = {
   '& .MuiOutlinedInput-notchedOutline': {

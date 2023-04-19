@@ -1,13 +1,13 @@
+import { Controller, useForm } from 'react-hook-form'
+import { useUserCreation } from '@src/queries/user'
+import { User } from '@src/types/User'
+import { LOGIN } from '@src/routes/routeSpecs'
+import { getErrorMessage } from '@src/utils/api'
+
 import { Link } from 'react-router-dom'
 import { TextField, Box, Typography, Button } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
-
-import { LOGIN } from '../../routes/routeSpecs'
-import { useUserCreation } from '../../queries/user'
-import { User } from '../../types/User'
-import { Alert } from '../../components/Alert'
-import { getErrorMessage } from '../../utils/api'
-import { Motion } from '../../components/Motion'
+import { Alert } from '@components/Alert'
+import { Motion } from '@components/Motion'
 
 interface FormUser extends Omit<User, 'age' | 'token' | 'id'> {
   age: string
@@ -20,7 +20,7 @@ const styledTextFieldProps = {
   variant: 'filled',
 } as const
 
-export const Signup = () => {
+const Signup = () => {
   const { mutate, isError, error } = useUserCreation()
 
   const { handleSubmit, control } = useForm({
@@ -153,3 +153,5 @@ export const Signup = () => {
     </Motion>
   )
 }
+
+export default Signup

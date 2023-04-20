@@ -7,8 +7,8 @@ import { getErrorMessage } from '@src/utils/api'
 
 import { Motion } from '@components/Motion'
 import { Alert } from '@components/Alert'
-import { getInputClasses } from '@components/atoms/input'
 import { getButtonClasses } from '@components/atoms/button'
+import { Input } from '@components/molecules/Input'
 
 const Login = () => {
   const { mutate, isError, error } = useUserAuthenticator()
@@ -38,30 +38,22 @@ const Login = () => {
           )}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="my-4 flex w-full flex-col items-center gap-4"
+            className="my-4 flex w-full flex-col items-center gap-6"
           >
-            <input
-              className={getInputClasses()}
-              type="email"
-              placeholder="E-mail"
+            <Input
+              label="E-mail"
               required
               {...register('email')}
+              type="email"
             />
-            <input
-              className={getInputClasses()}
-              type="password"
-              placeholder="Pasword"
+            <Input
+              label="Password"
               required
               {...register('password')}
+              type="password"
+              min="8"
             />
-            <button
-              type="submit"
-              className={getButtonClasses({
-                variant: 'solid',
-                size: 'lg',
-                color: 'pink',
-              })}
-            >
+            <button type="submit" className={getButtonClasses()}>
               Login
             </button>
             <Link

@@ -1,30 +1,26 @@
-import { Color, Size, Variant } from '@src/types/Theme'
+import { Size, Variant } from '@src/types/Theme'
 
-type ButtonStyles = Record<Variant, (size: Size, color: Color) => string>
+type ButtonStyles = Record<Variant, (size: Size) => string>
 
 const variantStyles: ButtonStyles = {
-  solid: (size, color) => `
-    duration-400 rounded-lg p-2 text-gray-950 transition-colors
-    bg-${color}-400 hover:bg-${color}-300
-
-    ${size === 'sm' ? 'text-sm' : size === 'md' ? 'text-md' : 'w-full'}
-  `,
-  outlined: (size, color) => `
-    duration-400 rounded-lg p-2 text-${color}-400 transition-colors
-    border border-${color}-400 hover:border-${color}-300 hover:text-${color}-300
-
-    ${size === 'sm' ? 'text-sm' : size === 'md' ? 'text-md' : 'w-full'}
-  `,
+  solid: (size) =>
+    `duration-400 rounded-lg p-2 text-gray-950 transition-color bg-pink-400 hover:bg-pink-300 ${
+      size === 'sm' ? 'text-sm' : size === 'md' ? 'text-md' : 'w-full'
+    }`,
+  outlined: (size) =>
+    `duration-400 rounded-lg p-2 text-pink-400 transition-colors border border-pink-400 border-pink-400 hover:border-pink-300 hover:text-pink-300 ${
+      size === 'sm' ? 'text-sm' : size === 'md' ? 'text-md' : 'w-full'
+    }`,
 }
 
-export const getButtonClasses = ({
-  variant,
-  size,
-  color,
-}: {
-  variant: Variant
-  size: Size
-  color: Color
-}): string => {
-  return variantStyles[variant](size, color)
+export const getButtonClasses = (
+  {
+    variant,
+    size,
+  }: {
+    variant: Variant
+    size: Size
+  } = { variant: 'solid', size: 'lg' }
+): string => {
+  return variantStyles[variant](size)
 }

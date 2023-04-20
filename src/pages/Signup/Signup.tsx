@@ -51,7 +51,7 @@ const Signup = () => {
           )}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="my-4 flex w-full flex-col gap-5"
+            className="my-4 flex w-full flex-col gap-6"
           >
             <Input
               label="First Name"

@@ -38,6 +38,8 @@ const Signup = () => {
     return
   }
 
+  const buttonClassName = getButtonClasses()
+
   return (
     <Motion style={{ height: 'inherit', padding: '0 24px' }}>
       <main className="h-full">
@@ -51,7 +53,7 @@ const Signup = () => {
           )}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="my-4 flex w-full flex-col gap-6"
+            className="my-4 flex w-full flex-col"
           >
             <Input
               label="First Name"
@@ -86,12 +88,12 @@ const Signup = () => {
               type="password"
               min="8"
             />
-            <button type="submit" className={getButtonClasses()}>
+            <button type="submit" className={`mt-6 ${buttonClassName}`}>
               Register
             </button>
             <Link
               to={LOGIN}
-              className="mx-auto mt-2 text-sm text-gray-200 underline hover:text-pink-300"
+              className="mx-auto mt-6 text-sm text-gray-200 underline hover:text-pink-300"
             >
               Login
             </Link>

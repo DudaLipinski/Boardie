@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'fs'
 import path from 'path'
-import controllersMap from '../controllers'
-import type { Path } from '../utils/endpoint'
+import controllersMap from '../endpoints'
+import type { Path } from '../utils/endpoint.utils'
 import headers from '../openapi.headers.json' assert { type: 'json' }
 
 const controllers = Object.values(controllersMap)

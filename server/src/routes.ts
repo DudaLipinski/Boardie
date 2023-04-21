@@ -1,6 +1,6 @@
 import type { Express } from 'express'
 
-import controllers from './controllers'
+import controllers from './endpoints'
 
 export const setRoutes = (app: Express) => {
   Object.values(controllers).forEach((controller) => {

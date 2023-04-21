@@ -6,7 +6,7 @@ import swaggerUi from 'swagger-ui-express'
 import openApiDocument from './openapi.json' assert { type: 'json' }
 
 import { setRoutes } from './routes'
-import { authenticateToken } from './utils/auth'
+import { authenticateToken } from './modules/auth/auth.utils'
 
 dotenv.config({ path: '.env.local' })
 

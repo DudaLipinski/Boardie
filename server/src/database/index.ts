@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3'
 import type { Transaction as KyselyTransaction } from 'kysely'
 import { Kysely, SqliteDialect } from 'kysely'
-import type { DB } from './types'
+import type { DB } from './database.types'
 
 const database = new Database('./database.db')
 database.pragma('journal_mode = WAL')

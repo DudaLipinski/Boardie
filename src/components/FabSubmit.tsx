@@ -1,7 +1,6 @@
-import { Fab, Typography } from '@mui/material'
+import { CircularProgress, Fab, Typography } from '@mui/material'
 
 import CheckIcon from '@mui/icons-material/Check'
-import CachedIcon from '@mui/icons-material/Cached'
 import { styledFloatButton } from '../styles/floatingButton'
 
 const fabProps = {
@@ -14,15 +13,17 @@ const fabProps = {
 const fabTextProps = {
   variant: 'button' as const,
   fontSize: 14,
-  component: 'h2' as const,
+  component: 'p' as const,
   sx: { mr: 0.5 },
 }
 
 export const FabSubmit = ({ isLoading }: { isLoading: boolean }) => (
   <Fab disabled={isLoading} {...fabProps}>
-    {isLoading ? <CachedIcon /> : <CheckIcon />}
-    <Typography {...fabTextProps}>
-      {isLoading ? 'Creating' : 'Confirm'}
-    </Typography>
+    {isLoading ? null : <CheckIcon />}
+    {isLoading ? (
+      <CircularProgress size="24px" />
+    ) : (
+      <Typography {...fabTextProps}>Save</Typography>
+    )}
   </Fab>
 )

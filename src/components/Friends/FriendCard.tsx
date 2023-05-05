@@ -11,8 +11,8 @@ export const FriendCard = ({ friend }: { friend: GenericUser }) => {
         <Typography
           variant="body1"
           component="h3"
-          margin="5px 0 2px 22px"
-          color="var(--adm-color-neutral-800)"
+          margin="5px 0 2px 14px"
+          fontWeight="700"
         >
           {friend.fullName}
         </Typography>

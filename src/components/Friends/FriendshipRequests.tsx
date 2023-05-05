@@ -15,7 +15,7 @@ export const styledListItem = {
   borderRadius: '4px',
   padding: '8px 15px',
   width: 'inherit',
-  margin: '0 auto 16px',
+  margin: '16px 0',
 }
 
 export const FriendshipRequests = ({
@@ -36,11 +36,21 @@ export const FriendshipRequests = ({
   return (
     <Link to={FRIENDSHIP_REQUESTS} style={{ textDecoration: 'none' }}>
       <Box sx={{ ...styledListItem }}>
-        <AvatarGroup max={2}>{avatars}</AvatarGroup>
+        <AvatarGroup
+          max={2}
+          sx={{
+            '.MuiAvatar-root': {
+              border: '0px',
+            },
+          }}
+        >
+          {avatars}
+        </AvatarGroup>
         <Typography
           variant="body1"
           component="h3"
-          color="var(--adm-color-neutral-800)"
+          color="secondary.main"
+          fontWeight={600}
         >
           Friendship requests
         </Typography>

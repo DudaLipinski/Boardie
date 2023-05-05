@@ -70,10 +70,9 @@ export const FriendshipRequestCard = ({
               Accept
             </Button>
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
               size="small"
-              sx={{ opacity: '0.6' }}
               onClick={handleIgnore}
             >
               Ignore

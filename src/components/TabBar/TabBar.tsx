@@ -5,7 +5,7 @@ import PeopleIcon from '@mui/icons-material/People'
 import { useNavigate } from 'react-router-dom'
 import HomeIcon from '@mui/icons-material/Home'
 import AddIcon from '@mui/icons-material/Add'
-import { ButtonGroup, IconButton } from '@mui/material'
+import { Button, ButtonGroup, IconButton } from '@mui/material'
 import {
   CREATE_MATCH,
   DASHBOARD,
@@ -25,7 +25,12 @@ export const TabBar = ({ user }: { user: User }) => {
   const genericUser = userToGeneric(user)
 
   return (
-    <Box>
+    <Box
+      sx={{
+        boxShadow: '0px -9px 24px 1px rgba(0, 0, 0, 0.1)',
+        zIndex: '1',
+      }}
+    >
       <BottomNavigation sx={{ borderRadius: '0 0 20px 20px', zIndex: 2 }}>
         <ButtonGroup
           sx={{
@@ -52,25 +57,23 @@ export const TabBar = ({ user }: { user: User }) => {
           >
             <CasinoIcon />
           </IconButton>
-          <IconButton
-            sx={{
-              ...styledIconProps,
-              backgroundColor: 'primary.main',
-              color: 'secondary.main',
-              border: '10px solid #f8f8f8',
-              width: '68px',
-              height: '68px',
-              marginTop: '-26px',
-              ':hover': {
-                backgroundColor: 'primary.darker',
-              },
+          <Button
+            style={{
+              borderRadius: 34,
             }}
+            sx={{
+              borderRadius: 34,
+              width: 60,
+              height: 60,
+              marginTop: '-22px',
+            }}
+            color="primary"
+            variant="contained"
             aria-label="Create match"
-            color="default"
             onClick={() => navigate(CREATE_MATCH)}
           >
             <AddIcon />
-          </IconButton>
+          </Button>
           <IconButton
             sx={{ ...styledIconProps }}
             aria-label="Friends"

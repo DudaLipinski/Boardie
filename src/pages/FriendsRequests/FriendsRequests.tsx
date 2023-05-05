@@ -1,8 +1,8 @@
-import { Typography } from '@mui/material'
 import { useMemo } from 'react'
 import { Motion } from '../../components/Motion'
 import { useFriendshipRequests } from '../../queries/friends'
 import { FriendshipRequestCard } from '../../components/FriendsRequests/FriendshipRequestCard'
+import { Title } from '../../components/Title'
 
 export const FriendsRequests = () => {
   const { data: friendsRequests } = useFriendshipRequests()
@@ -23,9 +23,7 @@ export const FriendsRequests = () => {
         flexDirection: 'column',
       }}
     >
-      <Typography variant="h2" component="h2" margin="20px 0" fontWeight="600">
-        Friends Requests
-      </Typography>
+      <Title title="Friends requests" />
       {friendshipRequestsCards}
     </Motion>
   )

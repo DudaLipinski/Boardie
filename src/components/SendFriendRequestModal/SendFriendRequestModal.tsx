@@ -14,7 +14,7 @@ const style = {
   width: 344,
   bgcolor: 'background.paper',
   boxShadow: 24,
-  bordeRadius: '4px',
+  bordeRadius: '8px',
   padding: '24px 32px',
 }
 
@@ -81,7 +81,6 @@ export const SendFriendRequestModal = ({ setOpen, open }: Props) => {
           fontWeight="700"
           align="center"
           margin="0 0 20px 0"
-          color="primary.darker"
         >
           Add a new friend
         </Typography>

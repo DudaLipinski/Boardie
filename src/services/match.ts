@@ -36,7 +36,7 @@ export const createMatch = (matchPayload: Omit<Match, 'id' | 'authorId'>) =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(
           'We were unable to create a match. Try again in a few minutes.'
         )
@@ -54,7 +54,7 @@ export const getMatches = (): Promise<Match[]> =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(
           'We were unable to fetch matches. Try again in a few minutes.'
         )
@@ -72,11 +72,11 @@ export const getMatch = (matchId: number): Promise<Match> =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status === 404) {
+      if (err.response.status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(
           'We were unable to fetch the match. Try again in a few minutes.'
         )
@@ -94,17 +94,17 @@ export const deleteMatch = (matchId: number): Promise<void> =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status === 403) {
+      if (err.response.status === 403) {
         throw new Error(
           "You don't have the needed permissions to delete this match."
         )
       }
 
-      if (err.status === 404) {
+      if (err.response.status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(genericError)
       }
     })
@@ -120,17 +120,17 @@ export const updateMatch = (matchPayload: MatchDetails): Promise<Match> =>
     })
     .catch((err) => {
       catchInternalError(err)
-      if (err.status === 403) {
+      if (err.response.status === 403) {
         throw new Error(
           "You don't have the needed permissions to update this match."
         )
       }
 
-      if (err.status === 404) {
+      if (err.response.status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(genericError)
       }
     })
@@ -147,17 +147,17 @@ export const createPlayer = (player: PlayerDetails) =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status === 403) {
+      if (err.response.status === 403) {
         throw new Error(
           "You don't have the needed permissions to update this match."
         )
       }
 
-      if (err.status === 404) {
+      if (err.response.status === 404) {
         throw new Error('We were unable to find the match with the given ID.')
       }
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(genericError)
       }
     })
@@ -179,17 +179,17 @@ export const deletePlayer = ({
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status === 403) {
+      if (err.response.status === 403) {
         throw new Error(
           "You don't have the needed permissions to delete this match."
         )
       }
 
-      if (err.status === 404) {
+      if (err.response.status === 404) {
         throw new Error('We were unable to find the match or the player.')
       }
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(genericError)
       }
     })
@@ -206,17 +206,17 @@ export const updatePlayer = (player: PlayerDetails): Promise<void> =>
     .catch((err) => {
       catchInternalError(err)
 
-      if (err.status === 403) {
+      if (err.response.status === 403) {
         throw new Error(
           "You don't have the needed permissions to update this match."
         )
       }
 
-      if (err.status === 404) {
+      if (err.response.status === 404) {
         throw new Error('We were unable to find the match or the player.')
       }
 
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error(genericError)
       }
     })

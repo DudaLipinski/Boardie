@@ -56,7 +56,7 @@ export const CreateAccount = () => {
         <Typography variant="h1" component="h1" align="center" fontWeight="600">
           Boardie
         </Typography>
-        <Typography gutterBottom align="center">
+        <Typography gutterBottom align="center" component="p">
           Please fill your details to create your account.
         </Typography>
         <Box

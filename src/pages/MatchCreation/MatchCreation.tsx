@@ -16,6 +16,7 @@ import { getErrorMessage } from '../../utils/api'
 import { useUser } from '../../queries/user'
 import { EDIT_MATCH } from '../../routes/routeSpecs'
 import { Motion } from '../../components/Motion'
+import { Title } from '../../components/Title'
 
 export const MatchCreation = () => {
   const navigate = useNavigate()
@@ -76,6 +77,7 @@ export const MatchCreation = () => {
       >
         {isError && <Alert severity="error" message={getErrorMessage(error)} />}
         <Stack spacing={2} overflow="hidden auto" height="inherit">
+          <Title title="Create Match" />
           <MatchDetails control={control} />
           <Players control={control} />
         </Stack>

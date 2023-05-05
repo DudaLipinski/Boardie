@@ -20,6 +20,7 @@ export const MatchDetails = ({ control }: Props) => {
       component="div"
       bgcolor="background.paper"
       padding="16px"
+      marginTop="0!important"
       borderRadius="8px"
     >
       <Stack spacing={2}>

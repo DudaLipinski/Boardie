@@ -19,11 +19,11 @@ export const Players = ({ players }: { players: Player[] }) => {
         variant="dot"
         sx={{
           '.MuiBadge-badge': {
-            background: 'var(--adm-color-gold)',
+            background: 'var(--color-warning)',
           },
         }}
       >
-        <Avatar user={player.friend} size="sm" />
+        <Avatar user={player.friend} size="sm" sx={{ border: '0px' }} />
       </Badge>
     )
   })

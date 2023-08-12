@@ -1,15 +1,14 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { Motion } from '../../components/Motion'
-import { useFriends, useFriendshipRequests } from '../../queries/friends'
-import { FriendCard } from '../../components/Friends/FriendCard'
-import { SendFriendRequestModal } from '../../components/Friends/SendFriendRequestModal'
+import { Motion } from '@components/Motion'
+import { useFriends, useFriendshipRequests } from '@src/queries/friends'
+import { Title } from '@components/Title'
+import { FriendCard } from './FriendCard'
+import { SendFriendRequestModal } from './SendFriendRequestModal'
+import { FriendshipRequests } from './FriendshipRequests'
+import { AnonFriendCard } from './AnonFriendCard'
 
-import { FriendshipRequests } from '../../components/Friends/FriendshipRequests'
-import { AnonFriendCard } from '../../components/Friends/AnonFriendCard'
-import { Title } from '../../components/Title'
-
-export const Friends = () => {
+const Friends = () => {
   const [openFriendRequestModal, setOpenFriendRequestModal] = useState(false)
   const { data: friends } = useFriends()
   const { data: friendsRequests } = useFriendshipRequests()
@@ -93,3 +92,5 @@ export const Friends = () => {
     </Motion>
   )
 }
+
+export default Friends

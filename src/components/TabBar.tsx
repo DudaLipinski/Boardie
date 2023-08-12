@@ -6,16 +6,17 @@ import { useNavigate } from 'react-router-dom'
 import HomeIcon from '@mui/icons-material/Home'
 import AddIcon from '@mui/icons-material/Add'
 import { Button, ButtonGroup, IconButton } from '@mui/material'
+
 import {
   CREATE_MATCH,
   DASHBOARD,
   FRIENDS,
   MATCHES,
   PROFILE,
-} from '../../routes/routeSpecs'
-import { Avatar } from '../Avatar'
-import { userToGeneric } from '../../utils/friends'
-import { User } from '../../types/User'
+} from '../routes/routeSpecs'
+import { userToGeneric } from '../utils/friends'
+import { User } from '../types/User'
+import { Avatar } from './Avatar'
 
 const styledIconProps = { width: '48px', height: '48px' }
 

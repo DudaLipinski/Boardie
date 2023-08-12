@@ -1,7 +1,8 @@
-import { Box, Typography, Button, Stack } from '@mui/material'
 import { useCallback } from 'react'
+import { Match } from '@src/types/Match'
 import { Control, useFieldArray } from 'react-hook-form'
-import { Match } from '../../types/Match'
+
+import { Box, Typography, Button, Stack } from '@mui/material'
 import { Player } from './Player'
 
 interface Props {

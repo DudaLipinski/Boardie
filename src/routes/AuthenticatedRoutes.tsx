@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router-dom'
-import { MatchCreation } from '../pages/MatchCreation/MatchCreation'
-import { Profile } from '../pages/Profile/Profile'
-import { Dashboard } from '../pages/Dashboard/Dashboard'
-import { MatchList } from '../pages/MatchList/MatchList'
-import { MatchEdition } from '../pages/MatchEdition/EditMatch'
-import { Friends } from '../pages/Friends/Friends'
-import { FriendsRequests } from '../pages/FriendsRequests/FriendsRequests'
+import MatchCreation from '../pages/MatchCreation'
+import Profile from '../pages/Profile'
+import Dashboard from '../pages/Dashboard'
+import MatchList from '../pages/MatchList'
+import MatchEdition from '../pages/MatchEdition'
+import Friends from '../pages/Friends'
+import FriendsRequests from '../pages/FriendsRequests/FriendsRequests'
 import {
   CREATE_MATCH,
   DASHBOARD,

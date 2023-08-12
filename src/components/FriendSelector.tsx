@@ -5,7 +5,8 @@ import {
   FilterOptionsState,
   Chip,
 } from '@mui/material'
-import React, { useEffect, useMemo } from 'react'
+
+import React, { useMemo } from 'react'
 import { useAnonFriendCreation, useFriends } from '../queries/friends'
 import { GenericUser } from '../types/GenericUser'
 import { userToGeneric } from '../utils/friends'
@@ -155,3 +156,7 @@ export const FriendSelector = ({
     </>
   )
 }
+function useEffect(arg0: () => void, arg1: any[]) {
+  throw new Error('Function not implemented.')
+}
+

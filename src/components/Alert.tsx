@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
+
 import { IconButton, Collapse, Alert as MuiAlert, SxProps } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import { useEffect, useState } from 'react'
 
 export interface AlertDefinition {
   sx?: SxProps

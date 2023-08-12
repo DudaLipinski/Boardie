@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
-import { Box, Button, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import { Motion } from '../../components/Motion'
-import { useFriendshipRequests } from '../../queries/friends'
-import { FriendshipRequestCard } from '../../components/FriendsRequests/FriendshipRequestCard'
-import { Title } from '../../components/Title'
+import { Box, Button, Typography } from '@mui/material'
+import { useFriendshipRequests } from '@src/queries/friends'
 
-export const FriendsRequests = () => {
+import { Motion } from '@components/Motion'
+import { Title } from '@components/Title'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import { FriendshipRequestCard } from './FriendshipRequestCard'
+
+const FriendsRequests = () => {
   const navigate = useNavigate()
   const { data: friendsRequests } = useFriendshipRequests()
 
@@ -62,3 +63,5 @@ export const FriendsRequests = () => {
     </Motion>
   )
 }
+
+export default FriendsRequests

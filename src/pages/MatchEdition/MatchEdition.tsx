@@ -1,24 +1,23 @@
 import dayjs from 'dayjs'
-import { useForm } from 'react-hook-form'
-import { Box, Stack } from '@mui/material'
-import { useParams } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import pick from 'lodash.pick'
 import omit from 'lodash.omit'
-import { Match as MatchType } from '../../types/Match'
-import { useMatch, useMatchUpdate } from '../../queries/match'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useParams } from 'react-router-dom'
+import { useMatch, useMatchUpdate } from '@src/queries/match'
+import { getErrorMessage } from '@src/utils/api'
+import { Match as MatchType } from '@src/types/Match'
 
-import { Players } from '../../components/Match/Players'
-import { MatchDetails } from '../../components/Match/MatchDetails'
+import { Box, Stack } from '@mui/material'
+import { Players } from '@components/Match/Players'
+import { MatchDetails } from '@components/Match/MatchDetails'
+import { FabSubmit } from '@components/FabSubmit'
+import { Alert } from '@components/Alert'
+import { FullScreenLoader } from '@components/FullScreenLoader'
+import { Motion } from '@components/Motion'
+import { Title } from '@components/Title'
 
-import { FabSubmit } from '../../components/FabSubmit'
-import { getErrorMessage } from '../../utils/api'
-import { Alert } from '../../components/Alert'
-import { FullScreenLoader } from '../../components/FullScreenLoader'
-import { Motion } from '../../components/Motion'
-import { Title } from '../../components/Title'
-
-export const MatchEdition = () => {
+const MatchEdition = () => {
   const { id } = useParams()
   const matchId = id ? parseInt(id) : 0
 
@@ -154,3 +153,5 @@ export const MatchEdition = () => {
     </Motion>
   )
 }
+
+export default MatchEdition

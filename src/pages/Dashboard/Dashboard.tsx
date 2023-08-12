@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material'
-import { Motion } from '../../components/Motion'
+import { Motion } from '@components/Motion'
 
-export const Dashboard = () => {
+const Dashboard = () => {
   return (
     <Motion
       style={{
@@ -17,3 +17,5 @@ export const Dashboard = () => {
     </Motion>
   )
 }
+
+export default Dashboard

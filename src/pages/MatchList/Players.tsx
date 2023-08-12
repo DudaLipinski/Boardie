@@ -1,6 +1,6 @@
+import { Player } from '@src/types/Match'
 import { AvatarGroup, Badge } from '@mui/material'
-import { Avatar } from '../Avatar'
-import { Player } from '../../types/Match'
+import { Avatar } from '@components/Avatar'
 import { styledAvatarGroup } from './MatchCard.styles'
 
 export const Players = ({ players }: { players: Player[] }) => {

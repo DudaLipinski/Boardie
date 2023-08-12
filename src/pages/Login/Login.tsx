@@ -7,6 +7,8 @@ import { getErrorMessage } from '@src/utils/api'
 
 import { Motion } from '@components/Motion'
 import { Alert } from '@components/Alert'
+import { getInputClasses } from '@components/atoms/input'
+import { getButtonClasses } from '@components/atoms/button'
 
 const Login = () => {
   const { mutate, isError, error } = useUserAuthenticator()
@@ -26,9 +28,9 @@ const Login = () => {
   return (
     <Motion style={{ height: 'inherit', padding: '0 24px' }}>
       <main className="h-full">
-        <section className="flex h-full flex-col items-center justify-center">
+        <section className="flex h-full flex-col items-center justify-center text-gray-200">
           <h1 className="text-3xl font-bold">Boardie</h1>
-          <p className="my-3 text-center text-base">
+          <p className="my-3 text-center text-base text-gray-200">
             Please fill your details to access your account.
           </p>
           {isError && (
@@ -39,17 +41,14 @@ const Login = () => {
             className="my-4 flex w-full flex-col items-center gap-4"
           >
             <input
-              id="email"
-              className="focus:green-800 w-full rounded-t-lg border-b border-gray-600 bg-gray-900 p-3 text-white
-              focus:border-green-800  focus:outline-none  focus:ring-1 focus:invalid:border-pink-400 focus:invalid:ring-pink-400"
+              className={getInputClasses()}
               type="email"
               placeholder="E-mail"
               required
               {...register('email')}
             />
             <input
-              id="password"
-              className="focus:green-800 w-full rounded-t-lg border-b border-gray-600 bg-gray-900 p-3 text-white focus:border-green-800 focus:outline-none focus:ring-1 focus:invalid:border-pink-400 focus:invalid:ring-pink-400"
+              className={getInputClasses()}
               type="password"
               placeholder="Pasword"
               required
@@ -57,13 +56,17 @@ const Login = () => {
             />
             <button
               type="submit"
-              className="duration-400 w-full rounded-lg bg-pink-400 p-2 text-gray-950 transition-colors hover:bg-pink-300"
+              className={getButtonClasses({
+                variant: 'solid',
+                size: 'lg',
+                color: 'pink',
+              })}
             >
               Login
             </button>
             <Link
               to={SIGNUP}
-              className="mt-2 text-sm text-white underline hover:text-pink-300"
+              className="mt-2 text-sm text-gray-200 underline hover:text-pink-300"
             >
               Register now!
             </Link>

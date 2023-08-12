@@ -2,24 +2,13 @@ import { Box, IconButton, ListItem, Stack, TextField } from '@mui/material'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
 import { Controller, useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
 import { Avatar } from '../Avatar'
 import { GenericUser } from '../../types/GenericUser'
 import { useDeleteAnonFriend, useUpdateAnonFriend } from '../../queries/friends'
 import { DeleteDialog } from '../DeleteDialog'
-
-const styledListItem = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  width: 'inherit',
-  margin: '0 auto 16px',
-  bgcolor: 'background.paper',
-  boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-  borderRadius: '4px',
-  justifyContent: 'space-between',
-}
+import { styledCard } from '../../styles/card'
 
 const styledDisabledInput = {
   '& .MuiOutlinedInput-notchedOutline': {
@@ -37,9 +26,11 @@ interface FormValues {
 export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const nameImput = useRef<HTMLDivElement | null>(null)
 
   const { mutate: mutateUpdateFriend, isSuccess: isSuccessUpdateFriend } =
     useUpdateAnonFriend()
+
   const { mutate: mutateDeleteFriend, isLoading: isLoadingDeleteFriend } =
     useDeleteAnonFriend()
 
@@ -55,14 +46,22 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
 
     if (isAnonFriendUpdated) {
       mutateUpdateFriend({ ...value, anonFriendId: friend.id })
-
       return
     }
 
     setIsEditing(false)
-
     return
   }
+
+  const handleDelete = () => {
+    mutateDeleteFriend(friend.id)
+  }
+
+  useEffect(() => {
+    if (isEditing) {
+      nameImput.current?.querySelector('input')?.focus()
+    }
+  }, [isEditing])
 
   useEffect(() => {
     if (isSuccessUpdateFriend) {
@@ -70,13 +69,15 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
     }
   }, [isSuccessUpdateFriend])
 
-  const handleDelete = () => {
-    mutateDeleteFriend(friend.id)
-  }
-
   return (
     <>
-      <ListItem sx={{ ...styledListItem }}>
+      <ListItem
+        sx={{
+          ...styledCard,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Box
           display="flex"
           alignItems="center"
@@ -95,6 +96,7 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
                 size="small"
                 sx={{ margin: '0 10px 0 10px' }}
                 {...field}
+                ref={nameImput}
               />
             )}
           />
@@ -102,27 +104,24 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
             {isEditing ? (
               <IconButton
                 aria-label="edit"
-                size="small"
                 onClick={handleSubmit(updateAnonFriend)}
               >
-                <CheckOutlinedIcon fontSize="inherit" color="success" />
+                <CheckOutlinedIcon sx={{ fontSize: '20px' }} color="success" />
               </IconButton>
             ) : (
               <IconButton
                 aria-label="edit"
-                size="small"
                 type="button"
                 onClick={() => setIsEditing(true)}
               >
-                <ModeEditOutlinedIcon fontSize="inherit" />
+                <ModeEditOutlinedIcon sx={{ fontSize: '20px' }} />
               </IconButton>
             )}
             <IconButton
               aria-label="delete"
-              size="small"
               onClick={() => setIsDeleteDialogOpen(true)}
             >
-              <DeleteOutlinedIcon fontSize="inherit" />
+              <DeleteOutlinedIcon sx={{ fontSize: '20px' }} />
             </IconButton>
           </Stack>
         </Box>

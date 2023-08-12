@@ -24,7 +24,9 @@ export const MatchList = () => {
   const listMatches = useMemo(
     () =>
       matches?.length ? (
-        <List disablePadding>{matchesCards}</List>
+        <List disablePadding sx={{ paddingBottom: '40px' }}>
+          {matchesCards}
+        </List>
       ) : (
         <Box
           display="flex"
@@ -45,16 +47,16 @@ export const MatchList = () => {
       <CircularProgress />
     </Box>
   ) : (
-    <Box height="100%" overflow="auto">
-      {listMatches}
-    </Box>
+    <>{listMatches}</>
   )
 
   return (
     <Motion style={{ width: '100%', position: 'relative' }}>
-      <Title title="Matches" />
       {isError && <Alert severity="error" message={getErrorMessage(error)} />}
-      {content}
+      <Box height="100%" overflow="auto">
+        <Title title="Matches" />
+        {content}
+      </Box>
     </Motion>
   )
 }

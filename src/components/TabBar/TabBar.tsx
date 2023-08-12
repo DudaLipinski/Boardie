@@ -26,8 +26,9 @@ export const TabBar = ({ user }: { user: User }) => {
 
   return (
     <Box
+      component="nav"
       sx={{
-        boxShadow: '0px -9px 24px 1px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0px -9px 24px 1px rgba(0, 0, 0, 0.25)',
         zIndex: '1',
       }}
     >

@@ -20,7 +20,10 @@ const FRIENDSHIP_REQUEST_KEY = 'friendshipRequests'
 export const useFriendshipRequests = () => {
   const friendsQuery = useQuery(
     FRIENDSHIP_REQUEST_KEY,
-    friendsService.getFriendshipRequests
+    friendsService.getFriendshipRequests,
+    {
+      staleTime: 1000 * 60 * 3,
+    }
   )
 
   return friendsQuery

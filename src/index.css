@@ -26,6 +26,9 @@
   --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%);
   --tw-prose-invert-th-borders: #4b5563;
   --tw-prose-invert-td-borders: #374151;
+
+  --border-radius: 10px;
+  --box-shadow: 2px 2px 13px 0px rgb(0 0 0 / 4%);
 }
 
 body {
@@ -52,5 +55,5 @@ code {
 
 a,
 a:visited {
-  color: var(--color-secondary);
+  color: #fff;
 }

@@ -6,6 +6,19 @@ import {
   CircularProgress,
 } from '@mui/material'
 
+const styledDialog = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '344px',
+  margin: 0,
+  borderRadius: 'var(--border-radius)',
+  padding: '24px 32px',
+  bgcolor: 'background.paper',
+  backgroundImage: 'none',
+}
+
 interface Props {
   isDeleteDialogOpen: boolean
   setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void
@@ -33,15 +46,19 @@ export const DeleteDialog = ({
     <MuiDialog
       open={isDeleteDialogOpen}
       onClose={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      sx={{ width: 'inherit' }}
+      aria-labelledby={title}
+      sx={{ '.MuiPaper-root': { ...styledDialog } }}
     >
-      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogTitle
+        id="alert-dialog-title"
+        padding="0 0 10px 0!important"
+        fontWeight="700"
+        component="h3"
+        variant="h5"
+      >
+        {title}
+      </DialogTitle>
       <DialogActions>
-        <Button variant="outlined" onClick={handleNoClick}>
-          Cancel
-        </Button>
         {isLoading ? (
           <Button variant="contained" autoFocus disabled>
             <CircularProgress size="24px" />
@@ -51,6 +68,9 @@ export const DeleteDialog = ({
             Confirm
           </Button>
         )}
+        <Button variant="outlined" onClick={handleNoClick}>
+          Cancel
+        </Button>
       </DialogActions>
     </MuiDialog>
   )

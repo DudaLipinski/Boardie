@@ -1,12 +1,12 @@
 import { ListItem, Typography } from '@mui/material'
-import { styledListItem } from '../MatchCard/MatchCard.styles'
 import { GenericUser } from '../../types/GenericUser'
 import { Avatar } from '../Avatar'
+import { styledCard } from '../../styles/card'
 
 export const FriendCard = ({ friend }: { friend: GenericUser }) => {
   return (
     <>
-      <ListItem sx={{ ...styledListItem }}>
+      <ListItem sx={{ ...styledCard, minHeight: '56px', alignItems: 'center' }}>
         <Avatar user={friend} size={'sm'} />
         <Typography
           variant="body1"

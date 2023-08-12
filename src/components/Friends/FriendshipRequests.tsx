@@ -1,4 +1,4 @@
-import { AvatarGroup, Box, Typography, IconButton } from '@mui/material'
+import { AvatarGroup, Typography, IconButton, Button } from '@mui/material'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { Link, useNavigate } from 'react-router-dom'
 import { Avatar } from '../Avatar'
@@ -10,12 +10,7 @@ export const styledListItem = {
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-between',
-  bgcolor: 'background.paper',
-  boxShadow: '2px 2px 13px 0px rgb(0 0 0 / 4%)',
-  borderRadius: '4px',
-  padding: '8px 15px',
-  width: 'inherit',
-  margin: '16px 0',
+  margin: '0 0 16px',
 }
 
 export const FriendshipRequests = ({
@@ -25,7 +20,7 @@ export const FriendshipRequests = ({
 }) => {
   const navigate = useNavigate()
 
-  const avatars = friendshipRequest.map((friendship: any) => (
+  const avatars = friendshipRequest.map((friendship) => (
     <Avatar
       key={friendship.userId}
       user={{ ...friendship, type: 'USER', id: friendship.userId }}
@@ -35,23 +30,28 @@ export const FriendshipRequests = ({
 
   return (
     <Link to={FRIENDSHIP_REQUESTS} style={{ textDecoration: 'none' }}>
-      <Box sx={{ ...styledListItem }}>
+      <Button
+        variant="contained"
+        color="secondary"
+        fullWidth
+        sx={{ ...styledListItem, minHeight: '56px' }}
+      >
         <AvatarGroup
           max={2}
           sx={{
             '.MuiAvatar-root': {
-              border: '0px',
+              background: 'white',
+              color: 'secondary.main',
+              width: '38px',
+              height: '38px',
+              fontSize: '16px',
+              border: '1px solid var(--color-secondary)',
             },
           }}
         >
           {avatars}
         </AvatarGroup>
-        <Typography
-          variant="body1"
-          component="h3"
-          color="secondary.main"
-          fontWeight={600}
-        >
+        <Typography variant="body1" component="h3" fontWeight={600}>
           Friendship requests
         </Typography>
         <IconButton
@@ -61,7 +61,7 @@ export const FriendshipRequests = ({
         >
           <ArrowForwardIosIcon />
         </IconButton>
-      </Box>
+      </Button>
     </Link>
   )
 }

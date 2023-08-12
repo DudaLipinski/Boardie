@@ -1,29 +1,23 @@
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useUserCreation } from '@src/queries/user'
 import { User } from '@src/types/User'
 import { LOGIN } from '@src/routes/routeSpecs'
 import { getErrorMessage } from '@src/utils/api'
 
 import { Link } from 'react-router-dom'
-import { TextField, Box, Typography, Button } from '@mui/material'
 import { Alert } from '@components/Alert'
 import { Motion } from '@components/Motion'
+import { getButtonClasses } from '@components/atoms/button'
+import { Input } from '@components/molecules/Input'
 
 interface FormUser extends Omit<User, 'age' | 'token' | 'id'> {
   age: string
 }
 
-const styledTextFieldProps = {
-  fullWidth: true,
-  required: true,
-  margin: 'dense',
-  variant: 'filled',
-} as const
-
 const Signup = () => {
   const { mutate, isError, error } = useUserCreation()
 
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, register } = useForm({
     defaultValues: {
       firstName: '',
       middleAndSurname: '',
@@ -46,110 +40,64 @@ const Signup = () => {
 
   return (
     <Motion style={{ height: 'inherit', padding: '0 24px' }}>
-      <Box
-        height="inherit"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        gap="12px"
-      >
-        <Typography variant="h1" component="h1" align="center" fontWeight="600">
-          Boardie
-        </Typography>
-        <Typography gutterBottom align="center" component="p">
-          Please fill your details to create your account.
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          gap="12px"
-        >
+      <main className="h-full">
+        <section className="flex h-full flex-col items-center justify-center text-gray-200">
+          <h1 className="text-3xl font-bold">Boardie</h1>
+          <p className="my-3 text-center text-base text-gray-200">
+            Please fill your details to create your account.
+          </p>
           {isError && (
-            <Alert
-              severity="error"
-              message={getErrorMessage(error)}
-              testid="signup-error"
-            />
+            <Alert severity="error" message={getErrorMessage(error)} />
           )}
-          <Controller
-            name="firstName"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="firstName"
-                label="First name"
-                type="text"
-                {...styledTextFieldProps}
-                {...field}
-              />
-            )}
-          />
-          <Controller
-            name="middleAndSurname"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="middleAndSurname"
-                label="Last name"
-                type="text"
-                {...styledTextFieldProps}
-                {...field}
-              />
-            )}
-          />
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="email"
-                label="Email"
-                type="email"
-                {...styledTextFieldProps}
-                {...field}
-              />
-            )}
-          />
-          <Controller
-            name="age"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="age"
-                label="Age"
-                type="number"
-                InputProps={{ inputProps: { min: '1', max: '120' } }}
-                {...styledTextFieldProps}
-                {...field}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="password"
-                label="Password"
-                type="password"
-                {...styledTextFieldProps}
-                {...field}
-              />
-            )}
-          />
-          <Button fullWidth variant="contained" size="large" type="submit">
-            Create account
-          </Button>
-        </Box>
-        <Box margin="12px 0" textAlign="center">
-          <Link to={LOGIN}>
-            <Typography> Login</Typography>
-          </Link>
-        </Box>
-      </Box>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="my-4 flex w-full flex-col gap-5"
+          >
+            <Input
+              label="First Name"
+              required
+              {...register('firstName')}
+              type="text"
+            />
+            <Input
+              label="Surname"
+              required
+              {...register('middleAndSurname')}
+              type="text"
+            />
+            <Input
+              label="E-mail"
+              required
+              {...register('email')}
+              type="email"
+            />
+            <Input
+              label="Age"
+              required
+              {...register('age')}
+              type="number"
+              min="1"
+              max="130"
+            />
+            <Input
+              label="Password"
+              required
+              {...register('password')}
+              type="password"
+              min="8"
+            />
+            <button type="submit" className={getButtonClasses()}>
+              Register
+            </button>
+            <Link
+              to={LOGIN}
+              className="mx-auto mt-2 text-sm text-gray-200 underline hover:text-pink-300"
+            >
+              Login
+            </Link>
+          </form>
+        </section>
+      </main>
     </Motion>
   )
 }

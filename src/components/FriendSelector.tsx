@@ -5,7 +5,7 @@ import {
   FilterOptionsState,
   Chip,
 } from '@mui/material'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useAnonFriendCreation, useFriends } from '../queries/friends'
 import { GenericUser } from '../types/GenericUser'
 import { userToGeneric } from '../utils/friends'
@@ -32,30 +32,40 @@ export const FriendSelector = ({
 }: Props) => {
   const friends = useFriends()
   const { data: loggedUser } = useUser()
-  const createAnonymousFriend = useAnonFriendCreation()
+  const {
+    mutate,
+    data: newFriend,
+    isLoading,
+    isSuccess,
+  } = useAnonFriendCreation()
 
   const isLoggedUser = (user: GenericUser) =>
     user.type === 'USER' && loggedUser?.id === user.id
 
-  const handleChange = async (
+  const handleChange = (
     event: React.SyntheticEvent<Element, Event>,
     newValue: string | ExistentOrNewFriend | null
   ) => {
     const newFriendFullName =
       typeof newValue === 'string' ? newValue : newValue?.newFriendName
+
     if (newFriendFullName) {
-      const newFriend = await createAnonymousFriend.mutateAsync(
-        newFriendFullName
-      )
-      newFriend && onChange(newFriend)
+      mutate(newFriendFullName)
       return
     }
 
     if (typeof newValue === 'string') {
       return
     }
+
     onChange(newValue)
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      newFriend && onChange(newFriend)
+    }
+  }, [isSuccess, newFriend, onChange])
 
   const filterOptions = (
     options: ExistentOrNewFriend[],
@@ -65,9 +75,10 @@ export const FriendSelector = ({
     const { inputValue } = params
 
     const alreadyExists = options.some(
-      (option: { fullName: any }) =>
+      (option: { fullName: string }) =>
         option.fullName.toLowerCase() === inputValue.toLowerCase()
     )
+
     if (inputValue !== '' && !alreadyExists) {
       filtered.push({
         id: 0,
@@ -125,7 +136,7 @@ export const FriendSelector = ({
         )}
         freeSolo
         autoHighlight={true}
-        loading={friends.isLoading || createAnonymousFriend.isLoading}
+        loading={friends.isLoading || isLoading}
         renderInput={(params) => (
           <TextField
             required

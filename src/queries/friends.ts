@@ -13,13 +13,7 @@ export const useFriends = () => {
 
 const CREATE_ANON_FRIEND_KEY = 'createAnonFriend'
 export const useAnonFriendCreation = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation(CREATE_ANON_FRIEND_KEY, friendsService.createAnonFriend, {
-    onSettled: () => {
-      queryClient.invalidateQueries(FRIENDS_KEY)
-    },
-  })
+  return useMutation(CREATE_ANON_FRIEND_KEY, friendsService.createAnonFriend)
 }
 
 const FRIENDSHIP_REQUEST_KEY = 'friendshipRequests'

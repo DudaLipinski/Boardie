@@ -50,7 +50,17 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
   })
 
   const updateAnonFriend = (value: FormValues) => {
-    mutateUpdateFriend({ ...value, anonFriendId: friend.id })
+    const isAnonFriendUpdated =
+      JSON.stringify(value.fullName) !== JSON.stringify(friend.fullName)
+
+    if (isAnonFriendUpdated) {
+      mutateUpdateFriend({ ...value, anonFriendId: friend.id })
+
+      return
+    }
+
+    setIsEditing(false)
+
     return
   }
 

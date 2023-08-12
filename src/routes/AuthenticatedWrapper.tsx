@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box } from '@mui/material'
 import { useEffect } from 'react'
-import { TabBar } from '@components/TabBar'
+import { TabBar } from '@components/organisms/TabBar'
 import { setUnauthorizedHandler } from '../utils/api'
 import { useUser } from '../queries/user'
 import { AuthenticatedRoutes } from './AuthenticatedRoutes'

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { SIGNUP } from '@src/routes/routeSpecs'
+import { SIGNUP } from 'routes/routeSpecs'
 import { User } from '@src/types/User'
 import { useUserAuthenticator } from '@src/queries/user'
 import { getErrorMessage } from '@src/utils/api'
@@ -25,6 +25,8 @@ const Login = () => {
     return
   }
 
+  const buttonClassName = getButtonClasses()
+
   return (
     <Motion style={{ height: 'inherit', padding: '0 24px' }}>
       <main className="h-full">
@@ -38,7 +40,7 @@ const Login = () => {
           )}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="my-4 flex w-full flex-col items-center gap-6"
+            className="my-4 flex w-full flex-col items-center"
           >
             <Input
               label="E-mail"
@@ -53,12 +55,12 @@ const Login = () => {
               type="password"
               min="8"
             />
-            <button type="submit" className={getButtonClasses()}>
+            <button type="submit" className={`mt-6 ${buttonClassName}`}>
               Login
             </button>
             <Link
               to={SIGNUP}
-              className="mt-2 text-sm text-gray-200 underline hover:text-pink-300"
+              className="mt-6 text-sm text-gray-200 underline hover:text-pink-300"
             >
               Register now!
             </Link>

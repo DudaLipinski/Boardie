@@ -32,8 +32,8 @@ export const MatchList = () => {
           display="flex"
           flexDirection="column"
           alignSelf="center"
-          height="100%"
           alignItems="center"
+          height="75vh"
           justifyContent="center"
         >
           <Typography>Start creating your first match! :)</Typography>

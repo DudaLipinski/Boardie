@@ -32,6 +32,7 @@ interface Props {
 export const Player = ({ index, control, onRemove, isUniquePlayer }: Props) => {
   return (
     <Box
+      component="li"
       bgcolor="background.paper"
       padding="16px"
       borderRadius="var(--border-radius)"
@@ -100,8 +101,9 @@ export const Player = ({ index, control, onRemove, isUniquePlayer }: Props) => {
       <Box>
         {!isUniquePlayer ? (
           <IconButton
+            data-testid={`remove-player-${index}`}
             sx={{ padding: '5px' }}
-            aria-label="remove player"
+            aria-label="Remove player"
             onClick={() => onRemove(index)}
           >
             <RemoveCircleOutlineIcon />

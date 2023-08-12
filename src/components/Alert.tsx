@@ -6,12 +6,13 @@ export interface AlertDefinition {
   sx?: SxProps
   severity: 'error' | 'info' | 'success' | 'warning'
   message: string
+  testid?: string
 }
 interface Props extends AlertDefinition {
   onClose?: () => void
 }
 
-export const Alert = ({ severity, message, sx, onClose }: Props) => {
+export const Alert = ({ severity, message, sx, onClose, testid }: Props) => {
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export const Alert = ({ severity, message, sx, onClose }: Props) => {
   return (
     <Collapse
       in={open}
+      data-testid={testid}
       sx={{
         zIndex: 2,
         marginBottom: '14px',

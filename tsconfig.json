@@ -2,7 +2,11 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Create React App",
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "module": "esnext",
     "target": "es2022",
     "allowJs": true,
@@ -16,6 +20,10 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "types": [
+      "cypress",
+      "@testing-library/cypress"
+    ]
   }
 }

@@ -1,5 +1,5 @@
 export const LOGIN = '/login'
-export const CREATE_ACCOUNT = '/create-account'
+export const SIGNUP = '/signup'
 
 export const PROFILE = '/profile'
 export const DASHBOARD = '/dashboard'

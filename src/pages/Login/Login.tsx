@@ -9,6 +9,7 @@ import { Motion } from '@components/Motion'
 import { Alert } from '@components/Alert'
 import { getButtonClasses } from '@components/atoms/button'
 import { Input } from '@components/molecules/Input'
+import { Trans, t } from '@lingui/macro'
 
 const Login = () => {
   const { mutate, isError, error } = useUserAuthenticator()
@@ -33,7 +34,7 @@ const Login = () => {
         <section className="flex h-full flex-col items-center justify-center text-gray-200">
           <h1 className="text-3xl font-bold">Boardie</h1>
           <p className="my-3 text-center text-base text-gray-200">
-            Please fill your details to access your account.
+            <Trans>Please fill your details to access your account.</Trans>
           </p>
           {isError && (
             <Alert severity="error" message={getErrorMessage(error)} />

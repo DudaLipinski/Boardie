@@ -6,9 +6,16 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
 import { theme } from './styles/theme'
 import AppRoutes from './routes/AppRoutes'
 import { AuthProvider } from './core/AuthContext'
+
+import messages from './locales/en/messages.json'
+
+i18n.load('en', messages)
+i18n.activate('en')
 
 dayjs.extend(utc)
 
@@ -21,7 +28,9 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
             <AuthProvider>
-              <AppRoutes />
+              <I18nProvider i18n={i18n}>
+                <AppRoutes />
+              </I18nProvider>
               <ReactQueryDevtools />
             </AuthProvider>
           </BrowserRouter>

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --color-primary: #ff79c6;
   --color-secondary: #bd93f9;
@@ -48,12 +52,8 @@ h6 {
   color: #fff;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-a,
-a:visited {
-  color: #fff;
+@layer base {
+  html {
+    font-family: Proxima Nova, system-ui, sans-serif;
+  }
 }

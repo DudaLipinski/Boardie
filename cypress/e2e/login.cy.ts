@@ -1,6 +1,9 @@
 describe('Login functionality', () => {
   it('should log in successfully', () => {
-    cy.login('duda@test.com', '12345678')
+    cy.visit('login')
+    cy.get('input[name="email"]').type('duda@test.com')
+    cy.get('input[name="password"]').type('12345678')
+    cy.findByRole('button', { name: 'Login' }).click()
     cy.url().should('include', '/matches')
   })
 

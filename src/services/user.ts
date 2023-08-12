@@ -6,13 +6,13 @@ export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
     .post<User>(`/me`, createUserPayload)
     .then((response) => response.data)
     .catch((err) => {
-      if (err.status === 401) {
+      if (err.response.status === 401) {
         throw new Error('Incorrect user format')
       }
-      if (err.status === 409) {
+      if (err.response.status === 409) {
         throw new Error('User already exists with given email')
       }
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error('An error occurred')
       }
     })
@@ -25,10 +25,10 @@ export const authenticateUser = (loginPayload: {
     .post<{ user: User; token: string }>(`/auth`, loginPayload)
     .then((response) => response.data)
     .catch((err) => {
-      if (err.status === 401) {
+      if (err.response.status === 401) {
         throw new Error("Provided credentials doesn't match any valid user")
       }
-      if (err.status !== 200) {
+      if (err.response.status !== 200) {
         throw new Error('An error occurred')
       }
     })

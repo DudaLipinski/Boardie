@@ -9,7 +9,7 @@ import { Motion } from '@components/Motion'
 import { Alert } from '@components/Alert'
 import { getButtonClasses } from '@components/atoms/button'
 import { Input } from '@components/molecules/Input'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 const Login = () => {
   const { mutate, isError, error } = useUserAuthenticator()

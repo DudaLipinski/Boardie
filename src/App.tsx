@@ -12,7 +12,7 @@ import { theme } from './styles/theme'
 import AppRoutes from './routes/AppRoutes'
 import { AuthProvider } from './core/AuthContext'
 
-import messages from './locales/en/messages.json'
+import messages from './intl/locales/en/messages.json'
 
 i18n.load('en', messages)
 i18n.activate('en')

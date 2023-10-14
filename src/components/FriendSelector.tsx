@@ -6,7 +6,9 @@ import {
   Chip,
 } from '@mui/material'
 
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
+import { Verified } from '@mui/icons-material'
+import { t } from '@lingui/macro'
 import { useAnonFriendCreation, useFriends } from '../queries/friends'
 import { GenericUser } from '../types/GenericUser'
 import { userToGeneric } from '../utils/friends'
@@ -31,7 +33,7 @@ export const FriendSelector = ({
   includeLoggedUser = true,
   onChange,
 }: Props) => {
-  const friends = useFriends()
+  const friendsQuery = useFriends()
   const { data: loggedUser } = useUser()
   const {
     mutate,
@@ -105,14 +107,15 @@ export const FriendSelector = ({
   }
 
   const options = useMemo(() => {
-    const result = friends.data ? [...friends.data] : []
+    const friends = [...(friendsQuery.data || [])]
+    const orderedFriends = friends.sort((a) => (a.type === 'USER' ? -1 : 1))
 
     if (includeLoggedUser && loggedUser) {
-      result.push(userToGeneric(loggedUser))
+      orderedFriends.push(userToGeneric(loggedUser))
     }
 
-    return result
-  }, [friends.data, loggedUser, includeLoggedUser])
+    return orderedFriends
+  }, [friendsQuery.data, loggedUser, includeLoggedUser])
 
   return (
     <>
@@ -126,23 +129,27 @@ export const FriendSelector = ({
         id={`players[${index}].friend.fullName`}
         options={options}
         getOptionLabel={getOptionLabel}
-        renderOption={(props, option) => (
+        renderOption={(props, user) => (
           <li {...props}>
-            {option.fullName}
+            {user.fullName}
 
-            {isLoggedUser(option) ? (
+            {isLoggedUser(user) ? (
               <Chip
                 label="You"
                 size="small"
                 sx={{ marginLeft: 'auto' }}
-                color="secondary"
+                color="default"
               />
+            ) : user.type === 'USER' ? (
+              <div title={t`Registered user`} style={{ marginLeft: 'auto' }}>
+                <Verified color="disabled" />
+              </div>
             ) : null}
           </li>
         )}
         freeSolo
         autoHighlight={true}
-        loading={friends.isLoading || isLoading}
+        loading={friendsQuery.isLoading || isLoading}
         renderInput={(params) => (
           <TextField
             required
@@ -156,7 +163,3 @@ export const FriendSelector = ({
     </>
   )
 }
-function useEffect(arg0: () => void, arg1: any[]) {
-  throw new Error('Function not implemented.')
-}
-

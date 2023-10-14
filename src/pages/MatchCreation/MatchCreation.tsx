@@ -84,7 +84,7 @@ const MatchCreation = () => {
             display="flex"
             justifyContent="space-between"
             alignItems="center"
-            marginBottom="12px"
+            marginBottom={1}
           >
             <Title title="Create Match" />
             <Button

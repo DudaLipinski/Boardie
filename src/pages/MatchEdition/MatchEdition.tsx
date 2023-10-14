@@ -141,7 +141,7 @@ const MatchEdition = () => {
                 message={getErrorMessage(errorMatchUpdate)}
               />
             )}
-            <Title title="Edit Match" />
+            <Title title="Edit Match" sx={{ paddingBottom: 1 }} />
             <MatchDetails control={control} />
             <Players control={control} />
           </Stack>

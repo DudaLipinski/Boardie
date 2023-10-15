@@ -1,2 +1,2 @@
 export const SERVER_URL =
-  process.env.REACT_APP_SERVER_URL ?? 'http://localhost:3007'
+  import.meta.env.REACT_APP_SERVER_URL ?? 'http://localhost:3007'

@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material'
 import { Motion } from '@components/Motion'
+import { Trans } from '@lingui/macro'
 
 const Dashboard = () => {
   return (
@@ -12,7 +13,7 @@ const Dashboard = () => {
       }}
     >
       <Typography align="center" variant="body2" component="p">
-        Dashboards coming soon
+        <Trans>Dashboards coming soon</Trans>
       </Typography>
     </Motion>
   )

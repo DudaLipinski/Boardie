@@ -46,7 +46,7 @@ export const FriendSelector = ({
     user.type === 'USER' && loggedUser?.id === user.id
 
   const handleChange = (
-    event: React.SyntheticEvent<Element, Event>,
+    _: React.SyntheticEvent<Element, Event>,
     newValue: string | ExistentOrNewFriend | null
   ) => {
     const newFriendFullName =

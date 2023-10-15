@@ -6,7 +6,7 @@ const AuthContext = createContext<{
   setIsLoggedIn: (value: boolean) => void
 }>({
   isLoggedIn: false,
-  setIsLoggedIn: (value) => {},
+  setIsLoggedIn: () => {},
 })
 
 export const AuthProvider = ({

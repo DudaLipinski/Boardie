@@ -25,8 +25,8 @@ export const useOptimisticUpdate = <MutationParams = unknown, T = unknown>(
       return { previousValue }
     },
     onError: (
-      err: unknown,
-      params: MutationParams,
+      _: unknown,
+      __: MutationParams,
       context: { previousValue: T | undefined } | undefined
     ) => {
       queryClient.setQueryData(queryKey, context?.previousValue)

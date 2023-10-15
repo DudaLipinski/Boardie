@@ -11,17 +11,20 @@ import { I18nProvider } from '@lingui/react'
 import { theme } from './styles/theme'
 import AppRoutes from './routes/AppRoutes'
 import { AuthProvider } from './core/AuthContext'
+import './index.css'
 
-import messages from './intl/locales/en/messages.json'
-
-i18n.load('en', messages)
-i18n.activate('en')
+import { useEffect } from 'react'
+import { activateLocale } from './i18n'
 
 dayjs.extend(utc)
 
 const queryClient = new QueryClient()
 
 function App() {
+  useEffect(() => {
+    activateLocale('en')
+  }, [])
+
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

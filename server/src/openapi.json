@@ -312,8 +312,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "boardgameName": {
-                    "type": "string"
+                  "boardgameId": {
+                    "type": "number"
                   },
                   "location": {
                     "type": "string",
@@ -374,7 +374,7 @@
                   }
                 },
                 "required": [
-                  "boardgameName",
+                  "boardgameId",
                   "location",
                   "startedAt",
                   "endedAt",
@@ -402,8 +402,8 @@
                       "type": "number",
                       "nullable": true
                     },
-                    "boardgameName": {
-                      "type": "string"
+                    "boardgameId": {
+                      "type": "number"
                     },
                     "location": {
                       "type": "string",
@@ -477,19 +477,50 @@
                         "additionalProperties": false,
                         "description": "Data that represents an existent player"
                       }
+                    },
+                    "boardgame": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "imageUrl": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "bggId": {
+                          "type": "number"
+                        },
+                        "year": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "imageUrl",
+                        "bggId",
+                        "year"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
                     }
                   },
                   "required": [
                     "id",
                     "authorId",
-                    "boardgameName",
+                    "boardgameId",
                     "location",
                     "startedAt",
                     "endedAt",
                     "createdAt",
                     "deletedAt",
                     "notes",
-                    "players"
+                    "players",
+                    "boardgame"
                   ],
                   "additionalProperties": false,
                   "description": "Match data with its players"
@@ -502,6 +533,9 @@
           },
           "403": {
             "description": "The logged user is not friends with one of the players"
+          },
+          "404": {
+            "description": "No boardgame with the given id was found"
           },
           "500": {
             "description": "An unexpected internal error"
@@ -530,8 +564,8 @@
                         "type": "number",
                         "nullable": true
                       },
-                      "boardgameName": {
-                        "type": "string"
+                      "boardgameId": {
+                        "type": "number"
                       },
                       "location": {
                         "type": "string",
@@ -605,19 +639,50 @@
                           "additionalProperties": false,
                           "description": "Data that represents an existent player"
                         }
+                      },
+                      "boardgame": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "imageUrl": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "bggId": {
+                            "type": "number"
+                          },
+                          "year": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "imageUrl",
+                          "bggId",
+                          "year"
+                        ],
+                        "additionalProperties": false,
+                        "nullable": true
                       }
                     },
                     "required": [
                       "id",
                       "authorId",
-                      "boardgameName",
+                      "boardgameId",
                       "location",
                       "startedAt",
                       "endedAt",
                       "createdAt",
                       "deletedAt",
                       "notes",
-                      "players"
+                      "players",
+                      "boardgame"
                     ],
                     "additionalProperties": false,
                     "description": "Match data with its players"
@@ -663,8 +728,8 @@
                       "type": "number",
                       "nullable": true
                     },
-                    "boardgameName": {
-                      "type": "string"
+                    "boardgameId": {
+                      "type": "number"
                     },
                     "location": {
                       "type": "string",
@@ -738,19 +803,50 @@
                         "additionalProperties": false,
                         "description": "Data that represents an existent player"
                       }
+                    },
+                    "boardgame": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "imageUrl": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "bggId": {
+                          "type": "number"
+                        },
+                        "year": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "imageUrl",
+                        "bggId",
+                        "year"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
                     }
                   },
                   "required": [
                     "id",
                     "authorId",
-                    "boardgameName",
+                    "boardgameId",
                     "location",
                     "startedAt",
                     "endedAt",
                     "createdAt",
                     "deletedAt",
                     "notes",
-                    "players"
+                    "players",
+                    "boardgame"
                   ],
                   "additionalProperties": false,
                   "description": "Match data with its players"
@@ -790,8 +886,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "boardgameName": {
-                    "type": "string"
+                  "boardgameId": {
+                    "type": "number"
                   },
                   "location": {
                     "type": "string",
@@ -892,7 +988,7 @@
                   }
                 },
                 "required": [
-                  "boardgameName",
+                  "boardgameId",
                   "location",
                   "startedAt",
                   "endedAt",
@@ -920,8 +1016,8 @@
                       "type": "number",
                       "nullable": true
                     },
-                    "boardgameName": {
-                      "type": "string"
+                    "boardgameId": {
+                      "type": "number"
                     },
                     "location": {
                       "type": "string",
@@ -995,19 +1091,50 @@
                         "additionalProperties": false,
                         "description": "Data that represents an existent player"
                       }
+                    },
+                    "boardgame": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "imageUrl": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "bggId": {
+                          "type": "number"
+                        },
+                        "year": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "imageUrl",
+                        "bggId",
+                        "year"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
                     }
                   },
                   "required": [
                     "id",
                     "authorId",
-                    "boardgameName",
+                    "boardgameId",
                     "location",
                     "startedAt",
                     "endedAt",
                     "createdAt",
                     "deletedAt",
                     "notes",
-                    "players"
+                    "players",
+                    "boardgame"
                   ],
                   "additionalProperties": false,
                   "description": "Match data with its players"
@@ -1837,6 +1964,67 @@
           },
           "404": {
             "description": "The match or player was not found"
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        }
+      }
+    },
+    "/boardgames": {
+      "get": {
+        "summary": "Gets all the boardgames",
+        "tags": [
+          "boardgames"
+        ],
+        "responses": {
+          "200": {
+            "description": "All boardgames",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "imageUrl": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "bggId": {
+                            "type": "number"
+                          },
+                          "year": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "imageUrl",
+                          "bggId",
+                          "year"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
           },
           "500": {
             "description": "An unexpected internal error"

@@ -1,9 +1,10 @@
 import z from 'zod'
+import * as usersModel from '../users/users.model'
+import { endpoint } from '../../utils/endpoint.utils'
+import kysely from '../../database'
 import * as anonFriendsModel from './anonFriends/anonFriends.model'
 import * as friendsModel from './friends.model'
-import * as usersModel from '../users/users.model'
 
-import { endpoint } from '../../utils/endpoint.utils'
 import {
   genericFriendDTOSchema,
   FriendType,
@@ -11,7 +12,6 @@ import {
   answerFriendshipRequestSchema,
   existentFriendshipRequestSchema,
 } from './friends.schema'
-import kysely from '../../database'
 
 type GenericFriend = z.infer<typeof genericFriendDTOSchema>
 

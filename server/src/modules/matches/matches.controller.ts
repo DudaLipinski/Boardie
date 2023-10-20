@@ -104,24 +104,33 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
       authorId: userId,
     }
 
-    const matchId = await kysely.transaction().execute(async (transaction) => {
-      // wrap match creation and player creation in a transaction
-      const { id: matchId } = await matchesModel.create.call(
-        { transaction },
-        match
-      )
+    const matchId = await kysely
+      .transaction()
+      .execute(async (transaction) => {
+        // wrap match creation and player creation in a transaction
+        const { id: matchId } = await matchesModel.create.call(
+          { transaction },
+          match
+        )
 
-      const { players } = matchCreationData
-      const digestedPlayers = players.map((player) => ({
-        ...playerDtoToDbModel(player),
-        matchId,
-      }))
+        const { players } = matchCreationData
+        const digestedPlayers = players.map((player) => ({
+          ...playerDtoToDbModel(player),
+          matchId,
+        }))
 
-      await playerModel.createMultiple.call({ transaction }, digestedPlayers)
+        await playerModel.createMultiple.call({ transaction }, digestedPlayers)
 
-      return matchId
-    })
-    if (!matchId) {
+        return matchId
+      })
+      .catch((error) => ({ error }))
+
+    if (typeof matchId !== 'number' && matchId?.error) {
+      return matchId.error.code === 'SQLITE_CONSTRAINT_FOREIGNKEY'
+        ? res.sendStatus(400)
+        : res.sendStatus(500)
+    }
+    if (typeof matchId !== 'number') {
       return res.sendStatus(500)
     }
 
@@ -147,6 +156,9 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
       },
       403: {
         description: 'The logged user is not friends with one of the players',
+      },
+      404: {
+        description: 'No boardgame with the given id was found',
       },
     },
   }

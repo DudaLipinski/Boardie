@@ -2,9 +2,9 @@ import omit from 'lodash.omit'
 
 import type z from 'zod'
 import { endpoint } from '../../utils/endpoint.utils'
+import { authDTOSchema } from '../auth/auth.schema'
 import * as userModel from './users.model'
 import { userCreationDataSchema, userDTOSchema } from './users.schema'
-import { authDTOSchema } from '../auth/auth.schema'
 
 const create = endpoint.POST('/me')<
   void,

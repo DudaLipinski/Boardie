@@ -1,56 +1,81 @@
-import { useSearchBoardgames } from '@src/queries/boardgames'
-import { useEffect, useState } from 'react'
-import { useDebounced } from '@src/hooks/useDebounced'
+import { Autocomplete, TextField } from '@mui/material'
 
-type Props = {
+import { useRef, useState } from 'react'
+import { useDebounced } from '@src/hooks/useDebounced'
+import { useSearchBoardgames } from '@src/queries/boardgames'
+
+interface Props {
   value: Boardgame
-  onChange: (boardgame: Boardgame) => void
+  onChange: (boardgame: Boardgame | null) => void
 }
+
 export const BoardgameSearchInput = ({ value, onChange }: Props) => {
+  const chosenBoardgameTitleExpectedAsInput = useRef<string>()
+
   const [query, setQuery] = useState('')
   const [setQueryDebounced] = useDebounced(setQuery, 400)
 
   const boardgamesQuery = useSearchBoardgames(query)
   const boardgames = boardgamesQuery.data ?? []
 
-  const [showBoardgames, setShowBoardgames] = useState(false)
-  useEffect(() => {
-    if (boardgamesQuery.isSuccess) {
-      setShowBoardgames(true)
+  const handleNewInputValue = (newInputValue: string) => {
+    if (newInputValue === chosenBoardgameTitleExpectedAsInput.current) {
+      return
     }
-  }, [boardgamesQuery.isSuccess])
 
-  const getBoardgameSelectionHandler = (boardgame: Boardgame) => () => {
-    onChange(boardgame)
-    setShowBoardgames(false)
+    setQueryDebounced(newInputValue)
   }
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQueryDebounced(event.target.value)
+  const getOptionLabel = (option: any) => {
+    if (typeof option === 'string') {
+      return option
+    }
+
+    if (option.inputValue) {
+      return option.inputValue
+    }
+
+    return option.title
+  }
+
+  const handleChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    newValue: Boardgame | null
+  ) => {
+    chosenBoardgameTitleExpectedAsInput.current = newValue?.title
+    onChange(newValue)
   }
 
   return (
-    <div>
-      {value && (
-        <div className="flex items-center justify-center rounded-md bg-gray-400 p-3">
-          {value.title}
-        </div>
-      )}
-
-      <input type="text" placeholder="Search" onChange={handleChange} />
-
-      {showBoardgames && (
-        <ul>
-          {boardgames.map((boardgame) => (
-            <li
-              key={boardgame.id}
-              onClick={getBoardgameSelectionHandler(boardgame)}
-            >
-              {boardgame.title}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <>
+      <Autocomplete
+        value={value}
+        onChange={handleChange}
+        filterOptions={(x) => x}
+        onInputChange={(_, newInputValue) => {
+          handleNewInputValue(newInputValue)
+        }}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        selectOnFocus
+        handleHomeEndKeys
+        options={boardgames}
+        getOptionLabel={getOptionLabel}
+        renderOption={(props, boardgame) => (
+          <li {...props}>{boardgame.title}</li>
+        )}
+        loading={boardgamesQuery.isLoading}
+        noOptionsText={query ? 'No results' : 'Start typing'}
+        renderInput={(params) => (
+          <TextField
+            required
+            {...params}
+            size="medium"
+            label="Boardgame"
+            placeholder="Search by title"
+          />
+        )}
+        disableClearable
+      />
+    </>
   )
 }

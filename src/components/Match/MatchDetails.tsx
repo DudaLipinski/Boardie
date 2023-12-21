@@ -5,7 +5,7 @@ import { Match } from '@src/types/Match'
 
 import { Stack, TextField, Grid, Box } from '@mui/material'
 import { MobileDateTimePicker } from '@mui/x-date-pickers'
-import { BoardgameSearchInput } from '@components/BoardgameSearchInputNew'
+import { BoardgameSearchInput } from '@components/BoardgameSearchInput'
 
 interface Props {
   control: Control<Match>

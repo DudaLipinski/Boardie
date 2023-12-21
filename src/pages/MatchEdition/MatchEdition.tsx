@@ -33,7 +33,7 @@ const MatchEdition = () => {
 
   const { handleSubmit, control, reset } = useForm<MatchType>({
     defaultValues: {
-      boardgameName: '',
+      boardgame: undefined,
       startedAt: '',
       endedAt: '',
       notes: '',
@@ -44,13 +44,7 @@ const MatchEdition = () => {
   useEffect(() => {
     if (data) {
       reset(
-        pick(data, [
-          'boardgameName',
-          'startedAt',
-          'endedAt',
-          'notes',
-          'players',
-        ])
+        pick(data, ['boardgame', 'startedAt', 'endedAt', 'notes', 'players'])
       )
     }
 
@@ -69,7 +63,7 @@ const MatchEdition = () => {
 
     const matchDetails = {
       id: matchId,
-      boardgameName: value.boardgameName,
+      boardgame: value.boardgame,
       notes: value.notes,
       startedAt: formattedStartedAt,
       endedAt: formattedEndedAt,

@@ -5,6 +5,7 @@ import { Match } from '@src/types/Match'
 
 import { Stack, TextField, Grid, Box } from '@mui/material'
 import { MobileDateTimePicker } from '@mui/x-date-pickers'
+import { BoardgameSearchInput } from '@components/BoardgameSearchInputNew'
 
 interface Props {
   control: Control<Match>
@@ -26,20 +27,9 @@ export const MatchDetails = ({ control }: Props) => {
     >
       <Stack spacing={2}>
         <Controller
-          name="boardgameName"
+          name="boardgame"
           control={control}
-          render={({ field }) => (
-            <TextField
-              required
-              id="boardgameName"
-              type="text"
-              fullWidth
-              variant="outlined"
-              margin="dense"
-              label="Boardgame"
-              {...field}
-            />
-          )}
+          render={({ field }) => <BoardgameSearchInput {...field} />}
         />
         <Grid container>
           <Grid item xs={6} sx={{ paddingRight: '7px' }}>

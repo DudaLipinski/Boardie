@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# ================================================================
+# CHECK REQUIREMENTS
+# ================================================================
+
+function function_exists {
+    command -v "${*}" > /dev/null 2>&1
+}
+
+if ! function_exists "nvm"; then
+    if [[ "${NVM_DIR}" == "" ]]; then
+        NVM_DIR="${HOME}/.nvm"
+    fi
+    if [[ -f "${NVM_DIR}/nvm.sh" ]]; then
+        # This handles a cornercase where nvm was installed but only for zsh.
+        source "${NVM_DIR}/nvm.sh"
+    else
+        echo "This script requires nvm: https://github.com/nvm-sh/nvm"
+        echo "Install it using the following command and try again:"
+        echo "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash"
+        exit 1
+    fi
+fi
+nvm install
+
+# ================================================================
+# MAIN BUSINESS
+# ================================================================
+
+yarn install --frozen-lockfile
+yarn start

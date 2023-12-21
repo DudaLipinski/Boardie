@@ -19,9 +19,17 @@ Table anon_friend {
   userId Int [not null]
 }
 
+Table boardgame {
+  id Int [pk, increment]
+  bggId Int [unique, not null]
+  title String [not null]
+  year Int
+  imageUrl String
+}
+
 Table match {
   id Int [pk, increment]
-  boardgameName String [not null]
+  boardgameId Int [not null]
   startedAt DateTime [not null]
   endedAt DateTime
   location String
@@ -59,6 +67,8 @@ Table friendship {
 }
 
 Ref: anon_friend.userId > user.id [delete: Cascade]
+
+Ref: match.boardgameId > boardgame.id
 
 Ref: match.authorId > user.id [delete: Set Null]
 

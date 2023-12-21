@@ -3,10 +3,18 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
+
 export type AnonFriend = {
   id: Generated<number>
   fullName: string
   userId: number
+}
+export type Boardgame = {
+  id: Generated<number>
+  bggId: number
+  title: string
+  year: number | null
+  imageUrl: string | null
 }
 export type Friendship = {
   smallerUserId: number
@@ -18,7 +26,7 @@ export type FriendshipRequest = {
 }
 export type Match = {
   id: Generated<number>
-  boardgameName: string
+  boardgameId: number
   startedAt: string
   endedAt: string | null
   location: string | null
@@ -47,6 +55,7 @@ export type User = {
 }
 export type DB = {
   anon_friend: AnonFriend
+  boardgame: Boardgame
   friendship: Friendship
   friendship_request: FriendshipRequest
   match: Match

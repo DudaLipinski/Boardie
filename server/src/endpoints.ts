@@ -4,6 +4,7 @@ import { endpoints as matches } from './modules/matches/matches.controller'
 import { endpoints as friends } from './modules/friends/friends.controller'
 import { endpoints as anonFriends } from './modules/friends/anonFriends/anonFriends.controllers'
 import { endpoints as players } from './modules/matches/players/players.controller'
+import { endpoints as boardgames } from './modules/boardgames/boardgames.controller'
 
 export default {
   user,
@@ -12,4 +13,5 @@ export default {
   friends,
   anonFriends,
   players,
+  boardgames,
 }

@@ -90,7 +90,8 @@ export const checkAccess = {
 const createForLoggedUser = endpoint.POST('/me/matches')<
   void,
   MatchCreationData,
-  MatchDTO
+  MatchDTO,
+  void
 >(
   async (req, res) => {
     const { body: matchCreationData, userId } = req
@@ -104,24 +105,33 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
       authorId: userId,
     }
 
-    const matchId = await kysely.transaction().execute(async (transaction) => {
-      // wrap match creation and player creation in a transaction
-      const { id: matchId } = await matchesModel.create.call(
-        { transaction },
-        match
-      )
+    const matchId = await kysely
+      .transaction()
+      .execute(async (transaction) => {
+        // wrap match creation and player creation in a transaction
+        const { id: matchId } = await matchesModel.create.call(
+          { transaction },
+          match
+        )
 
-      const { players } = matchCreationData
-      const digestedPlayers = players.map((player) => ({
-        ...playerDtoToDbModel(player),
-        matchId,
-      }))
+        const { players } = matchCreationData
+        const digestedPlayers = players.map((player) => ({
+          ...playerDtoToDbModel(player),
+          matchId,
+        }))
 
-      await playerModel.createMultiple.call({ transaction }, digestedPlayers)
+        await playerModel.createMultiple.call({ transaction }, digestedPlayers)
 
-      return matchId
-    })
-    if (!matchId) {
+        return matchId
+      })
+      .catch((error) => ({ error }))
+
+    if (typeof matchId !== 'number' && matchId?.error) {
+      return matchId.error.code === 'SQLITE_CONSTRAINT_FOREIGNKEY'
+        ? res.sendStatus(400)
+        : res.sendStatus(500)
+    }
+    if (typeof matchId !== 'number') {
       return res.sendStatus(500)
     }
 
@@ -138,8 +148,9 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
   {
     summary: 'Creates a match for the logged user',
     tags: ['matches'],
-    params: null,
+    pathParams: null,
     body: matchCreationDataSchema,
+    queryParams: null,
     responses: {
       201: {
         description: 'The created match',
@@ -148,11 +159,19 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
       403: {
         description: 'The logged user is not friends with one of the players',
       },
+      404: {
+        description: 'No boardgame with the given id was found',
+      },
     },
   }
 )
 
-const getAllByLoggedUser = endpoint.GET('/me/matches')<void, void, MatchDTO[]>(
+const getAllByLoggedUser = endpoint.GET('/me/matches')<
+  void,
+  void,
+  MatchDTO[],
+  void
+>(
   async (req, res) => {
     const matches = await matchesModel.getHydratedByUser(req.userId)
     res.status(200).send(matches)
@@ -160,8 +179,9 @@ const getAllByLoggedUser = endpoint.GET('/me/matches')<void, void, MatchDTO[]>(
   {
     summary: 'Gets all the matches for the logged user',
     tags: ['matches'],
-    params: null,
+    pathParams: null,
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: 'The matches',
@@ -174,7 +194,8 @@ const getAllByLoggedUser = endpoint.GET('/me/matches')<void, void, MatchDTO[]>(
 const getById = endpoint.GET('/matches/:matchId')<
   { matchId: string },
   void,
-  MatchDTO
+  MatchDTO,
+  void
 >(
   async (req, res) => {
     const { matchId } = req.params
@@ -192,13 +213,14 @@ const getById = endpoint.GET('/matches/:matchId')<
   {
     summary: 'Gets a match by id',
     tags: ['matches'],
-    params: {
+    pathParams: {
       matchId: {
         type: 'string',
         description: 'The id of the match',
       },
     },
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: 'The match',
@@ -247,7 +269,8 @@ const handlePlayersCRUD = async (
 const update = endpoint.PUT('/matches/:matchId')<
   { matchId: string },
   MatchUpdateData,
-  MatchDTO
+  MatchDTO,
+  void
 >(
   async (req, res) => {
     const matchId = parseInt(req.params.matchId, 10)
@@ -296,13 +319,14 @@ const update = endpoint.PUT('/matches/:matchId')<
   {
     summary: 'Updates a match',
     tags: ['matches'],
-    params: {
+    pathParams: {
       matchId: {
         type: 'string',
         description: 'The id of the match',
       },
     },
     body: matchUpdateDataSchema,
+    queryParams: null,
     responses: {
       200: {
         description: 'The match was updated',
@@ -320,6 +344,7 @@ const update = endpoint.PUT('/matches/:matchId')<
 
 const deleteById = endpoint.DELETE('/matches/:matchId')<
   { matchId: string },
+  void,
   void,
   void
 >(
@@ -345,13 +370,14 @@ const deleteById = endpoint.DELETE('/matches/:matchId')<
   {
     summary: 'Deletes a match',
     tags: ['matches'],
-    params: {
+    pathParams: {
       matchId: {
         type: 'string',
         description: 'The id of the match',
       },
     },
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: 'The match was deleted',

@@ -9,7 +9,7 @@ export interface Player {
 export interface Match {
   id: number
   authorId: string
-  boardgameName: string
+  boardgame: Boardgame
   startedAt: Dayjs | string
   endedAt: Dayjs | string | null
   notes: string

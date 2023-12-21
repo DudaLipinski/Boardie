@@ -11,8 +11,12 @@ interface PlayerDetails extends Player {
   matchId: number
 }
 
-const normalizeMatchData = (match: Omit<Match, 'id'> | MatchDetails) => ({
+const normalizeMatchData = ({
+  boardgame,
+  ...match
+}: Omit<Match, 'id'> | MatchDetails) => ({
   ...match,
+  boardgameId: boardgame.id,
   location: null,
   players: (match as Omit<Match, 'id'>).players
     ? (match as Omit<Match, 'id'>).players.map(
@@ -113,7 +117,11 @@ export const updateMatch = (matchPayload: MatchDetails): Promise<Match> =>
   axios({
     method: 'put',
     url: `/matches/${matchPayload.id}`,
-    data: { ...omit(matchPayload, 'id'), location: null },
+    data: {
+      ...omit(matchPayload, ['id', 'boardgame']),
+      boardgameId: matchPayload.boardgame.id,
+      location: null,
+    },
   })
     .then((response) => {
       return response.data

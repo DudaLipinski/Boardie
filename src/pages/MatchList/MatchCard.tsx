@@ -13,7 +13,7 @@ import { MatchInfo } from './MatchInfo'
 import { MenuButton } from './MenuButton'
 
 export const MatchCard = ({ match }: { match: Match }) => {
-  const { id, boardgameName, players, startedAt } = match
+  const { id, boardgame, players, startedAt } = match
   const { mutate, isError, error, isLoading } = useMatchDeletion()
 
   const playersByScore = useMemo(
@@ -39,7 +39,7 @@ export const MatchCard = ({ match }: { match: Match }) => {
             style={{ textDecoration: 'none' }}
           >
             <MatchInfo
-              boardgameName={boardgameName}
+              boardgameName={boardgame.title}
               date={startedAt}
               highestScore={highestScore}
             />

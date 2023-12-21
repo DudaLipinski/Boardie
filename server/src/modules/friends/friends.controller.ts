@@ -1,9 +1,10 @@
 import z from 'zod'
+import * as usersModel from '../users/users.model'
+import { endpoint } from '../../utils/endpoint.utils'
+import kysely from '../../database'
 import * as anonFriendsModel from './anonFriends/anonFriends.model'
 import * as friendsModel from './friends.model'
-import * as usersModel from '../users/users.model'
 
-import { endpoint } from '../../utils/endpoint.utils'
 import {
   genericFriendDTOSchema,
   FriendType,
@@ -11,14 +12,14 @@ import {
   answerFriendshipRequestSchema,
   existentFriendshipRequestSchema,
 } from './friends.schema'
-import kysely from '../../database'
 
 type GenericFriend = z.infer<typeof genericFriendDTOSchema>
 
 const getAllByLoggedUser = endpoint.GET('/me/friends')<
   void,
   void,
-  GenericFriend[]
+  GenericFriend[],
+  void
 >(
   async (req, res) => {
     const anonFriends = (await anonFriendsModel.getAllByUserId(req.userId)).map(
@@ -38,8 +39,9 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
   {
     summary: 'Gets all friends for the logged user',
     tags: ['friends'],
-    params: null,
+    pathParams: null,
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: "The logged user's friends",
@@ -52,6 +54,7 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
 const sendRequest = endpoint.POST('/me/friends/requests')<
   void,
   z.infer<typeof friendshipRequestSchema>,
+  void,
   void
 >(
   async (req, res) => {
@@ -100,8 +103,9 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
   {
     summary: 'Sends a friendship request to another user',
     tags: ['friends'],
-    params: null,
+    pathParams: null,
     body: friendshipRequestSchema,
+    queryParams: null,
     responses: {
       200: {
         description: 'The request was sent',
@@ -120,7 +124,8 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
 const getAllRequests = endpoint.GET('/me/friends/requests')<
   void,
   void,
-  z.infer<typeof existentFriendshipRequestSchema>[]
+  z.infer<typeof existentFriendshipRequestSchema>[],
+  void
 >(
   async (req, res) => {
     const requests = (await friendsModel.getFriendshipRequests(req.userId)).map(
@@ -135,8 +140,9 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
   {
     summary: 'Gets all friendship requests for the logged user',
     tags: ['friends'],
-    params: null,
+    pathParams: null,
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: "The logged user's friendship requests",
@@ -149,6 +155,7 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
 const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
   { requestingUserId: number },
   z.infer<typeof answerFriendshipRequestSchema>,
+  void,
   void
 >(
   async (req, res) => {
@@ -209,7 +216,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
   {
     summary: 'Answers a friendship request',
     tags: ['friends'],
-    params: {
+    pathParams: {
       requestingUserId: {
         type: 'number',
         description:
@@ -217,6 +224,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
       },
     },
     body: answerFriendshipRequestSchema,
+    queryParams: null,
     responses: {
       200: {
         description: 'The request answer has been processed',
@@ -233,6 +241,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
 
 const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
   { friendUserId: number },
+  void,
   void,
   void
 >(
@@ -256,13 +265,14 @@ const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
   {
     summary: 'Deletes a friendship',
     tags: ['friends'],
-    params: {
+    pathParams: {
       friendUserId: {
         type: 'number',
         description: 'The id of the user to delete the friendship with',
       },
     },
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: 'The friendship was deleted',

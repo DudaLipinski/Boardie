@@ -3,12 +3,12 @@ import fs from 'fs'
 import path from 'path'
 import controllersMap from '../endpoints'
 import type { Path } from '../utils/endpoint.utils'
-import headers from '../openapi.headers.json' assert { type: 'json' }
+import metadata from '../openapi.metadata.json' assert { type: 'json' }
 
 const controllers = Object.values(controllersMap)
 const endpoints = controllers.flatMap((endpoints) =>
   Object.values(endpoints)
-) as Path<any, any, any>[]
+) as Path<any, any, any, any>[]
 
 const paths: Record<string, any> = {}
 endpoints.forEach((endpoint) => {
@@ -23,14 +23,14 @@ endpoints.forEach((endpoint) => {
 })
 
 const result = {
-  ...headers,
+  ...metadata,
   paths,
 }
 
 fs.writeFile(
   path.relative(process.cwd(), 'src/openapi.json'),
   JSON.stringify(result, null, 2),
-  (err) => {
+  (err: any) => {
     if (err) {
       console.error(err)
     }

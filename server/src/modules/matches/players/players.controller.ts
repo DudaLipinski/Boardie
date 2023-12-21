@@ -1,16 +1,16 @@
 import z from 'zod'
 import * as matchesModel from '../matches.model'
-import * as playersModel from './players.model'
 import * as friendsModel from '../../friends/friends.model'
+import { endpoint } from '../../../utils/endpoint.utils'
+import { FriendType } from '../../friends/friends.schema'
+import type { MatchDTO } from '../matches.schema'
 import {
   playerDtoToDbModel,
   playerDTOSchema,
   playerCreationDataSchema,
   playerUpdateDataSchema,
 } from './players.schema'
-import { endpoint } from '../../../utils/endpoint.utils'
-import { FriendType } from '../../friends/friends.schema'
-import type { MatchDTO } from '../matches.schema'
+import * as playersModel from './players.model'
 
 type PlayerDTO = z.infer<typeof playerDTOSchema>
 type PlayerCreationData = z.infer<typeof playerCreationDataSchema>
@@ -61,7 +61,8 @@ const checkAccess = {
 const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
   { matchId: string },
   void,
-  PlayerDTO[]
+  PlayerDTO[],
+  void
 >(
   async (req, res) => {
     const { matchId } = req.params
@@ -81,13 +82,14 @@ const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
   {
     summary: 'Gets all players by match id',
     tags: ['matches/players'],
-    params: {
+    pathParams: {
       matchId: {
         type: 'string',
         description: 'The id of the match',
       },
     },
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: 'The players',
@@ -103,7 +105,8 @@ const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
 const create = endpoint.POST('/matches/:matchId/players')<
   { matchId: string },
   PlayerCreationData,
-  PlayerDTO
+  PlayerDTO,
+  void
 >(
   async (req, res) => {
     const matchId = parseInt(req.params.matchId)
@@ -132,13 +135,14 @@ const create = endpoint.POST('/matches/:matchId/players')<
   {
     summary: 'Creates a player',
     tags: ['matches/players'],
-    params: {
+    pathParams: {
       matchId: {
         type: 'string',
         description: 'The id of the match',
       },
     },
     body: playerCreationDataSchema,
+    queryParams: null,
     responses: {
       200: {
         description: 'The created player',
@@ -158,7 +162,8 @@ const create = endpoint.POST('/matches/:matchId/players')<
 const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
   { matchId: string; playerId: string },
   PlayerUpdateData,
-  PlayerDTO
+  PlayerDTO,
+  void
 >(
   async (req, res) => {
     const matchId = parseInt(req.params.matchId)
@@ -200,7 +205,7 @@ const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
   {
     summary: 'Updates a player',
     tags: ['matches/players'],
-    params: {
+    pathParams: {
       matchId: {
         type: 'string',
         description: 'The id of the match that contains the player',
@@ -211,6 +216,7 @@ const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
       },
     },
     body: playerUpdateDataSchema,
+    queryParams: null,
     responses: {
       200: {
         description: 'The updated player',
@@ -229,6 +235,7 @@ const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
 
 const deleteById = endpoint.DELETE('/matches/:matchId/players/:playerId')<
   { matchId: string; playerId: string },
+  void,
   void,
   void
 >(
@@ -261,7 +268,7 @@ const deleteById = endpoint.DELETE('/matches/:matchId/players/:playerId')<
   {
     summary: 'Deletes a player by id',
     tags: ['matches/players'],
-    params: {
+    pathParams: {
       matchId: {
         type: 'string',
         description: 'The id of the match that contains the player',
@@ -272,6 +279,7 @@ const deleteById = endpoint.DELETE('/matches/:matchId/players/:playerId')<
       },
     },
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: 'The player was deleted',

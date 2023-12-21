@@ -7,7 +7,8 @@ import { authSchema, authDTOSchema } from './auth.schema'
 const auth = endpoint.POST('/auth')<
   void,
   z.infer<typeof authDTOSchema>,
-  z.infer<typeof authSchema>
+  z.infer<typeof authSchema>,
+  void
 >(
   async (req, res) => {
     const loggedUser = await userModel.auth(req.body)
@@ -25,8 +26,10 @@ const auth = endpoint.POST('/auth')<
   {
     summary: 'Authenticates a user',
     tags: ['auth'],
-    params: null,
     body: authDTOSchema,
+    pathParams: null,
+    queryParams: null,
+    security: [],
     responses: {
       200: {
         description: 'The authenticated user',

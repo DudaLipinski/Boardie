@@ -1,5 +1,6 @@
 import z from 'zod'
 import { isoDateString } from '../../utils/schema.utils'
+import { boardgameDtoSchema } from '../boardgames/boardgames.schema'
 import {
   playerDTOSchema,
   playerCreationDataSchema,
@@ -9,7 +10,7 @@ import {
 const matchSchema = z.object({
   id: z.number(),
   authorId: z.number().nullable(),
-  boardgameName: z.string(),
+  boardgameId: z.number(),
   location: z.string().nullable(),
   startedAt: isoDateString(),
   endedAt: isoDateString().nullable(),
@@ -32,6 +33,7 @@ export const matchCreationDataSchema = matchSchema
 export const matchDTOSchema = matchSchema
   .extend({
     players: z.array(playerDTOSchema),
+    boardgame: z.nullable(boardgameDtoSchema),
   })
   .strict()
   .describe('Match data with its players')

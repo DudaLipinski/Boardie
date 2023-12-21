@@ -19,9 +19,18 @@ CREATE TABLE "anon_friend" (
 );
 
 -- CreateTable
+CREATE TABLE "boardgame" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "bggId" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "year" INTEGER,
+    "imageUrl" TEXT
+);
+
+-- CreateTable
 CREATE TABLE "match" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "boardgameName" TEXT NOT NULL,
+    "boardgameId" INTEGER NOT NULL,
     "startedAt" DATETIME NOT NULL,
     "endedAt" DATETIME,
     "location" TEXT,
@@ -29,6 +38,7 @@ CREATE TABLE "match" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" DATETIME,
     "authorId" INTEGER,
+    CONSTRAINT "match_boardgameId_fkey" FOREIGN KEY ("boardgameId") REFERENCES "boardgame" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "match_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "user" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
@@ -41,8 +51,8 @@ CREATE TABLE "player" (
     "userId" INTEGER,
     "anonFriendId" INTEGER,
     CONSTRAINT "player_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "match" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "player_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "player_anonFriendId_fkey" FOREIGN KEY ("anonFriendId") REFERENCES "anon_friend" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT "player_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "player_anonFriendId_fkey" FOREIGN KEY ("anonFriendId") REFERENCES "anon_friend" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -73,6 +83,9 @@ CREATE INDEX "user_email_idx" ON "user"("email");
 
 -- CreateIndex
 CREATE INDEX "anon_friend_userId_idx" ON "anon_friend"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "boardgame_bggId_key" ON "boardgame"("bggId");
 
 -- CreateIndex
 CREATE INDEX "match_authorId_idx" ON "match"("authorId");

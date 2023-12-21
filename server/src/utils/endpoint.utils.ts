@@ -18,7 +18,7 @@ type ContentType =
   | 'application/octet-stream'
 
 type ParameterObject = Pick<OpenAPIV3_1.ParameterObject, 'description'> &
-  Partial<Pick<OpenAPIV3_1.ParameterObject, 'in' | 'required'>> & {
+  Partial<Pick<OpenAPIV3_1.ParameterObject, 'required'>> & {
     // TODO: we can make this type strict if we add a generic type to ParameterObject
     type: 'string' | 'number'
   }
@@ -46,67 +46,100 @@ type PathResponses<ResponseBody> =
   | CreationResponse<ResponseBody>
   | MessageResponse
 
-interface OperationDefinition<
-  ParamsDict extends Params,
+type OperationDefinition<
+  PathParamsDict extends Params,
   RequestBody,
-  ResponseBody
-> {
+  ResponseBody,
+  QueryParamsDict extends Params
+> = {
   path: string
   method: HttpMethod
   tags: string[]
   summary: string
-  // TODO: find a way to make this required if ParamsDict is not void
-  params: ParamsDict extends void
+  pathParams: PathParamsDict extends void
     ? null
-    : Record<keyof ParamsDict, ParameterObject>
-  // TODO: find a way to make this required if RequestBody is not void
+    : Record<keyof PathParamsDict, ParameterObject>
+  queryParams: QueryParamsDict extends void
+    ? null
+    : Record<keyof QueryParamsDict, ParameterObject>
   body: RequestBody extends void ? null : z.ZodType<RequestBody>
   responses: PathResponses<ResponseBody>
+  security?: OpenAPIV3_1.SecurityRequirementObject[]
 }
 
 type PathMethodConstructor = (
   path: string
-) => <ParamsDict extends Params, RequestBody, ResponseBody>(
-  handler: RequestHandler<ParamsDict, ResponseBody | MessageBody, RequestBody>,
+) => <
+  PathParamsDict extends Params,
+  RequestBody,
+  ResponseBody,
+  QueryParamsDict extends Params
+>(
+  handler: RequestHandler<
+    PathParamsDict,
+    ResponseBody | MessageBody,
+    RequestBody,
+    QueryParamsDict
+  >,
   def: Omit<
-    OperationDefinition<ParamsDict, RequestBody, ResponseBody>,
+    OperationDefinition<
+      PathParamsDict,
+      RequestBody,
+      ResponseBody,
+      QueryParamsDict
+    >,
     'method' | 'path'
   >
-) => Path<ParamsDict, RequestBody, ResponseBody>
+) => Path<PathParamsDict, RequestBody, ResponseBody, QueryParamsDict>
 
 /**
  * A Path represents a single endpoint of the API.
  * It contains all the information needed to generate the OpenAPI spec.
  * It also contains the logic to validate the request and response.
  */
-export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
+export class Path<
+  PathParamsDict extends Params,
+  RequestBody,
+  ResponseBody,
+  QueryParamsDict extends Params
+> {
   private path: string
   private method: HttpMethod
   private summary: string
   private tags: string[]
-  private params: Record<keyof ParamsDict, ParameterObject> | null
+  private pathParams: Record<keyof PathParamsDict, ParameterObject> | null
+  private queryParams: Record<keyof QueryParamsDict, ParameterObject> | null
   private body: z.ZodType<RequestBody> | null
   private responses: PathResponses<ResponseBody>
   private allowedStatusCodes: Set<number>
+  private security?: OpenAPIV3_1.SecurityRequirementObject[]
   private handler: RequestHandler<
-    ParamsDict,
+    PathParamsDict,
     ResponseBody | MessageBody,
-    RequestBody
+    RequestBody,
+    QueryParamsDict
   >
 
   constructor(
     handler: RequestHandler<
-      ParamsDict,
+      PathParamsDict,
       ResponseBody | MessageBody,
-      RequestBody
+      RequestBody,
+      QueryParamsDict
     >,
-    def: OperationDefinition<ParamsDict, RequestBody, ResponseBody>
+    def: OperationDefinition<
+      PathParamsDict,
+      RequestBody,
+      ResponseBody,
+      QueryParamsDict
+    >
   ) {
     this.path = def.path
     this.method = def.method
     this.summary = def.summary
     this.tags = def.tags
-    this.params = def.params
+    this.pathParams = def.pathParams
+    this.queryParams = def.queryParams
     this.body = def.body
     this.responses = {
       ...def.responses,
@@ -114,6 +147,7 @@ export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
       400: this.body ? INVALID_REQUEST_BODY_SCHEMA : undefined,
     }
     this.allowedStatusCodes = new Set(Object.keys(this.responses).map(Number))
+    this.security = def.security
     this.handler = handler
 
     this.validateSchema()
@@ -136,107 +170,156 @@ export class Path<ParamsDict extends Params, RequestBody, ResponseBody> {
    * - Validates the request body against the provided schema
    * - Checks that the response status code is one of the allowed ones
    */
-  handle: RequestHandler<ParamsDict, ResponseBody | MessageBody, RequestBody> =
-    async (req, res, next) => {
-      const statusCheckedRes = {
-        ...res,
-        status: (statusCode: number) => {
-          this.checkAllowedStatusCodes(statusCode)
-          return res.status(statusCode)
-        },
-        sendStatus: (statusCode: number) => {
-          this.checkAllowedStatusCodes(statusCode)
-          return res.sendStatus(statusCode)
-        },
-      }
+  handle: RequestHandler<
+    PathParamsDict,
+    ResponseBody | MessageBody,
+    RequestBody,
+    QueryParamsDict
+  > = async (req, res, next) => {
+    const statusCheckedRes = {
+      ...res,
+      status: (statusCode: number) => {
+        this.checkAllowedStatusCodes(statusCode)
+        return res.status(statusCode)
+      },
+      sendStatus: (statusCode: number) => {
+        this.checkAllowedStatusCodes(statusCode)
+        return res.sendStatus(statusCode)
+      },
+    }
 
-      if (this.body) {
-        const bodyParseResult = this.body.safeParse(req.body)
+    // Checking query params
+    if (this.queryParams) {
+      const requiredQueryParams = Object.entries(this.queryParams).filter(
+        ([, param]) => (param as ParameterObject).required
+      )
 
-        if (!bodyParseResult.success) {
-          const errorMessage = JSON.stringify(
-            bodyParseResult.error.format()
-          ).replace(/"/g, "'")
+      const missingQueryParams = requiredQueryParams
+        .filter(
+          ([paramName]) =>
+            !Object.prototype.hasOwnProperty.call(req.query, paramName)
+        )
+        .map(([paramName]) => paramName)
 
-          return statusCheckedRes.status(400).send({ message: errorMessage })
-        }
-      }
-
-      try {
-        await this.handler(req, statusCheckedRes as typeof res, next)
-      } catch (error) {
-        logInternalError(error)
-        statusCheckedRes.status(500).send({ message: 'Internal server error' })
+      if (missingQueryParams.length > 0) {
+        return statusCheckedRes.status(400).send({
+          message: `Missing query params: ${missingQueryParams.join(', ')}`,
+        })
       }
     }
 
-  // TODO: split this method into smaller ones
-  getOpenApiObject = (): OpenAPIV3_1.OperationObject => ({
-    summary: this.summary,
-    tags: this.tags,
-    parameters: this.params
-      ? Object.entries(this.params).map(
-          ([paramName, paramSchema]): OpenAPIV3_1.ParameterObject => {
-            const schema = paramSchema as ParameterObject
-            return {
-              in: schema.in ?? 'path',
-              name: paramName,
-              required: schema.required ?? true,
-              schema: {
-                type: schema.type,
-              },
-            }
-          }
-        )
-      : undefined,
-    requestBody: this.body
-      ? {
-          content: {
-            'application/json': {
-              schema: zodToJsonSchema(this.body, { target: 'openApi3' }),
-            },
-          },
-        }
-      : undefined,
-    responses: Object.entries(this.responses).reduce(
-      (result, [statusCode, res]) => {
-        if (res === undefined) {
-          return result
-        }
+    if (this.body) {
+      const bodyParseResult = this.body.safeParse(req.body)
 
-        const response = res as Response<unknown>
-        const content = response.schema
-          ? {
-              [response.contentType ?? 'application/json']: {
-                schema: zodToJsonSchema(response.schema, {
-                  target: 'openApi3',
-                }),
-              },
-            }
-          : undefined
+      if (!bodyParseResult.success) {
+        const errorMessage = JSON.stringify(
+          bodyParseResult.error.format()
+        ).replace(/"/g, "'")
 
-        return {
-          ...result,
-          [statusCode]: {
-            description: response.description,
-            content,
-          },
-        }
-      },
-      {}
-    ),
-  })
+        return statusCheckedRes.status(400).send({ message: errorMessage })
+      }
+    }
+
+    try {
+      await this.handler(req, statusCheckedRes as typeof res, next)
+    } catch (error) {
+      logInternalError(error)
+      statusCheckedRes.status(500).send({ message: 'Internal server error' })
+    }
+  }
 
   setRouter = (app: Express) => {
     app[this.method](this.path, this.handle)
   }
+
+  getOpenApiObject = (): OpenAPIV3_1.OperationObject => ({
+    summary: this.summary,
+    tags: this.tags,
+    parameters: this.getOpenApiParameters(),
+    requestBody: this.getOpenApiRequestBody(),
+    responses: this.getOpenApiResponses(),
+    security: this.security ?? undefined,
+  })
+
+  private getOpenApiParameter = (
+    _in: 'query' | 'path',
+    [paramName, paramSchema]: [string, unknown]
+  ): OpenAPIV3_1.ParameterObject => {
+    const schema = paramSchema as ParameterObject
+
+    return {
+      in: _in,
+      name: paramName,
+      required: schema.required ?? true,
+      schema: {
+        type: schema.type,
+      },
+    }
+  }
+
+  private getOpenApiParameters = () => {
+    const getPathParam = this.getOpenApiParameter.bind(this, 'path')
+    const pathParams = this.pathParams
+      ? Object.entries(this.pathParams).map(getPathParam)
+      : []
+
+    const getQueryParam = this.getOpenApiParameter.bind(this, 'query')
+    const queryParams = this.queryParams
+      ? Object.entries(this.queryParams).map(getQueryParam)
+      : []
+
+    const params = [...pathParams, ...queryParams]
+    return params.length ? params : undefined
+  }
+
+  private getOpenApiRequestBody = () => {
+    if (!this.body) {
+      return undefined
+    }
+
+    return {
+      content: {
+        'application/json': {
+          schema: zodToJsonSchema(this.body, { target: 'openApi3' }),
+        },
+      },
+    }
+  }
+
+  private getOpenApiResponses = () =>
+    Object.entries(this.responses).reduce((result, [statusCode, res]) => {
+      if (res === undefined) {
+        return result
+      }
+
+      const response = res as Response<unknown>
+      const content = response.schema
+        ? {
+            [response.contentType ?? 'application/json']: {
+              schema: zodToJsonSchema(response.schema, {
+                target: 'openApi3',
+              }),
+            },
+          }
+        : undefined
+
+      return {
+        ...result,
+        [statusCode]: {
+          description: response.description,
+          content,
+        },
+      }
+    }, {})
 
   /**
    * Validates the path params inside the path string (E.g: /users/:id)
    * against the provided params schema, and vice-versa.
    */
   private validatePathParams = () => {
-    const requiredParams: string[] = this.params ? Object.keys(this.params) : []
+    const requiredParams: string[] = this.pathParams
+      ? Object.keys(this.pathParams)
+      : []
     if (!requiredParams?.length) return
 
     const pathParams = (this.path.match(/:[a-zA-Z]+/g) ?? []) as string[]

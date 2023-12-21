@@ -61,11 +61,24 @@ model AnonFriend {
   @@index([userId])
 }
 
+model Boardgame {
+  @@map("boardgame")
+
+  id        Int     @id @default(autoincrement())
+  bggId     Int     @unique
+  title     String
+  year      Int?
+  imageUrl  String?
+
+  // --- Relations
+  matches   Match[]
+}
+
 model Match {
   @@map("match")
 
   id                  Int                 @id @default(autoincrement())
-  boardgameName       String
+  boardgameId         Int
   startedAt           DateTime              // @db.DateTime(utc)
   endedAt             DateTime?             // @db.DateTime(utc)
   location            String?
@@ -75,6 +88,7 @@ model Match {
   players             Player[]
 
   // --- Relations
+  boardgame           Boardgame           @relation(fields: [boardgameId], references: [id])
   authorId            Int?
   author              User?                @relation(fields: [authorId], references: [id], onDelete: SetNull)
 

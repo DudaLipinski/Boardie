@@ -1,8 +1,8 @@
 import type { z } from 'zod'
-import * as anonFriendsModel from './anonFriends.model'
 
 import { endpoint } from '../../../utils/endpoint.utils'
 import { FriendType } from '../friends.schema'
+import * as anonFriendsModel from './anonFriends.model'
 import {
   anonFriendUpdateDataSchema,
   anonFriendCreationDataSchema,
@@ -19,7 +19,8 @@ const checkAccess = {
 const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   void,
   z.infer<typeof anonFriendCreationDataSchema>,
-  z.infer<typeof anonFriendDTOSchema>
+  z.infer<typeof anonFriendDTOSchema>,
+  void
 >(
   async (req, res) => {
     const { id } = await anonFriendsModel.create({
@@ -36,8 +37,9 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   {
     summary: 'Creates an anonymous friend for the logged user',
     tags: ['friends'],
-    params: null,
+    pathParams: null,
     body: anonFriendCreationDataSchema,
+    queryParams: null,
     responses: {
       201: {
         description: 'The created anonymous friend',
@@ -50,7 +52,8 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
 const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
   { anonFriendId: string },
   z.infer<typeof anonFriendUpdateDataSchema>,
-  z.infer<typeof anonFriendDTOSchema>
+  z.infer<typeof anonFriendDTOSchema>,
+  void
 >(
   async (req, res) => {
     const anonFriendUpdateData = req.body
@@ -74,13 +77,14 @@ const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
   {
     summary: 'Updates an anonymous friend for the logged user',
     tags: ['friends'],
-    params: {
+    pathParams: {
       anonFriendId: {
         type: 'number',
         description: 'The id of the anonymous friend to update',
       },
     },
     body: anonFriendUpdateDataSchema,
+    queryParams: null,
     responses: {
       200: {
         description: 'The updated anonymous friend data',
@@ -98,6 +102,7 @@ const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
 
 const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
   { anonFriendId: string },
+  void,
   void,
   void
 >(
@@ -122,13 +127,14 @@ const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
   {
     summary: 'Deletes an anonymous friend for the logged user',
     tags: ['friends'],
-    params: {
+    pathParams: {
       anonFriendId: {
         type: 'number',
         description: 'The id of the anonymous friend to delete',
       },
     },
     body: null,
+    queryParams: null,
     responses: {
       200: {
         description: 'The anonymous friend was deleted',

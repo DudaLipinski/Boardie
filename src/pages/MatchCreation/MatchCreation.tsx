@@ -38,7 +38,7 @@ const MatchCreation = () => {
 
   const { handleSubmit, control } = useForm<MatchType>({
     defaultValues: {
-      boardgameName: '',
+      boardgame: undefined,
       startedAt: dayjs(),
       endedAt: null,
       notes: '',

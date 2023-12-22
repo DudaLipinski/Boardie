@@ -12,3 +12,11 @@ localhost:3007/api-docs
 # Database structure
 
 The source of truth should be the `/database/database.dbml` file. You can import it into (dbdiagram)[https://dbdiagram.io/d] to visualize it
+
+# Troubleshooting
+
+## When installing packages in a Mac
+
+You might get some errors if the sqlite library.
+[To solve that you can try installing node-gyp](https://github.com/WiseLibs/better-sqlite3/issues/782#issuecomment-1687381807) globally:
+`pnpm add node-gyp -g`

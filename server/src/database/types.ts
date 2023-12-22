@@ -6,8 +6,8 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
 export type AnonFriend = {
   id: Generated<number>
-  fullName: string
   userId: number
+  fullName: string
 }
 export type Boardgame = {
   id: Generated<number>

@@ -15,8 +15,8 @@ Table user {
 
 Table anon_friend {
   id Int [pk, increment]
-  fullName String [not null]
   userId Int [not null]
+  fullName String [not null]
 }
 
 Table boardgame {

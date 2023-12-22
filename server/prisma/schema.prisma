@@ -51,11 +51,11 @@ model AnonFriend {
   @@map("anon_friend")
 
   id        Int     @id @default(autoincrement())
+  userId    Int
   fullName  String
 
   // --- Relations
   playedMatches   Player[]
-  userId    Int
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])

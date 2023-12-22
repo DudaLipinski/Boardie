@@ -5,7 +5,7 @@
 # ================================================================
 
 function function_exists {
-    command -v "${*}" > /dev/null 2>&1
+    command -v "${*}" >/dev/null 2>&1
 }
 
 if ! function_exists "nvm"; then
@@ -28,5 +28,5 @@ nvm install
 # MAIN BUSINESS
 # ================================================================
 
-yarn install --frozen-lockfile
-yarn start
+pnpm install --frozen-lockfile
+pnpm start

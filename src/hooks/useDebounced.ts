@@ -6,7 +6,7 @@ export const useDebounced = <T extends unknown[], R>(
   callback: (...args: T) => R,
   timeout = 500
 ) => {
-  const timeoutId = useRef<NodeJS.Timeout | undefined>()
+  const timeoutId = useRef<number | undefined>()
   const setIsDebouncingSubject = useMemo(
     () => createSubject((isDebouncing: boolean) => isDebouncing),
     []

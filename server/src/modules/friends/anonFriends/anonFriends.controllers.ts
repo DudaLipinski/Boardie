@@ -1,8 +1,9 @@
-import type { z } from 'zod'
+import { z } from 'zod'
 
 import { endpoint } from '../../../utils/endpoint.utils'
 import { FriendType } from '../friends.schema'
 import * as anonFriendsModel from './anonFriends.model'
+import * as anonFriendsUtils from './anonFriends.utils'
 import {
   anonFriendUpdateDataSchema,
   anonFriendCreationDataSchema,
@@ -44,6 +45,53 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
       201: {
         description: 'The created anonymous friend',
         schema: anonFriendDTOSchema,
+      },
+    },
+  }
+)
+
+const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
+  void,
+  { anonFriendId: z.infer<typeof anonFriendDTOSchema>['id'] },
+  { inviteToken: string },
+  void
+>(
+  async (req, res) => {
+    const { anonFriendId } = req.body
+
+    const anonFriend = await anonFriendsModel.getById(anonFriendId)
+    if (!anonFriend) {
+      return res.sendStatus(404)
+    }
+    if (!checkAccess.update(req.userId, anonFriend)) {
+      return res.sendStatus(403)
+    }
+
+    const inviteToken = anonFriendsUtils.generateInviteToken(anonFriendId)
+    res.status(200).send({
+      inviteToken,
+    })
+  },
+  {
+    summary: 'Generates an invite link for an anonymous friend',
+    tags: ['friends'],
+    body: z.object({
+      anonFriendId: z.number(),
+    }),
+    pathParams: null,
+    queryParams: null,
+    responses: {
+      200: {
+        description: 'The invite link',
+        schema: z.object({
+          inviteToken: z.string(),
+        }),
+      },
+      403: {
+        description: 'The logged user is not allowed to generate the link',
+      },
+      404: {
+        description: 'The friend does not exist',
       },
     },
   }
@@ -151,6 +199,7 @@ const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
 
 export const endpoints = {
   createForLoggedUser,
+  generateInviteToken,
   update,
   deleteById,
 }

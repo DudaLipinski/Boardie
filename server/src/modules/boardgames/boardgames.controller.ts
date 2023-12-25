@@ -20,9 +20,6 @@ const getAll = endpoint.GET('/boardgames')<
   {
     summary: 'Gets all the boardgames',
     tags: ['boardgames'],
-    body: null,
-    pathParams: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'All boardgames',
@@ -48,8 +45,6 @@ const search = endpoint.GET('/boardgames/search')<
   {
     summary: 'Searches for boardgames',
     tags: ['boardgames'],
-    body: null,
-    pathParams: null,
     queryParams: {
       query: {
         description: 'The query to search for',

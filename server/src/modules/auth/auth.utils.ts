@@ -20,9 +20,11 @@ const checkTokenIsAboutToExpire = (token: string) => {
   return expiresAt - now < RENEWAL_THRESHOLD
 }
 
+// [TODO] automatically generate these from the endpoint definitions
 const unauthenticatedEndpoints = [
   { path: '/auth', method: 'POST' },
   { path: '/me', method: 'POST' },
+  { path: '/anonfriends/verify-invite', method: 'POST' },
 ]
 export const authenticateToken: RequestHandler = (req, res, next) => {
   if (

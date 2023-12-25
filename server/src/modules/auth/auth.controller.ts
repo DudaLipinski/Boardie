@@ -27,8 +27,6 @@ const auth = endpoint.POST('/auth')<
     summary: 'Authenticates a user',
     tags: ['auth'],
     body: authDTOSchema,
-    pathParams: null,
-    queryParams: null,
     security: [],
     responses: {
       200: {

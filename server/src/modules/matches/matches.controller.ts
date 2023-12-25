@@ -148,9 +148,7 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
   {
     summary: 'Creates a match for the logged user',
     tags: ['matches'],
-    pathParams: null,
     body: matchCreationDataSchema,
-    queryParams: null,
     responses: {
       201: {
         description: 'The created match',
@@ -179,9 +177,6 @@ const getAllByLoggedUser = endpoint.GET('/me/matches')<
   {
     summary: 'Gets all the matches for the logged user',
     tags: ['matches'],
-    pathParams: null,
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The matches',
@@ -219,8 +214,6 @@ const getById = endpoint.GET('/matches/:matchId')<
         description: 'The id of the match',
       },
     },
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The match',
@@ -326,7 +319,6 @@ const update = endpoint.PUT('/matches/:matchId')<
       },
     },
     body: matchUpdateDataSchema,
-    queryParams: null,
     responses: {
       200: {
         description: 'The match was updated',
@@ -376,8 +368,6 @@ const deleteById = endpoint.DELETE('/matches/:matchId')<
         description: 'The id of the match',
       },
     },
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The match was deleted',

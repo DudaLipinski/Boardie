@@ -39,9 +39,6 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
   {
     summary: 'Gets all friends for the logged user',
     tags: ['friends'],
-    pathParams: null,
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: "The logged user's friends",
@@ -103,9 +100,7 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
   {
     summary: 'Sends a friendship request to another user',
     tags: ['friends'],
-    pathParams: null,
     body: friendshipRequestSchema,
-    queryParams: null,
     responses: {
       200: {
         description: 'The request was sent',
@@ -140,9 +135,6 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
   {
     summary: 'Gets all friendship requests for the logged user',
     tags: ['friends'],
-    pathParams: null,
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: "The logged user's friendship requests",
@@ -224,7 +216,6 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
       },
     },
     body: answerFriendshipRequestSchema,
-    queryParams: null,
     responses: {
       200: {
         description: 'The request answer has been processed',
@@ -271,8 +262,6 @@ const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
         description: 'The id of the user to delete the friendship with',
       },
     },
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The friendship was deleted',

@@ -28,9 +28,7 @@ const create = endpoint.POST('/me')<
   {
     summary: 'Creates a new user',
     tags: ['auth'],
-    pathParams: null,
     body: userCreationDataSchema,
-    queryParams: null,
     responses: {
       201: {
         description: 'The created user',
@@ -63,9 +61,6 @@ const getLoggedUser = endpoint.GET('/me')<
   {
     summary: 'Gets the logged user',
     tags: ['auth'],
-    pathParams: null,
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The logged user',
@@ -106,9 +101,7 @@ const unregisterLoggedUser = endpoint.POST('/me/unregister')<
   {
     summary: 'Unregisters the logged user',
     tags: ['auth'],
-    pathParams: null,
     body: authDTOSchema,
-    queryParams: null,
     responses: {
       200: {
         description: 'The logged user was unregistered',

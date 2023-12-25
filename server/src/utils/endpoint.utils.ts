@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { RequestHandler, Express } from 'express'
 import type { OpenAPIV3_1 } from 'openapi-types'
 import type { z } from 'zod'
@@ -41,31 +42,38 @@ interface SuccessResponse<ResponseBody> {
 interface CreationResponse<ResponseBody> {
   201: Response<ResponseBody>
 }
+
+// [TODO] When giving a responseBody schema, make specifying a schema inside the response required.
 type PathResponses<ResponseBody> =
   | SuccessResponse<ResponseBody>
   | CreationResponse<ResponseBody>
   | MessageResponse
+
+type ExcludeVoidKeys<T> = {
+  [K in keyof T]: T[K] extends void ? never : K
+}[keyof T]
+type ExcludeVoidProperties<T> = Pick<T, ExcludeVoidKeys<T>>
 
 type OperationDefinition<
   PathParamsDict extends Params,
   RequestBody,
   ResponseBody,
   QueryParamsDict extends Params
-> = {
+> = ExcludeVoidProperties<{
   path: string
   method: HttpMethod
   tags: string[]
   summary: string
   pathParams: PathParamsDict extends void
-    ? null
+    ? void
     : Record<keyof PathParamsDict, ParameterObject>
   queryParams: QueryParamsDict extends void
-    ? null
+    ? void
     : Record<keyof QueryParamsDict, ParameterObject>
-  body: RequestBody extends void ? null : z.ZodType<RequestBody>
+  body: RequestBody extends void ? void : z.ZodType<RequestBody>
   responses: PathResponses<ResponseBody>
   security?: OpenAPIV3_1.SecurityRequirementObject[]
-}
+}>
 
 type PathMethodConstructor = (
   path: string
@@ -103,8 +111,8 @@ export class Path<
   ResponseBody,
   QueryParamsDict extends Params
 > {
-  private path: string
-  private method: HttpMethod
+  path: string
+  method: HttpMethod
   private summary: string
   private tags: string[]
   private pathParams: Record<keyof PathParamsDict, ParameterObject> | null
@@ -138,9 +146,9 @@ export class Path<
     this.method = def.method
     this.summary = def.summary
     this.tags = def.tags
-    this.pathParams = def.pathParams
-    this.queryParams = def.queryParams
-    this.body = def.body
+    this.pathParams = (def as any).pathParams
+    this.queryParams = (def as any).queryParams
+    this.body = (def as any).body
     this.responses = {
       ...def.responses,
       500: INTERNAL_ERROR_SCHEMA,
@@ -153,14 +161,19 @@ export class Path<
     this.validateSchema()
   }
 
+  get requiresAuth() {
+    return !!this.security?.length
+  }
+
+  // [TODO]: fix all anys related to defs
   static GET: PathMethodConstructor = (path) => (handler, def) =>
-    new Path(handler, { ...def, path, method: 'get' })
+    new Path(handler, { ...(def as any), path, method: 'get' })
   static POST: PathMethodConstructor = (path) => (handler, def) =>
-    new Path(handler, { ...def, path, method: 'post' })
+    new Path(handler, { ...(def as any), path, method: 'post' })
   static PUT: PathMethodConstructor = (path) => (handler, def) =>
-    new Path(handler, { ...def, path, method: 'put' })
+    new Path(handler, { ...(def as any), path, method: 'put' })
   static DELETE: PathMethodConstructor = (path) => (handler, def) =>
-    new Path(handler, { ...def, path, method: 'delete' })
+    new Path(handler, { ...(def as any), path, method: 'delete' })
 
   getMethod = () => this.method
   getPath = () => this.path

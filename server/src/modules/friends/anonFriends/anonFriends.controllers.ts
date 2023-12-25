@@ -38,9 +38,7 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   {
     summary: 'Creates an anonymous friend for the logged user',
     tags: ['friends'],
-    pathParams: null,
     body: anonFriendCreationDataSchema,
-    queryParams: null,
     responses: {
       201: {
         description: 'The created anonymous friend',
@@ -67,7 +65,10 @@ const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
       return res.sendStatus(403)
     }
 
-    const inviteToken = anonFriendsUtils.generateInviteToken(anonFriendId)
+    const inviteToken = anonFriendsUtils.generateInviteToken({
+      anonFriendId,
+      userId: req.userId,
+    })
     res.status(200).send({
       inviteToken,
     })
@@ -78,8 +79,6 @@ const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
     body: z.object({
       anonFriendId: z.number(),
     }),
-    pathParams: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The invite link',
@@ -132,7 +131,6 @@ const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
       },
     },
     body: anonFriendUpdateDataSchema,
-    queryParams: null,
     responses: {
       200: {
         description: 'The updated anonymous friend data',
@@ -181,8 +179,6 @@ const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
         description: 'The id of the anonymous friend to delete',
       },
     },
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The anonymous friend was deleted',

@@ -88,8 +88,6 @@ const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
         description: 'The id of the match',
       },
     },
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The players',
@@ -142,7 +140,6 @@ const create = endpoint.POST('/matches/:matchId/players')<
       },
     },
     body: playerCreationDataSchema,
-    queryParams: null,
     responses: {
       200: {
         description: 'The created player',
@@ -216,7 +213,6 @@ const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
       },
     },
     body: playerUpdateDataSchema,
-    queryParams: null,
     responses: {
       200: {
         description: 'The updated player',
@@ -278,8 +274,6 @@ const deleteById = endpoint.DELETE('/matches/:matchId/players/:playerId')<
         description: 'The id of the player',
       },
     },
-    body: null,
-    queryParams: null,
     responses: {
       200: {
         description: 'The player was deleted',

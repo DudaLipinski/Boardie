@@ -1484,6 +1484,65 @@
         }
       }
     },
+    "/me/anonfriends/invite": {
+      "post": {
+        "summary": "Generates an invite link for an anonymous friend",
+        "tags": [
+          "friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "anonFriendId": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "anonFriendId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The invite link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "inviteToken": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "inviteToken"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request body is invalid"
+          },
+          "403": {
+            "description": "The logged user is not allowed to generate the link"
+          },
+          "404": {
+            "description": "The friend does not exist"
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        }
+      }
+    },
     "/me/anonfriends/:anonFriendId": {
       "put": {
         "summary": "Updates an anonymous friend for the logged user",

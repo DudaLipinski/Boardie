@@ -1,13 +1,14 @@
 import type { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
-import { JWT_TOKEN_SECRET_KEY } from '../../constants'
+import { JWT_AUTH_SECRET_KEY } from '../../constants'
 
 export function generateAccessToken(userId: string | number) {
-  if (!process.env[JWT_TOKEN_SECRET_KEY]) {
-    throw new Error('No JWT_TOKEN_SECRET found')
+  const jwtAuthSecretKey = process.env[JWT_AUTH_SECRET_KEY]
+  if (!jwtAuthSecretKey) {
+    throw new Error('No JWT_AUTH_SECRET_KEY found')
   }
 
-  return jwt.sign({ userId }, process.env.JWT_TOKEN_SECRET, {
+  return jwt.sign({ userId }, jwtAuthSecretKey, {
     expiresIn: '1d',
   })
 }
@@ -40,7 +41,7 @@ export const authenticateToken: RequestHandler = (req, res, next) => {
 
   jwt.verify(
     token,
-    process.env[JWT_TOKEN_SECRET_KEY] as string,
+    process.env[JWT_AUTH_SECRET_KEY] as string,
     (err, payload) => {
       if (err || !payload || typeof payload === 'string') {
         console.error(err)

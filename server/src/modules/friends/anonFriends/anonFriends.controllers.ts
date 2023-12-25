@@ -2,6 +2,8 @@ import { z } from 'zod'
 
 import { endpoint } from '../../../utils/endpoint.utils'
 import { FriendType } from '../friends.schema'
+import * as usersModel from '../../users/users.model'
+import { userNameDTOSchema, type UserNameDTO } from '../../users/users.schema'
 import * as anonFriendsModel from './anonFriends.model'
 import * as anonFriendsUtils from './anonFriends.utils'
 import {
@@ -91,6 +93,53 @@ const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
       },
       404: {
         description: 'The friend does not exist',
+      },
+    },
+  }
+)
+
+const verifyInviteToken = endpoint.POST('/anonfriends/verify-invite')<
+  void,
+  { inviteToken: string },
+  { invitingUser: UserNameDTO },
+  void
+>(
+  async (req, res) => {
+    const { inviteToken } = req.body
+
+    const inviteTokenPayload = anonFriendsUtils.verifyInviteToken(inviteToken)
+    if (!inviteTokenPayload) {
+      return res.sendStatus(403)
+    }
+
+    const invitingUser = await usersModel.getById(inviteTokenPayload.userId)
+    if (!invitingUser) {
+      return res.sendStatus(403)
+    }
+
+    res.status(200).send({
+      invitingUser: {
+        firstName: invitingUser.firstName,
+        middleAndSurname: invitingUser.middleAndSurname,
+      },
+    })
+  },
+  {
+    summary: 'Verifies an anon-friend invite token',
+    tags: ['friends'],
+    body: z.object({
+      inviteToken: z.string(),
+    }),
+    security: [],
+    responses: {
+      200: {
+        description: 'The token is valid',
+        schema: z.object({
+          invitingUser: userNameDTOSchema,
+        }),
+      },
+      403: {
+        description: 'The token is invalid',
       },
     },
   }
@@ -196,6 +245,7 @@ const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
 export const endpoints = {
   createForLoggedUser,
   generateInviteToken,
+  verifyInviteToken,
   update,
   deleteById,
 }

@@ -1543,6 +1543,77 @@
         }
       }
     },
+    "/anonfriends/verify-invite": {
+      "post": {
+        "summary": "Verifies an anon-friend invite token",
+        "tags": [
+          "friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "inviteToken": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "inviteToken"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The token is valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "invitingUser": {
+                      "type": "object",
+                      "properties": {
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "middleAndSurname": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "firstName",
+                        "middleAndSurname"
+                      ],
+                      "additionalProperties": false,
+                      "description": "A user full name"
+                    }
+                  },
+                  "required": [
+                    "invitingUser"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request body is invalid"
+          },
+          "403": {
+            "description": "The token is invalid"
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        },
+        "security": []
+      }
+    },
     "/me/anonfriends/:anonFriendId": {
       "put": {
         "summary": "Updates an anonymous friend for the logged user",

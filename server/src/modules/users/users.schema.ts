@@ -23,5 +23,14 @@ export const userDTOSchema = userSchema
   .strict()
   .describe('Data that represents a user')
 
+export const userNameDTOSchema = userSchema
+  .pick({
+    firstName: true,
+    middleAndSurname: true,
+  })
+  .strict()
+  .describe('A user full name')
+
 export type UserCreationData = z.infer<typeof userCreationDataSchema>
 export type UserDTO = z.infer<typeof userDTOSchema>
+export type UserNameDTO = z.infer<typeof userNameDTOSchema>

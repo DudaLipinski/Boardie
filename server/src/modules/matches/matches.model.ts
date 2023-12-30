@@ -16,29 +16,27 @@ export interface Match {
   endedAt: string | null
 }
 
-export function create(
-  this: { transaction?: Transaction },
-  match: Omit<Match, 'id' | 'createdAt' | 'deletedAt'>
-) {
-  return (this.transaction ?? kysely)
+export const create = (
+  match: Omit<Match, 'id' | 'createdAt' | 'deletedAt'>,
+  transaction?: Transaction
+) =>
+  (transaction ?? kysely)
     .insertInto('match')
     .values(match)
     .returning('id')
     .executeTakeFirstOrThrow()
-}
 
-export function update(
-  this: { transaction?: Transaction },
+export const update = (
   matchId: number,
-  match: Omit<Match, 'id' | 'authorId' | 'createdAt' | 'deletedAt'>
-) {
-  return (this.transaction ?? kysely)
+  match: Omit<Match, 'id' | 'authorId' | 'createdAt' | 'deletedAt'>,
+  transaction?: Transaction
+) =>
+  (transaction ?? kysely)
     .updateTable('match')
     .set(match)
     .where('id', '==', matchId)
     .executeTakeFirst()
     .then((result) => result.numUpdatedRows === 1n)
-}
 
 export const getHydratedById = async ({ id }: { id: number }) => {
   const match = await kysely

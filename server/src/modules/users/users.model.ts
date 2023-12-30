@@ -1,4 +1,5 @@
 import { CURRENT_DATETIME_QUERY } from '../../database/database.utils'
+import type { Transaction } from '../../database'
 import kysely from '../../database'
 
 export interface User {
@@ -8,6 +9,7 @@ export interface User {
   age: number | null
   email: string
   password: string
+  referredByUserId?: number | null
 }
 
 const allWithoutPassword = [
@@ -18,8 +20,11 @@ const allWithoutPassword = [
   'email',
 ] as const
 
-export const create = async (user: Omit<User, 'id'>) => {
-  const result = await kysely
+export const create = async (
+  user: Omit<User, 'id'>,
+  transaction?: Transaction
+) => {
+  const result = await (transaction ?? kysely)
     .insertInto('user')
     .values(user)
     .returning('id')

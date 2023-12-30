@@ -33,8 +33,8 @@ dependencies:
     specifier: ^9.0.2
     version: 9.0.2
   kysely:
-    specifier: ^0.26.3
-    version: 0.26.3
+    specifier: ^0.27.0
+    version: 0.27.0
   lodash.omit:
     specifier: ^4.5.0
     version: 4.5.0
@@ -4531,8 +4531,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /kysely@0.26.3:
-    resolution: {integrity: sha512-yWSgGi9bY13b/W06DD2OCDDHQmq1kwTGYlQ4wpZkMOJqMGCstVCFIvxCCVG4KfY1/3G0MhDAcZsip/Lw8/vJWw==}
+  /kysely@0.27.0:
+    resolution: {integrity: sha512-wxOVru+SYTzofm59GlN0Tyo0v23qfX9pyU0n6Fc0GZZ5YldcyswenWsCoETqiJdtx7ThnxZpicqA2aqPMZV7DQ==}
     engines: {node: '>=14.0.0'}
     dev: false
 

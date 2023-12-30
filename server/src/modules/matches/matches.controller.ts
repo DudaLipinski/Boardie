@@ -109,10 +109,7 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
       .transaction()
       .execute(async (transaction) => {
         // wrap match creation and player creation in a transaction
-        const { id: matchId } = await matchesModel.create.call(
-          { transaction },
-          match
-        )
+        const { id: matchId } = await matchesModel.create(match, transaction)
 
         const { players } = matchCreationData
         const digestedPlayers = players.map((player) => ({
@@ -120,7 +117,7 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
           matchId,
         }))
 
-        await playerModel.createMultiple.call({ transaction }, digestedPlayers)
+        await playerModel.createMultiple(digestedPlayers, transaction)
 
         return matchId
       })
@@ -241,7 +238,7 @@ const handlePlayersCRUD = async (
       ...playerDtoToDbModel(player),
       matchId,
     }))
-    await playerModel.createMultiple.call({ transaction }, digestedPlayers)
+    await playerModel.createMultiple(digestedPlayers, transaction)
   }
 
   if (players?.update?.length) {
@@ -286,10 +283,10 @@ const update = endpoint.PUT('/matches/:matchId')<
     const updated = await kysely.transaction().execute(async (transaction) => {
       const { players, ...matchDetails } = req.body
 
-      const matchUpdated = await matchesModel.update.call(
-        { transaction },
+      const matchUpdated = await matchesModel.update(
         matchId,
-        matchDetails
+        matchDetails,
+        transaction
       )
       if (!matchUpdated) {
         return false

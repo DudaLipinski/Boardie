@@ -63,15 +63,10 @@ export const getAllByMatchId = (params: { matchId: number | number[] }) =>
     .execute()
     .then((players) => players.map(dbPlayerToDtoModel)) // TODO: separate dbPlayerToDtoModel
 
-export function createMultiple(
-  this: { transaction?: Transaction },
-  players: PlayerCreationData[]
-) {
-  return (this.transaction ?? kysely)
-    .insertInto('player')
-    .values(players)
-    .execute()
-}
+export const createMultiple = (
+  players: PlayerCreationData[],
+  transaction?: Transaction
+) => (transaction ?? kysely).insertInto('player').values(players).execute()
 
 export const create = (player: PlayerCreationData) =>
   kysely
@@ -81,7 +76,7 @@ export const create = (player: PlayerCreationData) =>
     .execute()
     .then((rows) => getById({ id: rows[0]?.id }))
 
-export function update(
+export const update = (
   {
     id,
     player,
@@ -90,14 +85,13 @@ export function update(
     player: PlayerUpdateData
   },
   transaction?: Transaction
-) {
-  return (transaction ?? kysely)
+) =>
+  (transaction ?? kysely)
     .updateTable('player')
     .set(player)
     .where('id', '==', id)
     .executeTakeFirst()
     .then((result) => result.numUpdatedRows !== 1n)
-}
 
 export const deleteMultiple = (
   params: { ids: number[] },
@@ -116,10 +110,23 @@ export const deleteById = (params: { id: number; matchId: number }) =>
     .executeTakeFirst()
     .then((result) => result.numDeletedRows === 1n)
 
-export const checkIfExists = async (params: { id: number }) =>
+export const checkIfExists = (params: { id: number }) =>
   kysely
     .selectFrom('player')
     .select(['id'])
     .where('id', '==', params.id)
     .executeTakeFirst()
     .then((result) => !!result)
+
+export const transferAllFromAnonFriendToUser = (
+  params: {
+    userId: number
+    anonFriendId: number
+  },
+  transaction?: Transaction
+) =>
+  (transaction ?? kysely)
+    .updateTable('player')
+    .set({ userId: params.userId, anonFriendId: null })
+    .where('anonFriendId', '==', params.anonFriendId)
+    .execute()

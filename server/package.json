@@ -28,7 +28,7 @@
     "fuzzysort": "^2.0.4",
     "immer": "^10.0.3",
     "jsonwebtoken": "^9.0.2",
-    "kysely": "^0.26.3",
+    "kysely": "^0.27.0",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "prisma-kysely": "^1.7.1",

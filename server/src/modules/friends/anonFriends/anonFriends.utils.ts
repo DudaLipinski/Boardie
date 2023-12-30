@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { JWT_ANON_FRIEND_INVITE_SECRET_KEY } from '../../../constants'
 
-type AnonFriendInviteTokenPayload = {
+export type AnonFriendInviteTokenPayload = {
   userId: number
   anonFriendId: number
 }

@@ -4,41 +4,43 @@ datasource db {
 }
 
 generator kysely {
-    provider = "prisma-kysely"
-    output = "../src/database"
-    fileName = "types.ts"
-    dateTimeTypeOverride = "string"
+  provider             = "prisma-kysely"
+  output               = "../src/database"
+  fileName             = "types.ts"
+  dateTimeTypeOverride = "string"
 }
 
 generator dbml {
-  provider = "prisma-dbml-generator"
+  provider              = "prisma-dbml-generator"
   includeRelationFields = false
 }
 
 model User {
-  @@map("user")
-
-  id                   Int      @id @default(autoincrement())
-  email                String   @unique
-  firstName            String
-  middleAndSurname     String
-  age                  Int?
-  password             String
-  createdAt            DateTime            @default(now())
-  unregisteredAt       DateTime?
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  firstName        String
+  middleAndSurname String
+  age              Int?
+  password         String
+  createdAt        DateTime  @default(now())
+  unregisteredAt   DateTime?
+  referredByUserId Int?
 
   // --- Relations
-  authoredMatches  Match[]
-  playedMatches    Player[]
-  anonFriends          AnonFriend[]
+  authoredMatches            Match[]
+  playedMatches              Player[]
+  anonFriends                AnonFriend[]
+  referredUsers              User[]              @relation("referral")
   // addressId            Int?
   // address              Address? @relation(fields: [addressId], references: [id])
-  friendsA             Friendship[] @relation("friendA")
-  friendsB             Friendship[] @relation("friendB")
-  sentFriendshipRequests   FriendshipRequest[] @relation("requestingUser")
-  receivedFriendshipRequests   FriendshipRequest[] @relation("requestedUser")
+  friendsA                   Friendship[]        @relation("friendA")
+  friendsB                   Friendship[]        @relation("friendB")
+  sentFriendshipRequests     FriendshipRequest[] @relation("requestingUser")
+  receivedFriendshipRequests FriendshipRequest[] @relation("requestedUser")
+  referringUser              User?               @relation("referral", fields: [referredByUserId], references: [id], onDelete: SetNull)
 
-  @@index ([email])
+  @@index([email])
+  @@map("user")
 }
 
 // model Address {
@@ -48,93 +50,88 @@ model User {
 // }
 
 model AnonFriend {
-  @@map("anon_friend")
-
-  id        Int     @id @default(autoincrement())
-  userId    Int
-  fullName  String
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  fullName String
 
   // --- Relations
-  playedMatches   Player[]
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playedMatches Player[]
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@map("anon_friend")
 }
 
 model Boardgame {
-  @@map("boardgame")
-
-  id        Int     @id @default(autoincrement())
-  bggId     Int     @unique
-  title     String
-  year      Int?
-  imageUrl  String?
+  id       Int     @id @default(autoincrement())
+  bggId    Int     @unique
+  title    String
+  year     Int?
+  imageUrl String?
 
   // --- Relations
-  matches   Match[]
+  matches Match[]
+
+  @@map("boardgame")
 }
 
 model Match {
-  @@map("match")
-
-  id                  Int                 @id @default(autoincrement())
-  boardgameId         Int
-  startedAt           DateTime              // @db.DateTime(utc)
-  endedAt             DateTime?             // @db.DateTime(utc)
-  location            String?
-  notes               String?
-  createdAt           DateTime            @default(now()) // @db.DateTime(utc)
-  deletedAt           DateTime?             // @db.DateTime(utc)
-  players             Player[]
+  id          Int       @id @default(autoincrement())
+  boardgameId Int
+  startedAt   DateTime // @db.DateTime(utc)
+  endedAt     DateTime? // @db.DateTime(utc)
+  location    String?
+  notes       String?
+  createdAt   DateTime  @default(now()) // @db.DateTime(utc)
+  deletedAt   DateTime? // @db.DateTime(utc)
+  players     Player[]
 
   // --- Relations
-  boardgame           Boardgame           @relation(fields: [boardgameId], references: [id])
-  authorId            Int?
-  author              User?                @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  boardgame Boardgame @relation(fields: [boardgameId], references: [id])
+  authorId  Int?
+  author    User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([authorId])
+  @@map("match")
 }
 
 model Player {
-  @@map("player")
-
-  id            Int         @id @default(autoincrement())
-  score         Int?
-  isWinner      Boolean?
+  id       Int      @id @default(autoincrement())
+  score    Int?
+  isWinner Boolean?
 
   // --- Relations
-  matchId       Int
-  match         Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  userId        Int?
-  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  anonFriendId  Int?
-  anonFriend    AnonFriend? @relation(fields: [anonFriendId], references: [id], onDelete: SetNull)
+  matchId      Int
+  match        Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId       Int?
+  user         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  anonFriendId Int?
+  anonFriend   AnonFriend? @relation(fields: [anonFriendId], references: [id], onDelete: SetNull)
 
   @@index([matchId])
+  @@map("player")
 }
 
 model FriendshipRequest {
-  @@map("friendship_request")
-
-  requestingUserId  Int
-  requestedUserId   Int
+  requestingUserId Int
+  requestedUserId  Int
 
   // --- Relations
-  requestingUser    User  @relation("requestingUser", fields: [requestingUserId], references: [id], onDelete: Cascade)
-  requestedUser     User  @relation("requestedUser", fields: [requestedUserId], references: [id], onDelete: Cascade)
+  requestingUser User @relation("requestingUser", fields: [requestingUserId], references: [id], onDelete: Cascade)
+  requestedUser  User @relation("requestedUser", fields: [requestedUserId], references: [id], onDelete: Cascade)
 
   @@id([requestingUserId, requestedUserId])
+  @@map("friendship_request")
 }
 
 model Friendship {
-  @@map("friendship")
-
-  smallerUserId  Int
+  smallerUserId Int
   biggerUserId  Int
 
   // --- Relations
-  userA    User  @relation("friendA", fields: [smallerUserId], references: [id], onDelete: Cascade)
-  userB    User  @relation("friendB", fields: [biggerUserId], references: [id], onDelete: Cascade)
+  userA User @relation("friendA", fields: [smallerUserId], references: [id], onDelete: Cascade)
+  userB User @relation("friendB", fields: [biggerUserId], references: [id], onDelete: Cascade)
 
   @@id([smallerUserId, biggerUserId])
+  @@map("friendship")
 }

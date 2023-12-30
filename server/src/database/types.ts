@@ -52,6 +52,7 @@ export type User = {
   password: string
   createdAt: Generated<string>
   unregisteredAt: string | null
+  referredByUserId: number | null
 }
 export type DB = {
   anon_friend: AnonFriend

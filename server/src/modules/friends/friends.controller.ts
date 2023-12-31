@@ -164,9 +164,9 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
     }
 
     const result = await kysely.transaction().execute(async (transaction) => {
-      const requestWasFound = await friendsModel.deleteRequest.call(
-        { transaction },
-        friendRequest
+      const requestWasFound = await friendsModel.deleteRequest(
+        friendRequest,
+        transaction
       )
       if (!requestWasFound) {
         return 'not-found' as const
@@ -175,21 +175,21 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
       // If the request was found, also delete the inverse request
       // in the case where the requested user had also sent a request
       // to the requesting user
-      await friendsModel.deleteRequest.call(
-        { transaction },
+      await friendsModel.deleteRequest(
         {
           requestingUserId: friendRequest.requestedUserId,
           requestedUserId: friendRequest.requestingUserId,
-        }
+        },
+        transaction
       )
 
       if (!accept) {
         return
       }
 
-      const friendshipCreated = await friendsModel.createFriendship.call(
-        { transaction },
-        [friendRequest.requestingUserId, friendRequest.requestedUserId]
+      const friendshipCreated = await friendsModel.createFriendship(
+        [friendRequest.requestingUserId, friendRequest.requestedUserId],
+        transaction
       )
       if (!friendshipCreated) {
         return 'conflict' as const

@@ -1,3 +1,4 @@
+import type { Transaction } from '../../../database'
 import kysely from '../../../database'
 
 export interface AnonFriend {
@@ -34,8 +35,8 @@ export const update = (
     .then((result) => result.numUpdatedRows === 1n)
 }
 
-export const deleteById = (id: AnonFriend['id']) =>
-  kysely
+export const deleteById = (id: AnonFriend['id'], transaction?: Transaction) =>
+  (transaction ?? kysely)
     .deleteFrom('anon_friend')
     .where('id', '==', id)
     .executeTakeFirst()

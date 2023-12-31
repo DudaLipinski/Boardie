@@ -49,6 +49,9 @@
                   },
                   "password": {
                     "type": "string"
+                  },
+                  "anonFriendInviteToken": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -1543,7 +1546,7 @@
         }
       }
     },
-    "/anonfriends/verify-invite": {
+    "/anonfriends/invite/verify": {
       "post": {
         "summary": "Verifies an anon-friend invite token",
         "tags": [

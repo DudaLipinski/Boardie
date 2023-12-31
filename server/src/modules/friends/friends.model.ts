@@ -29,11 +29,11 @@ export const getFriendshipRequests = async (userId: number) =>
     .where('requestedUserId', '==', userId)
     .execute()
 
-export function deleteRequest(
-  this: { transaction?: Transaction },
-  { requestingUserId, requestedUserId }: FriendshipRequest
-) {
-  return (this.transaction ?? kysely)
+export const deleteRequest = (
+  { requestingUserId, requestedUserId }: FriendshipRequest,
+  transaction?: Transaction
+) => {
+  return (transaction ?? kysely)
     .deleteFrom('friendship_request')
     .where('requestedUserId', '==', requestedUserId)
     .where('requestingUserId', '==', requestingUserId)
@@ -53,11 +53,11 @@ const getOrderedFriendship = ([
   biggerUserId: userAId > userBId ? userAId : userBId,
 })
 
-export function createFriendship(
-  this: { transaction?: Transaction },
-  request: Friendship
-) {
-  return (this.transaction ?? kysely)
+export const createFriendship = (
+  request: Friendship,
+  transaction: Transaction
+) => {
+  return (transaction ?? kysely)
     .insertInto('friendship')
     .values([getOrderedFriendship(request)])
     .onConflict((f) => f.doNothing())

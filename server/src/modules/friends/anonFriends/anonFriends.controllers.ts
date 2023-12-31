@@ -50,6 +50,7 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   }
 )
 
+// QUESTIONING: the /me prefix might not be necessary here
 const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
   void,
   { anonFriendId: z.infer<typeof anonFriendDTOSchema>['id'] },
@@ -98,7 +99,7 @@ const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
   }
 )
 
-const verifyInviteToken = endpoint.POST('/anonfriends/verify-invite')<
+const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
   void,
   { inviteToken: string },
   { invitingUser: UserNameDTO },

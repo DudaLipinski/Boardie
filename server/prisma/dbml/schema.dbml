@@ -11,6 +11,7 @@ Table user {
   password String [not null]
   createdAt DateTime [default: `now()`, not null]
   unregisteredAt DateTime
+  referredByUserId Int
 }
 
 Table anon_friend {
@@ -65,6 +66,8 @@ Table friendship {
     (smallerUserId, biggerUserId) [pk]
   }
 }
+
+Ref: user.referredByUserId > user.id
 
 Ref: anon_friend.userId > user.id [delete: Cascade]
 

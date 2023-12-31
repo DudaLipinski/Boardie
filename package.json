@@ -24,6 +24,7 @@
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^5.0.20",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "axios": "^1.3.4",
     "dayjs": "^1.11.7",
     "framer-motion": "^10.6.1",

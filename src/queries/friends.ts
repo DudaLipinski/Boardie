@@ -88,3 +88,10 @@ export const useDeleteAnonFriend = () => {
     },
   })
 }
+
+const CREATE_ANON_FRIEND_INVITE_TOKEN = 'createAnonFriendInviteToken'
+export const useCreateAnonFriendInviteToken = () =>
+  useMutation(
+    CREATE_ANON_FRIEND_INVITE_TOKEN,
+    friendsService.createAnonFriendInviteToken
+  )

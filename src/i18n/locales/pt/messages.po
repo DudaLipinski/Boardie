@@ -13,17 +13,49 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/pages/Friends/Friends.tsx:63
+msgid "Add new"
+msgstr ""
+
+#: src/pages/Friends/Friends.tsx:113
+msgid "All match participations will be transferred to the invited friend."
+msgstr ""
+
 #: src/services/user.ts:18
 #: src/services/user.ts:34
 msgid "An error occurred"
+msgstr ""
+
+#: src/pages/Friends/Friends.tsx:90
+msgid "Anonymous friends"
+msgstr ""
+
+#: src/pages/Friends/AnonFriendCard.tsx:99
+msgid "Copied"
+msgstr ""
+
+#: src/pages/Friends/AnonFriendCard.tsx:113
+msgid "Copy invite link"
 msgstr ""
 
 #: src/pages/Dashboard/Dashboard.tsx:16
 msgid "Dashboards coming soon"
 msgstr ""
 
+#: src/pages/Friends/AnonFriendCard.tsx:105
+msgid "Error"
+msgstr ""
+
 #: src/services/user.ts:12
 msgid "Incorrect user format"
+msgstr ""
+
+#: src/pages/Friends/Friends.tsx:101
+msgid "Invite them"
+msgstr ""
+
+#: src/pages/Friends/AnonFriendCard.tsx:109
+msgid "Loading"
 msgstr ""
 
 #: src/pages/Login/Login.tsx:37
@@ -40,4 +72,12 @@ msgstr ""
 
 #: src/services/user.ts:15
 msgid "User already exists with given email"
+msgstr ""
+
+#: src/pages/Friends/Friends.tsx:92
+#~ msgid "You can invite your real friends to join <0>Boardie</0> and replace their anon placeholders. <1>Invite them <2/></1>"
+#~ msgstr ""
+
+#: src/pages/Friends/Friends.tsx:96
+msgid "Your friends can join <0>Boardie</0> to replace their anon placeholders."
 msgstr ""

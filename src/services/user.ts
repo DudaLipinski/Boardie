@@ -3,7 +3,11 @@ import { t } from '@lingui/macro'
 import { axios } from '../utils/axios'
 import { User } from '../types/User'
 
-export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
+export const createUser = (
+  createUserPayload: Omit<User, 'id' | 'token'> & {
+    anonFriendInviteToken?: string
+  }
+) =>
   axios
     .post<User>(`/me`, createUserPayload)
     .then((response) => response.data)

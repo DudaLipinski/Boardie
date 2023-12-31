@@ -51,14 +51,16 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
 )
 
 // QUESTIONING: the /me prefix might not be necessary here
-const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
-  void,
+const generateInviteToken = endpoint.POST(
+  '/me/anonfriends/:anonFriendId/invite'
+)<
   { anonFriendId: z.infer<typeof anonFriendDTOSchema>['id'] },
+  void,
   { inviteToken: string },
   void
 >(
   async (req, res) => {
-    const { anonFriendId } = req.body
+    const { anonFriendId } = req.params
 
     const anonFriend = await anonFriendsModel.getById(anonFriendId)
     if (!anonFriend) {
@@ -79,9 +81,12 @@ const generateInviteToken = endpoint.POST('/me/anonfriends/invite')<
   {
     summary: 'Generates an invite link for an anonymous friend',
     tags: ['friends'],
-    body: z.object({
-      anonFriendId: z.number(),
-    }),
+    pathParams: {
+      anonFriendId: {
+        type: 'number',
+        description: 'The id of the anonymous friend to generate the link for',
+      },
+    },
     responses: {
       200: {
         description: 'The invite link',

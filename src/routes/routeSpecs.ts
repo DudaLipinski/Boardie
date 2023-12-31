@@ -1,8 +1,11 @@
 export const LOGIN = '/login'
-export const SIGNUP = '/signup'
 
+export const SIGNUP = '/signup'
+export const SIGNUP_ANON_FRIEND_INVITE_TOKEN_PARAM = 'anonFriendInviteToken'
 export const getSignupRouteWithAnonFriendInviteToken = (token: string) =>
-  `${SIGNUP}?anonFriendInviteToken=${encodeURIComponent(token)}`
+  `${SIGNUP}?${SIGNUP_ANON_FRIEND_INVITE_TOKEN_PARAM}=${encodeURIComponent(
+    token
+  )}`
 
 export const PROFILE = '/profile'
 export const DASHBOARD = '/dashboard'

@@ -95,3 +95,10 @@ export const useCreateAnonFriendInviteToken = () =>
     CREATE_ANON_FRIEND_INVITE_TOKEN,
     friendsService.createAnonFriendInviteToken
   )
+
+const VERIFY_ANON_FRIEND_INVITE_TOKEN = 'verifyAnonFriendInviteToken'
+export const useVerifyAnonFriendInviteToken = () =>
+  useMutation(
+    VERIFY_ANON_FRIEND_INVITE_TOKEN,
+    friendsService.verifyAnonFriendInviteToken
+  )

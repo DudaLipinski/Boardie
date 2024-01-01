@@ -117,6 +117,11 @@ const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
     if (!inviteTokenPayload) {
       return res.sendStatus(403)
     }
+    if (inviteTokenPayload === 'expired') {
+      return res.status(403).send({
+        message: 'expired',
+      })
+    }
 
     const [anonFriend, invitingUser] = await Promise.all([
       anonFriendsModel.getById(inviteTokenPayload.anonFriendId),

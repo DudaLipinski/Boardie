@@ -34,9 +34,8 @@ const useAnonFriendInviteToken = () => {
   }, [anonFriendInviteToken])
 
   return {
+    ...verifyAnonFriendInviteToken,
     token: anonFriendInviteToken,
-    data: verifyAnonFriendInviteToken.data,
-    isLoading: verifyAnonFriendInviteToken.isLoading,
   }
 }
 
@@ -69,110 +68,132 @@ const Signup = () => {
 
   const buttonClassName = getButtonClasses()
 
+  const disable = anonFriendInviteToken.isLoading
+
   return (
     <Motion style={{ height: 'inherit', padding: '0 24px' }}>
       <main className="h-full">
         <section className="flex h-full flex-col items-center justify-center text-gray-200">
-          <h1 className="text-3xl font-bold">Sign up</h1>
-
-          {anonFriendInviteToken.data ? (
-            <div>
+          {anonFriendInviteToken.isError ? (
+            <>
               <p className="my-3 text-center text-base text-gray-200">
-                Is it{' '}
-                <span className="font-bold text-pink-400">
-                  {anonFriendInviteToken.data.anonFriendFullName}
-                </span>{' '}
-                that I'm talking with?{' '}
-                <FavoriteIcon className="-mt-[3px]" fontSize="inherit" />
+                {getErrorMessage(anonFriendInviteToken.error)}
               </p>
 
-              <p className="my-3 text-center text-base text-gray-200">
-                You have been invited by{' '}
-                <span className="font-bold">
-                  {anonFriendInviteToken.data.invitingUser.firstName}{' '}
-                  {anonFriendInviteToken.data.invitingUser.middleAndSurname}
-                </span>{' '}
-                <br />
-                to join <em>Boardie!</em>
-              </p>
-
-              <p className="my-3 text-center text-sm">
-                <em>
-                  By using this invite you will have{' '}
-                  <span className="font-bold">
-                    {anonFriendInviteToken.data.invitingUser.firstName}{' '}
-                    {anonFriendInviteToken.data.invitingUser.middleAndSurname}
-                  </span>{' '}
-                  as a friend and might have some existing matches waiting for
-                  you!
-                </em>
-              </p>
-            </div>
+              <Link
+                to={LOGIN}
+                className="mx-auto mt-6 text-sm text-gray-200 underline hover:text-pink-300"
+              >
+                Go to login
+              </Link>
+            </>
           ) : (
-            <p className="my-3 text-center text-base text-gray-200">
-              Please fill your details to create your account.
-            </p>
-          )}
+            <>
+              <h1 className="text-3xl font-bold">Sign up</h1>
 
-          {isError && (
-            <Alert severity="error" message={getErrorMessage(error)} />
+              {anonFriendInviteToken.data ? (
+                <div>
+                  <p className="my-3 text-center text-base text-gray-200">
+                    Is it{' '}
+                    <span className="font-bold text-pink-400">
+                      {anonFriendInviteToken.data.anonFriendFullName}
+                    </span>{' '}
+                    that I'm talking with?{' '}
+                    <FavoriteIcon className="-mt-[3px]" fontSize="inherit" />
+                  </p>
+
+                  <p className="my-3 text-center text-base text-gray-200">
+                    You have been invited by{' '}
+                    <span className="font-bold">
+                      {anonFriendInviteToken.data.invitingUser.firstName}{' '}
+                      {anonFriendInviteToken.data.invitingUser.middleAndSurname}
+                    </span>{' '}
+                    <br />
+                    to join <em>Boardie!</em>
+                  </p>
+
+                  <p className="my-3 text-center text-sm">
+                    <em>
+                      By using this invite you will have{' '}
+                      <span className="font-bold">
+                        {anonFriendInviteToken.data.invitingUser.firstName}{' '}
+                        {
+                          anonFriendInviteToken.data.invitingUser
+                            .middleAndSurname
+                        }
+                      </span>{' '}
+                      as a friend and might have some existing matches waiting
+                      for you!
+                    </em>
+                  </p>
+                </div>
+              ) : (
+                <p className="my-3 text-center text-base text-gray-200">
+                  Please fill your details to create your account.
+                </p>
+              )}
+
+              {isError && (
+                <Alert severity="error" message={getErrorMessage(error)} />
+              )}
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex w-full flex-col"
+              >
+                <Input
+                  disabled={disable}
+                  label="First Name"
+                  required
+                  {...register('firstName')}
+                  type="text"
+                />
+                <Input
+                  disabled={disable}
+                  label="Surname"
+                  required
+                  {...register('middleAndSurname')}
+                  type="text"
+                />
+                <Input
+                  disabled={disable}
+                  label="E-mail"
+                  required
+                  {...register('email')}
+                  type="email"
+                />
+                <Input
+                  disabled={disable}
+                  label="Age"
+                  required
+                  {...register('age')}
+                  type="number"
+                  min="1"
+                  max="130"
+                />
+                <Input
+                  disabled={disable}
+                  label="Password"
+                  required
+                  {...register('password')}
+                  type="password"
+                  min="8"
+                />
+                <button
+                  type="submit"
+                  disabled={disable}
+                  className={`mt-6 ${buttonClassName}`}
+                >
+                  Register
+                </button>
+                <Link
+                  to={LOGIN}
+                  className="mx-auto mt-6 text-sm text-gray-200 underline hover:text-pink-300"
+                >
+                  Login
+                </Link>
+              </form>
+            </>
           )}
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex w-full flex-col"
-          >
-            <Input
-              disabled={anonFriendInviteToken.isLoading}
-              label="First Name"
-              required
-              {...register('firstName')}
-              type="text"
-            />
-            <Input
-              disabled={anonFriendInviteToken.isLoading}
-              label="Surname"
-              required
-              {...register('middleAndSurname')}
-              type="text"
-            />
-            <Input
-              disabled={anonFriendInviteToken.isLoading}
-              label="E-mail"
-              required
-              {...register('email')}
-              type="email"
-            />
-            <Input
-              disabled={anonFriendInviteToken.isLoading}
-              label="Age"
-              required
-              {...register('age')}
-              type="number"
-              min="1"
-              max="130"
-            />
-            <Input
-              disabled={anonFriendInviteToken.isLoading}
-              label="Password"
-              required
-              {...register('password')}
-              type="password"
-              min="8"
-            />
-            <button
-              type="submit"
-              disabled={anonFriendInviteToken.isLoading}
-              className={`mt-6 ${buttonClassName}`}
-            >
-              Register
-            </button>
-            <Link
-              to={LOGIN}
-              className="mx-auto mt-6 text-sm text-gray-200 underline hover:text-pink-300"
-            >
-              Login
-            </Link>
-          </form>
         </section>
       </main>
     </Motion>

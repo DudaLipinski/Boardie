@@ -14,7 +14,7 @@ export function generateInviteToken(
   }
 
   return jwt.sign(tokenPayload, jwtInviteSecretKey, {
-    expiresIn: '30m',
+    expiresIn: '2d',
   })
 }
 
@@ -25,12 +25,12 @@ export function verifyInviteToken(token: string) {
   }
 
   try {
-    const payload = jwt.verify(
-      token,
-      jwtInviteSecretKey
-    ) as AnonFriendInviteTokenPayload
-    return payload
+    return jwt.verify(token, jwtInviteSecretKey) as AnonFriendInviteTokenPayload
   } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      return 'expired'
+    }
+
     return null
   }
 }

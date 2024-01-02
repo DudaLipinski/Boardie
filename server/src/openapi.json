@@ -1583,10 +1583,14 @@
                       ],
                       "additionalProperties": false,
                       "description": "A user full name"
+                    },
+                    "anonFriendFullName": {
+                      "type": "string"
                     }
                   },
                   "required": [
-                    "invitingUser"
+                    "invitingUser",
+                    "anonFriendFullName"
                   ],
                   "additionalProperties": false
                 }

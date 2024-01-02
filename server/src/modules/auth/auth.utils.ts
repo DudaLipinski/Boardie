@@ -24,7 +24,7 @@ const checkTokenIsAboutToExpire = (token: string) => {
 const unauthenticatedEndpoints = [
   { path: '/auth', method: 'POST' },
   { path: '/me', method: 'POST' },
-  { path: '/anonfriends/verify-invite', method: 'POST' },
+  { path: '/anonfriends/invite/verify', method: 'POST' },
 ]
 export const authenticateToken: RequestHandler = (req, res, next) => {
   if (

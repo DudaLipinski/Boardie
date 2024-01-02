@@ -107,7 +107,7 @@ const generateInviteToken = endpoint.POST(
 const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
   void,
   { inviteToken: string },
-  { invitingUser: UserNameDTO },
+  { invitingUser: UserNameDTO; anonFriendFullName: string },
   void
 >(
   async (req, res) => {
@@ -117,10 +117,18 @@ const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
     if (!inviteTokenPayload) {
       return res.sendStatus(403)
     }
+    if (inviteTokenPayload === 'expired') {
+      return res.status(403).send({
+        message: 'expired',
+      })
+    }
 
-    const invitingUser = await usersModel.getById(inviteTokenPayload.userId)
-    if (!invitingUser) {
-      return res.sendStatus(403)
+    const [anonFriend, invitingUser] = await Promise.all([
+      anonFriendsModel.getById(inviteTokenPayload.anonFriendId),
+      usersModel.getById(inviteTokenPayload.userId),
+    ])
+    if (!invitingUser || !anonFriend) {
+      return res.sendStatus(404)
     }
 
     res.status(200).send({
@@ -128,6 +136,7 @@ const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
         firstName: invitingUser.firstName,
         middleAndSurname: invitingUser.middleAndSurname,
       },
+      anonFriendFullName: anonFriend.fullName,
     })
   },
   {
@@ -142,10 +151,15 @@ const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
         description: 'The token is valid',
         schema: z.object({
           invitingUser: userNameDTOSchema,
+          anonFriendFullName: z.string(),
         }),
       },
       403: {
         description: 'The token is invalid',
+      },
+      404: {
+        description:
+          'The token is valid but the user/anon-friend do not exist anymore',
       },
     },
   }

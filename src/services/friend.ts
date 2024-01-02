@@ -116,3 +116,27 @@ export const deleteAnonFriend = (anonFriendId: number): Promise<void> =>
         throw new Error(genericError)
       }
     })
+
+export const createAnonFriendInviteToken = (anonFriendId: number) =>
+  axios<{ inviteToken: string }>({
+    method: 'post',
+    url: `/me/anonfriends/${anonFriendId}/invite`,
+  })
+    .then((response) => {
+      return response.data?.inviteToken
+    })
+    .catch((err) => {
+      if (err.status === 403) {
+        throw new Error(
+          "You don't have the needed permissions to invite this friend."
+        )
+      }
+
+      if (err.status === 404) {
+        throw new Error('We were unable to find the friend with the given ID.')
+      }
+
+      if (err.status !== 200) {
+        throw new Error(genericError)
+      }
+    })

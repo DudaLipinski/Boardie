@@ -1,4 +1,12 @@
-import { Box, IconButton, ListItem, Stack, TextField } from '@mui/material'
+import {
+  Box,
+  Button,
+  IconButton,
+  ListItem,
+  Stack,
+  TextField,
+} from '@mui/material'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined'
 import { Controller, useForm } from 'react-hook-form'
@@ -6,9 +14,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
 import { Avatar } from '@components/Avatar'
 import { GenericUser } from '@src/types/GenericUser'
-import { useDeleteAnonFriend, useUpdateAnonFriend } from '@src/queries/friends'
+import {
+  useCreateAnonFriendInviteToken,
+  useDeleteAnonFriend,
+  useUpdateAnonFriend,
+} from '@src/queries/friends'
 import { DeleteDialog } from '@components/DeleteDialog'
 import { styledCard } from '@src/styles/card'
+import { Trans } from '@lingui/macro'
+import { getSignupRouteWithAnonFriendInviteToken } from '@src/routes/routeSpecs'
 
 const styledDisabledInput = {
   '& .MuiOutlinedInput-notchedOutline': {
@@ -21,6 +35,86 @@ const styledDisabledInput = {
 
 interface FormValues {
   fullName: string
+}
+
+const CopyInviteLinkButton = ({ anonFriendId }: { anonFriendId: number }) => {
+  const createAnonFriendInviteToken = useCreateAnonFriendInviteToken()
+  const [copied, setCopied] = useState(false)
+
+  const showLoadingTimeout = useRef<number | null>(null)
+  const [showLoading, setShowLoading] = useState(false)
+
+  const copyToClipboard = (token: string) => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}${getSignupRouteWithAnonFriendInviteToken(
+        token
+      )}`
+    )
+    setCopied(true)
+
+    setTimeout(() => {
+      setCopied(false)
+    }, 3000)
+  }
+
+  const handleCopyRequest = () => {
+    if (createAnonFriendInviteToken.isLoading) {
+      return
+    }
+
+    if (createAnonFriendInviteToken.data) {
+      copyToClipboard(createAnonFriendInviteToken.data)
+      return
+    }
+
+    createAnonFriendInviteToken.mutate(anonFriendId)
+  }
+
+  // We just want to show loading state if the request takes longer than 200ms
+  useEffect(() => {
+    if (createAnonFriendInviteToken.isLoading) {
+      showLoadingTimeout.current = window.setTimeout(() => {
+        setShowLoading(true)
+      }, 200)
+      return
+    }
+
+    if (showLoadingTimeout.current) {
+      clearTimeout(showLoadingTimeout.current)
+    }
+    setShowLoading(false)
+  }, [createAnonFriendInviteToken.isLoading])
+
+  useEffect(() => {
+    if (createAnonFriendInviteToken.data) {
+      copyToClipboard(createAnonFriendInviteToken.data)
+    }
+  }, [createAnonFriendInviteToken.data])
+
+  return (
+    <Button onClick={handleCopyRequest} className="w-28">
+      {copied ? (
+        <div className="flex items-center">
+          <div>
+            <Trans>Copied</Trans>
+          </div>
+          <FavoriteIcon className="ml-1" fontSize="inherit" />
+        </div>
+      ) : createAnonFriendInviteToken.isError ? (
+        <span>
+          <Trans>Error</Trans>
+        </span>
+      ) : showLoading ? (
+        <span>
+          <Trans>Loading</Trans>...
+        </span>
+      ) : (
+        <span className="whitespace-nowrap">
+          <Trans>Copy invite link</Trans>
+        </span>
+      )}
+    </Button>
+  )
 }
 
 export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
@@ -111,6 +205,7 @@ export const AnonFriendCard = ({ friend }: { friend: GenericUser }) => {
             spacing={0}
             data-testid={`menu-anonFriend-${fullNameTestId}`}
           >
+            <CopyInviteLinkButton anonFriendId={friend.id} />
             {isEditing ? (
               <IconButton
                 aria-label="edit"

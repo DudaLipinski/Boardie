@@ -7,6 +7,10 @@ import { FriendCard } from './FriendCard'
 import { SendFriendRequestModal } from './SendFriendRequestModal'
 import { FriendshipRequests } from './FriendshipRequests'
 import { AnonFriendCard } from './AnonFriendCard'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { Trans } from '@lingui/macro'
+import { Tooltip } from '@components/Tooltip'
 
 const Friends = () => {
   const [openFriendRequestModal, setOpenFriendRequestModal] = useState(false)
@@ -56,7 +60,7 @@ const Friends = () => {
             type="button"
             onClick={() => setOpenFriendRequestModal(true)}
           >
-            Add new +
+            <Trans>Add new</Trans> +
           </Button>
         </Box>
 
@@ -76,17 +80,52 @@ const Friends = () => {
         ) : null}
 
         {anonFriendsCards?.length ? (
-          <Box component="ul" sx={{ padding: '8px 0 40px 0', margin: 0 }}>
+          <>
             <Typography
               variant="h3"
               component="h2"
               margin="20px 0"
               fontWeight="600"
             >
-              Anonymous friends
+              <Trans>Anonymous friends</Trans>
             </Typography>
-            {anonFriendsCards}
-          </Box>
+
+            <div className="mt-1 p-3 flex rounded-md bg-purple-200 bg-opacity-10">
+              <div>
+                <p>
+                  <Trans>
+                    Your friends can join <em>Boardie</em> to replace their anon
+                    placeholders.{' '}
+                  </Trans>{' '}
+                  <span className="text-pink-400">
+                    <Trans>Invite them</Trans>{' '}
+                    <FavoriteIcon
+                      fontSize="inherit"
+                      sx={{ display: 'inline' }}
+                    />
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-start ml-1 -mt-[0.2em]">
+                <Tooltip
+                  content={
+                    <p className="text-sm max-w-[15em] text-center">
+                      <Trans>
+                        All match participations will be transferred to the
+                        invited friend.
+                      </Trans>
+                    </p>
+                  }
+                >
+                  <InfoOutlinedIcon sx={{ fontSize: 20 }} />
+                </Tooltip>
+              </div>
+            </div>
+
+            <Box component="ul" sx={{ padding: '16px 0 40px 0', margin: 0 }}>
+              {anonFriendsCards}
+            </Box>
+          </>
         ) : null}
       </Box>
     </Motion>

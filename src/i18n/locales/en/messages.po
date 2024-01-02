@@ -13,18 +13,50 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/pages/Friends/Friends.tsx:63
+msgid "Add new"
+msgstr "Add new"
+
+#: src/pages/Friends/Friends.tsx:113
+msgid "All match participations will be transferred to the invited friend."
+msgstr "All match participations will be transferred to the invited friend."
+
 #: src/services/user.ts:18
 #: src/services/user.ts:34
 msgid "An error occurred"
 msgstr "An error occurred"
 
+#: src/pages/Friends/Friends.tsx:90
+msgid "Anonymous friends"
+msgstr "Anonymous friends"
+
+#: src/pages/Friends/AnonFriendCard.tsx:99
+msgid "Copied"
+msgstr "Copied"
+
+#: src/pages/Friends/AnonFriendCard.tsx:113
+msgid "Copy invite link"
+msgstr "Copy invite link"
+
 #: src/pages/Dashboard/Dashboard.tsx:16
 msgid "Dashboards coming soon"
 msgstr "Dashboards coming soon"
 
+#: src/pages/Friends/AnonFriendCard.tsx:105
+msgid "Error"
+msgstr "Error"
+
 #: src/services/user.ts:12
 msgid "Incorrect user format"
 msgstr "Incorrect user format"
+
+#: src/pages/Friends/Friends.tsx:101
+msgid "Invite them"
+msgstr "Invite them"
+
+#: src/pages/Friends/AnonFriendCard.tsx:109
+msgid "Loading"
+msgstr "Loading"
 
 #: src/pages/Login/Login.tsx:37
 msgid "Please fill your details to access your account."
@@ -41,3 +73,11 @@ msgstr "Registered user"
 #: src/services/user.ts:15
 msgid "User already exists with given email"
 msgstr "User already exists with given email"
+
+#: src/pages/Friends/Friends.tsx:92
+#~ msgid "You can invite your real friends to join <0>Boardie</0> and replace their anon placeholders. <1>Invite them <2/></1>"
+#~ msgstr "You can invite your real friends to join <0>Boardie</0> and replace their anon placeholders. <1>Invite them <2/></1>"
+
+#: src/pages/Friends/Friends.tsx:96
+msgid "Your friends can join <0>Boardie</0> to replace their anon placeholders."
+msgstr "Your friends can join <0>Boardie</0> to replace their anon placeholders."

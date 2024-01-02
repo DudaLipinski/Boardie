@@ -1487,30 +1487,22 @@
         }
       }
     },
-    "/me/anonfriends/invite": {
+    "/me/anonfriends/:anonFriendId/invite": {
       "post": {
         "summary": "Generates an invite link for an anonymous friend",
         "tags": [
           "friends"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "anonFriendId": {
-                    "type": "number"
-                  }
-                },
-                "required": [
-                  "anonFriendId"
-                ],
-                "additionalProperties": false
-              }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "anonFriendId",
+            "required": true,
+            "schema": {
+              "type": "number"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "The invite link",
@@ -1530,9 +1522,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "The request body is invalid"
           },
           "403": {
             "description": "The logged user is not allowed to generate the link"

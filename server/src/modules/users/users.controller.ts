@@ -66,7 +66,12 @@ const create = endpoint.POST('/me')<
         anonFriendInviteToken
       )
       if (!decodedInviteToken) {
-        return res.sendStatus(400)
+        return res.sendStatus(403)
+      }
+      if (decodedInviteToken === 'expired') {
+        return res.status(403).send({
+          message: 'expired-anon-friend-invite-token',
+        })
       }
 
       anonFriendReferral = decodedInviteToken
@@ -102,6 +107,9 @@ const create = endpoint.POST('/me')<
       },
       400: {
         description: 'The user data is invalid',
+      },
+      403: {
+        description: 'The anon-friend invite-token is invalid',
       },
       409: {
         description: "There's already a user registered with this email",

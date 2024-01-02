@@ -3,13 +3,24 @@ import { t } from '@lingui/macro'
 import { axios } from '../utils/axios'
 import { User } from '../types/User'
 
-export const createUser = (createUserPayload: Omit<User, 'id' | 'token'>) =>
+export const createUser = (
+  createUserPayload: Omit<User, 'id' | 'token'> & {
+    anonFriendInviteToken?: string
+  },
+) =>
   axios
     .post<User>(`/me`, createUserPayload)
     .then((response) => response.data)
-    .catch((err: AxiosError) => {
+    .catch((err) => {
       if (err.response?.status === 401) {
         throw new Error(t`Incorrect user format`)
+      }
+      if (err.response?.status === 403) {
+        if (err.response.data?.message === 'expired-anon-friend-invite-token') {
+          throw new Error(t`The invite token has expired`)
+        }
+
+        throw new Error(t`Invalid invite token`)
       }
       if (err.response?.status === 409) {
         throw new Error(t`User already exists with given email`)

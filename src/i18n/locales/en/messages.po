@@ -21,8 +21,8 @@ msgstr "Add new"
 msgid "All match participations will be transferred to the invited friend."
 msgstr "All match participations will be transferred to the invited friend."
 
-#: src/services/user.ts:18
-#: src/services/user.ts:34
+#: src/services/user.ts:22
+#: src/services/user.ts:38
 msgid "An error occurred"
 msgstr "An error occurred"
 
@@ -46,7 +46,7 @@ msgstr "Dashboards coming soon"
 msgid "Error"
 msgstr "Error"
 
-#: src/services/user.ts:12
+#: src/services/user.ts:16
 msgid "Incorrect user format"
 msgstr "Incorrect user format"
 
@@ -62,7 +62,7 @@ msgstr "Loading"
 msgid "Please fill your details to access your account."
 msgstr "Please fill your details to access your account."
 
-#: src/services/user.ts:31
+#: src/services/user.ts:35
 msgid "Provided credentials doesn't match any valid user"
 msgstr "Provided credentials doesn't match any valid user"
 
@@ -70,7 +70,7 @@ msgstr "Provided credentials doesn't match any valid user"
 msgid "Registered user"
 msgstr "Registered user"
 
-#: src/services/user.ts:15
+#: src/services/user.ts:19
 msgid "User already exists with given email"
 msgstr "User already exists with given email"
 

@@ -1,6 +1,6 @@
 import { axios } from '../utils/axios'
 import { GenericUser } from '../types/GenericUser'
-import { FriendshipRequest } from '../types/Friend'
+import { AnonFriendInviteTokenData, FriendshipRequest } from '../types/Friend'
 import { genericError } from '../utils/api'
 
 export const getFriends = (): Promise<GenericUser[]> =>
@@ -104,7 +104,7 @@ export const deleteAnonFriend = (anonFriendId: number): Promise<void> =>
     .catch((err) => {
       if (err.status === 403) {
         throw new Error(
-          "You don't have the needed permissions to delete this friend."
+          "You don't have the needed permissions to delete this friend.",
         )
       }
 
@@ -128,7 +128,7 @@ export const createAnonFriendInviteToken = (anonFriendId: number) =>
     .catch((err) => {
       if (err.status === 403) {
         throw new Error(
-          "You don't have the needed permissions to invite this friend."
+          "You don't have the needed permissions to invite this friend.",
         )
       }
 
@@ -137,6 +137,33 @@ export const createAnonFriendInviteToken = (anonFriendId: number) =>
       }
 
       if (err.status !== 200) {
+        throw new Error(genericError)
+      }
+    })
+
+export const verifyAnonFriendInviteToken = (inviteToken: string) =>
+  axios<AnonFriendInviteTokenData>({
+    method: 'post',
+    url: `/anonfriends/invite/verify`,
+    data: { inviteToken },
+  })
+    .then((response) => {
+      return response.data
+    })
+    .catch((err) => {
+      if (err.response.status === 403) {
+        if (err.response.data?.message === 'expired') {
+          throw new Error('The invite token has expired.')
+        }
+
+        throw new Error('Invalid invite token.')
+      }
+
+      if (err.response.status === 404) {
+        throw new Error('The user/anon-friend do not exist anymore.')
+      }
+
+      if (err.response.status !== 200) {
         throw new Error(genericError)
       }
     })

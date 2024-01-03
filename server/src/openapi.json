@@ -111,6 +111,9 @@
           "400": {
             "description": "The request body is invalid"
           },
+          "403": {
+            "description": "The anon-friend invite-token is invalid"
+          },
           "409": {
             "description": "There's already a user registered with this email"
           },
@@ -1208,6 +1211,96 @@
         }
       }
     },
+    "me/matches/winners/summary": {
+      "get": {
+        "summary": "Gets the winners summary for the logged user",
+        "tags": [
+          "matches"
+        ],
+        "responses": {
+          "200": {
+            "description": "The summary of winners for matches played or authored by the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "boardgame": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "imageUrl": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "bggId": {
+                            "type": "number"
+                          },
+                          "year": {
+                            "type": "number",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "imageUrl",
+                          "bggId",
+                          "year"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "players": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "ANON_FRIEND",
+                                "USER"
+                              ]
+                            },
+                            "wins": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "type",
+                            "wins"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "boardgame",
+                      "players"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected internal error"
+          }
+        }
+      }
+    },
     "/me/friends": {
       "get": {
         "summary": "Gets all friends for the logged user",
@@ -1602,6 +1695,9 @@
           },
           "403": {
             "description": "The token is invalid"
+          },
+          "404": {
+            "description": "The token is valid but the user/anon-friend do not exist anymore"
           },
           "500": {
             "description": "An unexpected internal error"

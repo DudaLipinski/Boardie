@@ -12,11 +12,13 @@ import type {
   MatchDTO,
   MatchUpdateData,
   Players,
+  WinnersSummaryDTO,
 } from './matches.schema'
 import {
   matchUpdateDataSchema,
   matchCreationDataSchema,
   matchDTOSchema,
+  winnersSummaryDTOSchema,
 } from './matches.schema'
 import { playerDtoToDbModel } from './players/players.schema'
 
@@ -379,10 +381,33 @@ const deleteById = endpoint.DELETE('/matches/:matchId')<
   }
 )
 
+export const getWinnersSummary = endpoint.GET('/me/matches/winners/summary')<
+  void,
+  void,
+  WinnersSummaryDTO[],
+  void
+>(
+  async (req, res) => {
+    res.status(200).send(await matchesModel.getWinnersSummary(req.userId))
+  },
+  {
+    summary: 'Gets the winners summary for the logged user',
+    tags: ['matches'],
+    responses: {
+      200: {
+        description:
+          'The summary of winners for matches played or authored by the user',
+        schema: z.array(winnersSummaryDTOSchema),
+      },
+    },
+  }
+)
+
 export const endpoints = {
   createForLoggedUser,
   getAllByLoggedUser,
   getById,
   update,
   deleteById,
+  getWinnersSummary,
 }

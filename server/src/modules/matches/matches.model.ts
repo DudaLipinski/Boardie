@@ -1,8 +1,11 @@
+import { sql } from 'kysely'
 import { CURRENT_DATETIME_QUERY } from '../../database/database.utils'
 import type { Transaction } from '../../database'
 import kysely from '../../database'
 import * as boardgamesModel from '../boardgames/boardgames.model'
-import { getAllByMatchId } from './players/players.model'
+import { FriendType } from '../friends/friends.schema'
+import type { Boardgame } from '../boardgames/boardgames.model'
+import * as playersModel from './players/players.model'
 
 export interface Match {
   id: number
@@ -52,7 +55,7 @@ export const getHydratedById = async ({ id }: { id: number }) => {
 
   const boardgame = (await boardgamesModel.getById(match.boardgameId)) ?? null
 
-  const players = await getAllByMatchId({ matchId: match.id })
+  const players = await playersModel.getAllByMatchId({ matchId: match.id })
   return {
     ...match,
     players,
@@ -60,29 +63,31 @@ export const getHydratedById = async ({ id }: { id: number }) => {
   }
 }
 
+const matchesAuthoredOrPlayedByUserQuery = (userId: number) =>
+  kysely
+    .selectFrom('match')
+    .select('match.id')
+    .leftJoin('player', 'match.id', 'player.matchId')
+    .where((eb) =>
+      eb.or([
+        eb('match.authorId', '==', userId),
+        eb('player.userId', '==', userId),
+      ])
+    )
+    .where('match.deletedAt', 'is', null)
+
 export const getHydratedByUser = async (userId: number) => {
   const matches = await kysely
     .selectFrom('match')
     .selectAll()
-    .where((eb) =>
-      eb.or([
-        eb('authorId', '==', userId),
-        eb.exists((qb) =>
-          // TODO: solve this n + 1 problem
-          qb
-            .selectFrom('player')
-            .select('id')
-            .whereRef('player.matchId', '==', 'match.id')
-            .where('player.userId', '==', userId)
-            .limit(1)
-        ),
-      ])
-    )
+    .where('match.id', 'in', matchesAuthoredOrPlayedByUserQuery(userId))
     .where('deletedAt', 'is', null)
     .orderBy('createdAt', 'desc')
     .execute()
 
-  const players = await getAllByMatchId({ matchId: matches.map((m) => m.id) })
+  const players = await playersModel.getAllByMatchId({
+    matchId: matches.map((m) => m.id),
+  })
   const playersByMatchId = players.reduce((acc, player) => {
     if (acc[player.matchId]) {
       acc[player.matchId].push(player)
@@ -118,3 +123,53 @@ export const deleteById = (params: { id: number }) =>
     .where('id', '==', params.id)
     .executeTakeFirst()
     .then((result) => result.numUpdatedRows === 1n)
+
+type BoardgameWinnersSummary = {
+  boardgame: Boardgame
+  players: {
+    id: number
+    type: FriendType
+    wins: number
+  }[]
+}
+export const getWinnersSummary = async (userId: number) => {
+  const boardgamesById = await boardgamesModel.getAllMappedById()
+
+  return kysely
+    .selectFrom('player')
+    .leftJoin('match', 'player.matchId', 'match.id')
+    .select([
+      'match.boardgameId',
+      'player.userId',
+      'player.anonFriendId',
+      sql<number>`count(*)`.as('wins'),
+    ])
+    .where('match.id', 'in', matchesAuthoredOrPlayedByUserQuery(userId))
+    .where('player.isWinner', '==', 1)
+    .groupBy(['match.boardgameId', 'player.userId', 'player.anonFriendId'])
+    .execute()
+    .then((result) => {
+      const summary: Record<number, BoardgameWinnersSummary> = {}
+
+      result.forEach((row) => {
+        if (!row.boardgameId) {
+          return
+        }
+
+        if (!summary[row.boardgameId]) {
+          summary[row.boardgameId] = {
+            boardgame: boardgamesById[row.boardgameId],
+            players: [],
+          }
+        }
+
+        summary[row.boardgameId]!.players.push({
+          id: row.userId ?? row.anonFriendId!,
+          type: row.userId ? FriendType.USER : FriendType.ANON_FRIEND,
+          wins: row.wins,
+        })
+      })
+
+      return Object.values(summary)
+    })
+}

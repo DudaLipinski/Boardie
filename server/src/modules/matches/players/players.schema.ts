@@ -1,13 +1,13 @@
 import z from 'zod'
-import type {
-  HydratedPlayer,
-  PlayerUpdateData as DBPlayerUpdateData,
-} from './players.model'
 import {
   FriendType,
   genericFriendDTOSchema,
   genericFriendIdDTOSchema,
 } from '../../friends/friends.schema'
+import type {
+  HydratedPlayer,
+  PlayerUpdateData as DBPlayerUpdateData,
+} from './players.model'
 
 const playerSchema = z.object({
   id: z.number(),

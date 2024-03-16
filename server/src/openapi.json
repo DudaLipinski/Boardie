@@ -1211,7 +1211,7 @@
         }
       }
     },
-    "me/matches/winners/summary": {
+    "/me/matches/winners/summary": {
       "get": {
         "summary": "Gets the winners summary for the logged user",
         "tags": [
@@ -1223,74 +1223,87 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "boardgame": {
+                  "type": "object",
+                  "properties": {
+                    "winnersByBoardgame": {
+                      "type": "array",
+                      "items": {
                         "type": "object",
                         "properties": {
-                          "id": {
-                            "type": "number"
+                          "boardgame": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "imageUrl": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "bggId": {
+                                "type": "number"
+                              },
+                              "year": {
+                                "type": "number",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "title",
+                              "imageUrl",
+                              "bggId",
+                              "year"
+                            ],
+                            "additionalProperties": false
                           },
-                          "title": {
-                            "type": "string"
-                          },
-                          "imageUrl": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "bggId": {
-                            "type": "number"
-                          },
-                          "year": {
-                            "type": "number",
-                            "nullable": true
+                          "players": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "ANON_FRIEND",
+                                    "USER"
+                                  ]
+                                },
+                                "wins": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type",
+                                "wins"
+                              ],
+                              "additionalProperties": false
+                            }
                           }
                         },
                         "required": [
-                          "id",
-                          "title",
-                          "imageUrl",
-                          "bggId",
-                          "year"
+                          "boardgame",
+                          "players"
                         ],
                         "additionalProperties": false
-                      },
-                      "players": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "number"
-                            },
-                            "type": {
-                              "type": "string",
-                              "enum": [
-                                "ANON_FRIEND",
-                                "USER"
-                              ]
-                            },
-                            "wins": {
-                              "type": "number"
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "type",
-                            "wins"
-                          ],
-                          "additionalProperties": false
-                        }
                       }
                     },
-                    "required": [
-                      "boardgame",
-                      "players"
-                    ],
-                    "additionalProperties": false
-                  }
+                    "matchesCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "winnersByBoardgame",
+                    "matchesCount"
+                  ],
+                  "additionalProperties": false
                 }
               }
             }

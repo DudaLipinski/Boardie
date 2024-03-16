@@ -61,14 +61,14 @@ export const matchUpdateDataSchema = matchSchema
   .strict()
   .describe('Match data with its players')
 
-export const winnersSummaryDTOSchema = z.object({
+export const boardgameWinnersSummaryDTOSchema = z.object({
   boardgame: boardgameDtoSchema,
   players: z.array(
     z.object({
       id: z.number(),
       type: z.nativeEnum(FriendType),
       wins: z.number(),
-    })
+    }),
   ),
 })
 
@@ -77,4 +77,6 @@ export type MatchCreationData = z.infer<typeof matchCreationDataSchema>
 export type MatchUpdateData = z.infer<typeof matchUpdateDataSchema>
 export type PlayersCrud = z.infer<typeof playersCRUDSchema>
 export type Players = MatchCreationData['players']
-export type WinnersSummaryDTO = z.infer<typeof winnersSummaryDTOSchema>
+export type BoardgameWinnersSummaryDTO = z.infer<
+  typeof boardgameWinnersSummaryDTOSchema
+>

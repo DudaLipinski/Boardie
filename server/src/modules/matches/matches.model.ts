@@ -21,7 +21,7 @@ export interface Match {
 
 export const create = (
   match: Omit<Match, 'id' | 'createdAt' | 'deletedAt'>,
-  transaction?: Transaction
+  transaction?: Transaction,
 ) =>
   (transaction ?? kysely)
     .insertInto('match')
@@ -32,7 +32,7 @@ export const create = (
 export const update = (
   matchId: number,
   match: Omit<Match, 'id' | 'authorId' | 'createdAt' | 'deletedAt'>,
-  transaction?: Transaction
+  transaction?: Transaction,
 ) =>
   (transaction ?? kysely)
     .updateTable('match')
@@ -67,12 +67,13 @@ const matchesAuthoredOrPlayedByUserQuery = (userId: number) =>
   kysely
     .selectFrom('match')
     .select('match.id')
+    .distinct()
     .leftJoin('player', 'match.id', 'player.matchId')
     .where((eb) =>
       eb.or([
         eb('match.authorId', '==', userId),
         eb('player.userId', '==', userId),
-      ])
+      ]),
     )
     .where('match.deletedAt', 'is', null)
 
@@ -135,7 +136,11 @@ type BoardgameWinnersSummary = {
 export const getWinnersSummary = async (userId: number) => {
   const boardgamesById = await boardgamesModel.getAllMappedById()
 
-  return kysely
+  const matchIds = await matchesAuthoredOrPlayedByUserQuery(userId)
+    .execute()
+    .then((result) => result.map((row) => row.id))
+
+  const winnersByBoardgame = await kysely
     .selectFrom('player')
     .leftJoin('match', 'player.matchId', 'match.id')
     .select([
@@ -144,7 +149,7 @@ export const getWinnersSummary = async (userId: number) => {
       'player.anonFriendId',
       sql<number>`count(*)`.as('wins'),
     ])
-    .where('match.id', 'in', matchesAuthoredOrPlayedByUserQuery(userId))
+    .where('match.id', 'in', matchIds)
     .where('player.isWinner', '==', 1)
     .groupBy(['match.boardgameId', 'player.userId', 'player.anonFriendId'])
     .execute()
@@ -172,4 +177,9 @@ export const getWinnersSummary = async (userId: number) => {
 
       return Object.values(summary)
     })
+
+  return {
+    matchesCount: matchIds.length,
+    winnersByBoardgame,
+  }
 }

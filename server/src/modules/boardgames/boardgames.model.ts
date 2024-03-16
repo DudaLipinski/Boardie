@@ -2,6 +2,14 @@ import fuzzysort from 'fuzzysort'
 import kysely from '../../database'
 import { Cached } from '../../utils/cache.utils'
 
+export type Boardgame = {
+  id: number
+  bggId: number
+  title: string
+  year: number | null
+  imageUrl: string | null
+}
+
 const cachedBoardgames = new Cached(async () => {
   const boardgames = await kysely.selectFrom('boardgame').selectAll().execute()
 

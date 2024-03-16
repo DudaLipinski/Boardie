@@ -84,11 +84,11 @@ model Match {
   notes       String?
   createdAt   DateTime  @default(now()) // @db.DateTime(utc)
   deletedAt   DateTime? // @db.DateTime(utc)
-  players     Player[]
+  authorId    Int?
 
   // --- Relations
+  players   Player[]
   boardgame Boardgame @relation(fields: [boardgameId], references: [id])
-  authorId  Int?
   author    User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([authorId])
@@ -96,19 +96,20 @@ model Match {
 }
 
 model Player {
-  id       Int      @id @default(autoincrement())
-  score    Int?
-  isWinner Boolean?
+  id           Int      @id @default(autoincrement())
+  score        Int?
+  isWinner     Boolean?
+  matchId      Int
+  userId       Int?
+  anonFriendId Int?
 
   // --- Relations
-  matchId      Int
-  match        Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  userId       Int?
-  user         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  anonFriendId Int?
-  anonFriend   AnonFriend? @relation(fields: [anonFriendId], references: [id], onDelete: SetNull)
+  match      Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  anonFriend AnonFriend? @relation(fields: [anonFriendId], references: [id], onDelete: SetNull)
 
   @@index([matchId])
+  @@index([userId])
   @@map("player")
 }
 

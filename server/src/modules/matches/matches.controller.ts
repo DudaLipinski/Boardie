@@ -12,16 +12,18 @@ import type {
   MatchDTO,
   MatchUpdateData,
   Players,
+  BoardgameWinnersSummaryDTO,
 } from './matches.schema'
 import {
   matchUpdateDataSchema,
   matchCreationDataSchema,
   matchDTOSchema,
+  boardgameWinnersSummaryDTOSchema,
 } from './matches.schema'
 import { playerDtoToDbModel } from './players/players.schema'
 
 export const getUniqueFriendsFromPlayers = (
-  players: MatchCreationData['players']
+  players: MatchCreationData['players'],
 ) => {
   const friends = players.map((player) => player.friend)
 
@@ -30,7 +32,7 @@ export const getUniqueFriendsFromPlayers = (
     if (
       !uniqueFriends.find(
         (uniqueFriend) =>
-          friend.id === uniqueFriend.id && friend.type === uniqueFriend.type
+          friend.id === uniqueFriend.id && friend.type === uniqueFriend.type,
       )
     ) {
       uniqueFriends.push(friend)
@@ -42,7 +44,7 @@ export const getUniqueFriendsFromPlayers = (
 
 const checkPlayersFriendship = async (
   userId: number,
-  players: MatchCreationData['players'] | undefined
+  players: MatchCreationData['players'] | undefined,
 ) => {
   if (!players?.length) {
     return true
@@ -70,12 +72,12 @@ export const checkAccess = {
     match.authorId === userId ||
     match.players.some(
       (player) =>
-        player.friend.type === FriendType.USER && player.friend.id === userId
+        player.friend.type === FriendType.USER && player.friend.id === userId,
     ),
   update: async (
     userId: number,
     authorId: number | null,
-    involvedPlayers: Players
+    involvedPlayers: Players,
   ) => {
     if (authorId !== userId) {
       return false
@@ -158,7 +160,7 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
         description: 'No boardgame with the given id was found',
       },
     },
-  }
+  },
 )
 
 const getAllByLoggedUser = endpoint.GET('/me/matches')<
@@ -180,7 +182,7 @@ const getAllByLoggedUser = endpoint.GET('/me/matches')<
         schema: z.array(matchDTOSchema),
       },
     },
-  }
+  },
 )
 
 const getById = endpoint.GET('/matches/:matchId')<
@@ -224,14 +226,14 @@ const getById = endpoint.GET('/matches/:matchId')<
         description: 'The match was not found',
       },
     },
-  }
+  },
 )
 
 // TODO: add friendship validation
 const handlePlayersCRUD = async (
   matchId: number,
   players: MatchUpdateData['players'],
-  transaction: Transaction
+  transaction: Transaction,
 ) => {
   if (players?.create?.length) {
     const digestedPlayers = players.create.map((player) => ({
@@ -286,7 +288,7 @@ const update = endpoint.PUT('/matches/:matchId')<
       const matchUpdated = await matchesModel.update(
         matchId,
         matchDetails,
-        transaction
+        transaction,
       )
       if (!matchUpdated) {
         return false
@@ -328,7 +330,7 @@ const update = endpoint.PUT('/matches/:matchId')<
         description: 'The match was not found',
       },
     },
-  }
+  },
 )
 
 const deleteById = endpoint.DELETE('/matches/:matchId')<
@@ -376,7 +378,35 @@ const deleteById = endpoint.DELETE('/matches/:matchId')<
         description: 'The match was not found',
       },
     },
-  }
+  },
+)
+
+export const getWinnersSummary = endpoint.GET('/me/matches/winners/summary')<
+  void,
+  void,
+  {
+    winnersByBoardgame: BoardgameWinnersSummaryDTO[]
+    matchesCount: number
+  },
+  void
+>(
+  async (req, res) => {
+    res.status(200).send(await matchesModel.getWinnersSummary(req.userId))
+  },
+  {
+    summary: 'Gets the winners summary for the logged user',
+    tags: ['matches'],
+    responses: {
+      200: {
+        description:
+          'The summary of winners for matches played or authored by the user',
+        schema: z.object({
+          winnersByBoardgame: z.array(boardgameWinnersSummaryDTOSchema),
+          matchesCount: z.number(),
+        }),
+      },
+    },
+  },
 )
 
 export const endpoints = {
@@ -385,4 +415,5 @@ export const endpoints = {
   getById,
   update,
   deleteById,
+  getWinnersSummary,
 }

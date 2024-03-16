@@ -3,13 +3,10 @@ import * as friendsService from '../services/friend'
 import { MATCHES_KEY } from './match'
 
 const FRIENDS_KEY = 'friends'
-export const useFriends = () => {
-  const friendsQuery = useQuery(FRIENDS_KEY, friendsService.getFriends, {
+export const useFriends = () =>
+  useQuery(FRIENDS_KEY, friendsService.getFriends, {
     staleTime: Infinity,
   })
-
-  return friendsQuery
-}
 
 const CREATE_ANON_FRIEND_KEY = 'createAnonFriend'
 export const useAnonFriendCreation = () => {
@@ -29,7 +26,7 @@ export const useFriendshipRequests = () => {
     friendsService.getFriendshipRequests,
     {
       staleTime: 1000 * 60 * 3,
-    }
+    },
   )
 
   return friendsQuery
@@ -39,7 +36,7 @@ const CREATE_FRIENDSHIP_REQUEST_KEY = 'createFriendshipRequest'
 export const useFriendshipRequestCreation = () => {
   return useMutation(
     CREATE_FRIENDSHIP_REQUEST_KEY,
-    friendsService.createFriendshipRequest
+    friendsService.createFriendshipRequest,
   )
 }
 
@@ -56,7 +53,7 @@ export const useAnswerFriendshipRequest = () => {
         queryClient.invalidateQueries(FRIENDS_KEY)
         queryClient.invalidateQueries(FRIENDSHIP_REQUEST_KEY)
       },
-    }
+    },
   )
 }
 
@@ -73,7 +70,7 @@ export const useUpdateAnonFriend = () => {
         queryClient.invalidateQueries(FRIENDS_KEY)
         queryClient.invalidateQueries(MATCHES_KEY)
       },
-    }
+    },
   )
 }
 
@@ -93,12 +90,12 @@ const CREATE_ANON_FRIEND_INVITE_TOKEN = 'createAnonFriendInviteToken'
 export const useCreateAnonFriendInviteToken = () =>
   useMutation(
     CREATE_ANON_FRIEND_INVITE_TOKEN,
-    friendsService.createAnonFriendInviteToken
+    friendsService.createAnonFriendInviteToken,
   )
 
 const VERIFY_ANON_FRIEND_INVITE_TOKEN = 'verifyAnonFriendInviteToken'
 export const useVerifyAnonFriendInviteToken = () =>
   useMutation(
     VERIFY_ANON_FRIEND_INVITE_TOKEN,
-    friendsService.verifyAnonFriendInviteToken
+    friendsService.verifyAnonFriendInviteToken,
   )

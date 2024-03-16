@@ -20,7 +20,7 @@ export const getButtonClasses = (
   }: {
     variant: Variant
     size: Size
-  } = { variant: 'solid', size: 'lg' }
+  } = { variant: 'solid', size: 'lg' },
 ): string => {
   return variantStyles[variant](size)
 }

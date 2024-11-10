@@ -26,10 +26,13 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
   void
 >(
   async (req, res) => {
-    const { id } = await anonFriendsModel.create({
+    const id = await anonFriendsModel.create({
       ...req.body,
       userId: req.userId,
     })
+    if (!id) {
+      return res.sendStatus(500)
+    }
 
     res.status(201).send({
       id,
@@ -47,12 +50,12 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
         schema: anonFriendDTOSchema,
       },
     },
-  }
+  },
 )
 
 // QUESTIONING: the /me prefix might not be necessary here
 const generateInviteToken = endpoint.POST(
-  '/me/anonfriends/:anonFriendId/invite'
+  '/me/anonfriends/:anonFriendId/invite',
 )<
   { anonFriendId: z.infer<typeof anonFriendDTOSchema>['id'] },
   void,
@@ -101,7 +104,7 @@ const generateInviteToken = endpoint.POST(
         description: 'The friend does not exist',
       },
     },
-  }
+  },
 )
 
 const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
@@ -162,7 +165,7 @@ const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
           'The token is valid but the user/anon-friend do not exist anymore',
       },
     },
-  }
+  },
 )
 
 const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
@@ -212,7 +215,7 @@ const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
         description: 'The friend does not exist',
       },
     },
-  }
+  },
 )
 
 const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
@@ -259,7 +262,7 @@ const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
         description: 'The friend does not exist',
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

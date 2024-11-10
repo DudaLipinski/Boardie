@@ -23,16 +23,13 @@ const allWithoutPassword = [
 export const create = async (
   user: Omit<User, 'id'>,
   transaction?: Transaction,
-) => {
-  const result = await (transaction ?? kysely)
+) =>
+  await (transaction ?? kysely)
     .insertInto('user')
+    .ignore()
     .values(user)
-    .returning('id')
-    .onConflict((u) => u.column('email').doNothing())
     .executeTakeFirst()
-
-  return result?.id
-}
+    .then((result) => (result.insertId ? Number(result.insertId) : undefined))
 
 // TODO: fix this, we are now returning false when the user is not found
 // and also when the credentials are wrong
@@ -45,9 +42,9 @@ export const unregister = async (
     .set({
       unregisteredAt: CURRENT_DATETIME_QUERY,
     })
-    .where('id', '==', userId)
-    .where('email', '==', auth.email)
-    .where('password', '==', auth.password)
+    .where('id', '=', userId)
+    .where('email', '=', auth.email)
+    .where('password', '=', auth.password)
     .where('unregisteredAt', 'is', null)
     .executeTakeFirst()
 
@@ -58,7 +55,7 @@ export const getById = (id: number) =>
   kysely
     .selectFrom('user')
     .select(allWithoutPassword)
-    .where('id', '==', id)
+    .where('id', '=', id)
     .where('unregisteredAt', 'is', null)
     .executeTakeFirst()
 
@@ -66,7 +63,7 @@ export const getByEmail = (email: string) =>
   kysely
     .selectFrom('user')
     .select(allWithoutPassword)
-    .where('email', '==', email)
+    .where('email', '=', email)
     .where('unregisteredAt', 'is', null)
     .limit(1)
     .executeTakeFirst()
@@ -75,8 +72,8 @@ export const auth = (auth: Pick<User, 'email' | 'password'>) =>
   kysely
     .selectFrom('user')
     .select(allWithoutPassword)
-    .where('email', '==', auth.email)
-    .where('password', '==', auth.password)
+    .where('email', '=', auth.email)
+    .where('password', '=', auth.password)
     .where('unregisteredAt', 'is', null)
     .limit(1)
     .executeTakeFirst()
@@ -85,7 +82,7 @@ export const checkExistsById = (id: number) =>
   kysely
     .selectFrom('user')
     .select('id')
-    .where('id', '==', id)
+    .where('id', '=', id)
     .where('unregisteredAt', 'is', null)
     .limit(1)
     .executeTakeFirst()

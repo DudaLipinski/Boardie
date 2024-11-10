@@ -21,6 +21,7 @@ import {
   boardgameWinnersSummaryDTOSchema,
 } from './matches.schema'
 import { playerDtoToDbModel } from './players/players.schema'
+import { utcToMysql } from '../../utils/date.utils'
 
 export const getUniqueFriendsFromPlayers = (
   players: MatchCreationData['players'],
@@ -104,6 +105,8 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
 
     const match = {
       ...omit(matchCreationData, ['players']),
+      startedAt: utcToMysql(matchCreationData.startedAt),
+      endedAt: utcToMysql(matchCreationData.endedAt),
       authorId: userId,
     }
 
@@ -111,7 +114,10 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
       .transaction()
       .execute(async (transaction) => {
         // wrap match creation and player creation in a transaction
-        const { id: matchId } = await matchesModel.create(match, transaction)
+        const matchId = await matchesModel.create(match, transaction)
+        if (!matchId) {
+          throw new Error('Failed to create match')
+        }
 
         const { players } = matchCreationData
         const digestedPlayers = players.map((player) => ({
@@ -126,11 +132,14 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
       .catch((error) => ({ error }))
 
     if (typeof matchId !== 'number' && matchId?.error) {
+      console.log('--- matchId.error ---') // [XXX] REMOVE BEFORE COMMITING
+      console.log(matchId.error) // [XXX] REMOVE BEFORE COMMITING
       return matchId.error.code === 'SQLITE_CONSTRAINT_FOREIGNKEY'
         ? res.sendStatus(400)
         : res.sendStatus(500)
     }
     if (typeof matchId !== 'number') {
+      console.log('--- HERE ---') // [XXX] REMOVE BEFORE COMMITING
       return res.sendStatus(500)
     }
 

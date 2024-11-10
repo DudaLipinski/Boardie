@@ -23,7 +23,7 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
 >(
   async (req, res) => {
     const anonFriends = (await anonFriendsModel.getAllByUserId(req.userId)).map(
-      (friend) => ({ ...friend, type: FriendType.ANON_FRIEND })
+      (friend) => ({ ...friend, type: FriendType.ANON_FRIEND }),
     )
 
     const friends = (await friendsModel.getAllByUserId(req.userId)).map(
@@ -31,7 +31,7 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
         id: friend.id as number,
         fullName: `${friend.firstName} ${friend.middleAndSurname}`,
         type: FriendType.USER,
-      })
+      }),
     )
 
     res.status(200).send([...friends, ...anonFriends])
@@ -45,7 +45,7 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
         schema: z.array(genericFriendDTOSchema),
       },
     },
-  }
+  },
 )
 
 const sendRequest = endpoint.POST('/me/friends/requests')<
@@ -113,7 +113,7 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
           'The friendship already exists or the request was already sent',
       },
     },
-  }
+  },
 )
 
 const getAllRequests = endpoint.GET('/me/friends/requests')<
@@ -127,7 +127,7 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
       (request) => ({
         userId: request.userId as number,
         fullName: `${request.firstName} ${request.middleAndSurname}`,
-      })
+      }),
     )
 
     res.status(200).send(requests)
@@ -141,7 +141,7 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
         schema: z.array(existentFriendshipRequestSchema),
       },
     },
-  }
+  },
 )
 
 const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
@@ -166,7 +166,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
     const result = await kysely.transaction().execute(async (transaction) => {
       const requestWasFound = await friendsModel.deleteRequest(
         friendRequest,
-        transaction
+        transaction,
       )
       if (!requestWasFound) {
         return 'not-found' as const
@@ -180,7 +180,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
           requestingUserId: friendRequest.requestedUserId,
           requestedUserId: friendRequest.requestingUserId,
         },
-        transaction
+        transaction,
       )
 
       if (!accept) {
@@ -189,7 +189,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
 
       const friendshipCreated = await friendsModel.createFriendship(
         [friendRequest.requestingUserId, friendRequest.requestedUserId],
-        transaction
+        transaction,
       )
       if (!friendshipCreated) {
         return 'conflict' as const
@@ -227,7 +227,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
         description: 'The friendship already exists',
       },
     },
-  }
+  },
 )
 
 const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
@@ -270,7 +270,7 @@ const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
         description: 'The friendship does not exist',
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

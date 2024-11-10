@@ -16,8 +16,8 @@ interface OrderedFriendship {
 export const createFriendshipRequest = (request: FriendshipRequest) =>
   kysely
     .insertInto('friendship_request')
+    .ignore()
     .values(request)
-    .onConflict((f) => f.doNothing())
     .executeTakeFirst()
     .then((result) => result.numInsertedOrUpdatedRows === 1n)
 
@@ -26,17 +26,17 @@ export const getFriendshipRequests = async (userId: number) =>
     .selectFrom('friendship_request')
     .leftJoin('user', 'user.id', 'requestingUserId')
     .select(['user.id as userId', 'user.firstName', 'user.middleAndSurname'])
-    .where('requestedUserId', '==', userId)
+    .where('requestedUserId', '=', userId)
     .execute()
 
 export const deleteRequest = (
   { requestingUserId, requestedUserId }: FriendshipRequest,
-  transaction?: Transaction
+  transaction?: Transaction,
 ) => {
   return (transaction ?? kysely)
     .deleteFrom('friendship_request')
-    .where('requestedUserId', '==', requestedUserId)
-    .where('requestingUserId', '==', requestingUserId)
+    .where('requestedUserId', '=', requestedUserId)
+    .where('requestingUserId', '=', requestingUserId)
     .executeTakeFirst()
     .then((result) => result.numDeletedRows > 0)
 }
@@ -55,12 +55,12 @@ const getOrderedFriendship = ([
 
 export const createFriendship = (
   request: Friendship,
-  transaction: Transaction
+  transaction: Transaction,
 ) => {
   return (transaction ?? kysely)
     .insertInto('friendship')
+    .ignore()
     .values([getOrderedFriendship(request)])
-    .onConflict((f) => f.doNothing())
     .executeTakeFirst()
     .then((result) => result.numInsertedOrUpdatedRows === 1n)
 }
@@ -70,14 +70,14 @@ export const getAllByUserId = async (userId: number) => {
     .selectFrom('friendship')
     .leftJoin('user', 'user.id', 'biggerUserId')
     .select(['user.id', 'user.firstName', 'user.middleAndSurname'])
-    .where('smallerUserId', '==', userId)
+    .where('smallerUserId', '=', userId)
     .execute()
 
   const usersB = await kysely
     .selectFrom('friendship')
     .leftJoin('user', 'user.id', 'smallerUserId')
     .select(['user.id', 'user.firstName', 'user.middleAndSurname'])
-    .where('biggerUserId', '==', userId)
+    .where('biggerUserId', '=', userId)
     .execute()
 
   return [...usersA, ...usersB]
@@ -89,8 +89,8 @@ export const checkFriendshipExists = (friendship: Friendship) => {
   return kysely
     .selectFrom('friendship')
     .select('smallerUserId')
-    .where('smallerUserId', '==', smallerUserId)
-    .where('biggerUserId', '==', biggerUserId)
+    .where('smallerUserId', '=', smallerUserId)
+    .where('biggerUserId', '=', biggerUserId)
     .limit(1)
     .executeTakeFirst()
     .then((result) => result?.smallerUserId !== undefined)
@@ -99,7 +99,7 @@ export const checkFriendshipExists = (friendship: Friendship) => {
 export const genericCheckFriendshipExistsWith = async (
   userId: number,
   friendId: number,
-  friendType: FriendType
+  friendType: FriendType,
 ) => {
   if (friendType === FriendType.ANON_FRIEND) {
     const friendshipExists = await checkAnonFriendshipExists({
@@ -126,8 +126,8 @@ export const deleteFriendship = async (friendship: Friendship) => {
 
   return kysely
     .deleteFrom('friendship')
-    .where('smallerUserId', '==', smallerUserId)
-    .where('biggerUserId', '==', biggerUserId)
+    .where('smallerUserId', '=', smallerUserId)
+    .where('biggerUserId', '=', biggerUserId)
     .executeTakeFirst()
     .then((result) => result.numDeletedRows > 0)
 }

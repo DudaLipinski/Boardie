@@ -7,8 +7,8 @@ import { List, Box, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Alert } from '@components/Alert'
 import { Motion } from '@components/Motion'
-import { Title } from '@components/Title'
 import { MatchCard } from './MatchCard'
+import Header from '@components/Header'
 
 const MatchList = () => {
   const { data: matches, isError, error, isLoading } = useMatches()
@@ -18,7 +18,7 @@ const MatchList = () => {
       matches?.map((match: Match) => {
         return <MatchCard key={match.id} match={match} />
       }),
-    [matches]
+    [matches],
   )
 
   const listMatches = useMemo(
@@ -39,7 +39,7 @@ const MatchList = () => {
           <Typography>Start creating your first match! :)</Typography>
         </Box>
       ),
-    [matches?.length, matchesCards]
+    [matches?.length, matchesCards],
   )
 
   const content = isLoading ? (
@@ -53,8 +53,8 @@ const MatchList = () => {
   return (
     <Motion style={{ width: '100%', position: 'relative' }}>
       {isError && <Alert severity="error" message={getErrorMessage(error)} />}
-      <Box height="100%" overflow="auto">
-        <Title title="Matches" />
+      <Box height="100%">
+        <Header title="Matches" />
         {content}
       </Box>
     </Motion>

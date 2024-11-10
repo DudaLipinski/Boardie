@@ -10,15 +10,15 @@ import { userToPlayer } from '@src/utils/friends'
 import { getErrorMessage } from '@src/utils/api'
 import { EDIT_MATCH } from '@src/routes/routeSpecs'
 
-import { Box, Button, Stack } from '@mui/material'
+import { Box, IconButton, Stack } from '@mui/material'
 import { Players } from '@components/Match/Players'
 import { MatchDetails } from '@components/Match/MatchDetails'
 import { Alert } from '@components/Alert'
 import { FabSubmit } from '@components/FabSubmit'
 import { Motion } from '@components/Motion'
-import { Title } from '@components/Title'
 
 import CloseIcon from '@mui/icons-material/Close'
+import Header from '@components/Header'
 
 const MatchCreation = () => {
   const navigate = useNavigate()
@@ -73,29 +73,34 @@ const MatchCreation = () => {
     <Motion>
       <Box
         component="form"
-        gap="12px"
         height="100%"
         position="relative"
         onSubmit={handleSubmit(onSubmit)}
       >
         {isError && <Alert severity="error" message={getErrorMessage(error)} />}
-        <Stack spacing={2} height="inherit" overflow="hidden auto">
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            marginBottom={1}
-          >
-            <Title title="Create Match" />
-            <Button
+        <Stack
+          spacing={2}
+          height="inherit"
+          display="block"
+          overflow="hidden auto"
+          paddingBottom="96px"
+          sx={{
+            'scrollbar-width': 'none',
+            '&::-webkit-scrollbar': {
+              width: '0px',
+              height: '0px',
+            },
+          }}
+        >
+          <Header title="Create Match">
+            <IconButton
               aria-label="Close"
               onClick={() => navigate(-1)}
-              variant="outlined"
-              sx={{ minWidth: '20px', padding: '8px 8px' }}
+              size="medium"
             >
               <CloseIcon />
-            </Button>
-          </Box>
+            </IconButton>
+          </Header>
           <MatchDetails control={control} />
           <Players control={control} />
         </Stack>

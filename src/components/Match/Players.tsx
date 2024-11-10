@@ -43,14 +43,6 @@ export const Players = ({ control }: Props) => {
         <Typography variant="h3" component="h3">
           Players
         </Typography>
-        <Button
-          variant="outlined"
-          size="small"
-          type="button"
-          onClick={addPlayer}
-        >
-          Add new +
-        </Button>
       </Box>
       <Stack
         spacing={2}
@@ -68,6 +60,15 @@ export const Players = ({ control }: Props) => {
           />
         ))}
       </Stack>
+      <Button
+        variant="outlined"
+        size="small"
+        type="button"
+        onClick={addPlayer}
+        sx={{ width: '100%' }}
+      >
+        Add player
+      </Button>
     </>
   )
 }

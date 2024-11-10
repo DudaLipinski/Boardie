@@ -4,6 +4,6 @@ export const styledFloatButton = {
   bottom: 25,
   right: 0,
   width: 'auto',
-  minWidth: 45,
+  minWidth: 90,
   height: 45,
 }

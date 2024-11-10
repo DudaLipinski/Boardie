@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { useFriendshipRequests } from '@src/queries/friends'
 
 import { Motion } from '@components/Motion'
-import { Title } from '@components/Title'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { FriendshipRequestCard } from './FriendshipRequestCard'
+import Header from '@components/Header'
 
 const FriendsRequests = () => {
   const navigate = useNavigate()
@@ -20,7 +19,7 @@ const FriendsRequests = () => {
           friendshipRequest={friendshipRequest}
         />
       )),
-    [friendsRequests]
+    [friendsRequests],
   )
 
   return (
@@ -31,23 +30,7 @@ const FriendsRequests = () => {
         flexDirection: 'column',
       }}
     >
-      <Box
-        display="flex"
-        justifyContent="start"
-        alignItems="center"
-        gap="16px"
-        marginBottom="12px"
-      >
-        <Button
-          aria-label="Close"
-          onClick={() => navigate(-1)}
-          variant="outlined"
-          sx={{ minWidth: '20px', padding: '8px 8px' }}
-        >
-          <ArrowBackIosNewIcon />
-        </Button>
-        <Title title="Friends requests" />
-      </Box>
+      <Header title="Friends requests" onBack={() => navigate(-1)} />
       {friendsRequests?.length ? (
         friendshipRequestsCards
       ) : (

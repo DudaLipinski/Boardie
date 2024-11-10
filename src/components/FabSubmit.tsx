@@ -3,29 +3,23 @@ import { CircularProgress, Fab, Typography } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import { styledFloatButton } from '../styles/floatingButton'
 
-const fabProps = {
-  color: 'primary' as const,
-  variant: 'extended' as const,
-  sx: { ...styledFloatButton },
-  type: 'submit' as const,
-}
-
-const fabTextProps = {
-  variant: 'button' as const,
-  fontSize: 14,
-  component: 'p' as const,
-  sx: { mr: 0.4 },
-}
-
 export const FabSubmit = ({ isLoading }: { isLoading: boolean }) => (
-  <Fab disabled={isLoading} {...fabProps}>
-    {isLoading ? null : (
-      <CheckIcon fontSize="small" sx={{ marginRight: '4px' }} />
-    )}
+  <Fab
+    disabled={isLoading}
+    color="primary"
+    variant="extended"
+    type="submit"
+    sx={{ ...styledFloatButton }}
+  >
     {isLoading ? (
-      <CircularProgress size="24px" />
+      <CircularProgress size="24px" sx={{ color: '#000' }} />
     ) : (
-      <Typography {...fabTextProps}>Save</Typography>
+      <>
+        <CheckIcon fontSize="small" sx={{ marginRight: '4px' }} />
+        <Typography variant="button" fontSize={14}>
+          Save
+        </Typography>
+      </>
     )}
   </Fab>
 )

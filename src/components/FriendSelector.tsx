@@ -47,7 +47,7 @@ export const FriendSelector = ({
 
   const handleChange = (
     _: React.SyntheticEvent<Element, Event>,
-    newValue: string | ExistentOrNewFriend | null
+    newValue: string | ExistentOrNewFriend | null,
   ) => {
     const newFriendFullName =
       typeof newValue === 'string' ? newValue : newValue?.newFriendName
@@ -72,14 +72,14 @@ export const FriendSelector = ({
 
   const filterOptions = (
     options: ExistentOrNewFriend[],
-    params: FilterOptionsState<ExistentOrNewFriend>
+    params: FilterOptionsState<ExistentOrNewFriend>,
   ) => {
     const filtered = filter(options, params)
     const { inputValue } = params
 
     const alreadyExists = options.some(
       (option: { fullName: string }) =>
-        option.fullName.toLowerCase() === inputValue.toLowerCase()
+        option.fullName.toLowerCase() === inputValue.toLowerCase(),
     )
 
     if (inputValue !== '' && !alreadyExists) {
@@ -155,7 +155,7 @@ export const FriendSelector = ({
             required
             {...params}
             size="small"
-            label="Add player"
+            label="Player's name"
             placeholder="Select a friend or create one"
           />
         )}

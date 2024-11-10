@@ -1,4 +1,11 @@
-import { Modal, Typography, TextField, Button, Box } from '@mui/material'
+import {
+  Modal,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  IconButton,
+} from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 import { useEffect, useRef } from 'react'
@@ -15,7 +22,7 @@ const style = {
   width: 344,
   bgcolor: 'background.paper',
   borderRadius: 'var(--border-radius)',
-  padding: '24px 32px',
+  padding: '16px',
 }
 
 interface Props {
@@ -81,7 +88,7 @@ export const SendFriendRequestModal = ({ setOpen, open }: Props) => {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          marginBottom="22px"
+          marginBottom="12px"
         >
           <Typography
             variant="h5"
@@ -91,14 +98,13 @@ export const SendFriendRequestModal = ({ setOpen, open }: Props) => {
           >
             Add a new friend
           </Typography>
-          <Button
+          <IconButton
             aria-label="Close"
             onClick={() => setOpen(false)}
-            variant="outlined"
             sx={{ minWidth: '20px', padding: '6px' }}
           >
             <CloseIcon />
-          </Button>
+          </IconButton>
         </Box>
         {isError && <Alert severity="error" message={getErrorMessage(error)} />}
         {isSuccess && <Alert severity="success" message="Request sent!" />}

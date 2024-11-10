@@ -15,7 +15,7 @@ import { FabSubmit } from '@components/FabSubmit'
 import { Alert } from '@components/Alert'
 import { FullScreenLoader } from '@components/FullScreenLoader'
 import { Motion } from '@components/Motion'
-import { Title } from '@components/Title'
+import Header from '@components/Header'
 
 const MatchEdition = () => {
   const { id } = useParams()
@@ -44,7 +44,7 @@ const MatchEdition = () => {
   useEffect(() => {
     if (data) {
       reset(
-        pick(data, ['boardgame', 'startedAt', 'endedAt', 'notes', 'players'])
+        pick(data, ['boardgame', 'startedAt', 'endedAt', 'notes', 'players']),
       )
     }
 
@@ -72,7 +72,7 @@ const MatchEdition = () => {
     const updatedPlayers = receivedPlayers
       .filter((receivedPlayer) => {
         const oldPlayer = initialPlayers?.find(
-          (player) => player.id === receivedPlayer.id
+          (player) => player.id === receivedPlayer.id,
         )
         return (
           oldPlayer &&
@@ -99,7 +99,7 @@ const MatchEdition = () => {
     const deletedPlayers = initialPlayers
       ?.filter(
         (oldPlayer) =>
-          !receivedPlayers.find((newPlayer) => newPlayer.id === oldPlayer.id)
+          !receivedPlayers.find((newPlayer) => newPlayer.id === oldPlayer.id),
       )
       .map((player) => player.id)
 
@@ -128,14 +128,26 @@ const MatchEdition = () => {
           {isError && (
             <Alert severity="error" message={getErrorMessage(error)} />
           )}
-          <Stack spacing={2} overflow="hidden auto" height="inherit">
+          <Stack
+            spacing={2}
+            overflow="hidden auto"
+            height="inherit"
+            paddingBottom="96px"
+            sx={{
+              'scrollbar-width': 'none',
+              '&::-webkit-scrollbar': {
+                width: '0px',
+                height: '0px',
+              },
+            }}
+          >
             {isErrorMatchUpdate && (
               <Alert
                 severity="error"
                 message={getErrorMessage(errorMatchUpdate)}
               />
             )}
-            <Title title="Edit Match" sx={{ paddingBottom: 1 }} />
+            <Header title="Edit Match" />
             <MatchDetails control={control} />
             <Players control={control} />
           </Stack>

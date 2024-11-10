@@ -13,7 +13,7 @@ import { WinPercentageDoughnut } from './WinPercentageDoughnut'
 import { WinCountBar } from './WinCountBar'
 import Tabs from '@mui/material/Tabs/Tabs'
 import { Tab } from '@mui/material'
-import { Title } from '@components/Title'
+import Header from '@components/Header'
 
 Chart.register(ChartDataLabels)
 Chart.register(...registerables)
@@ -114,7 +114,7 @@ const Dashboard = () => {
 
   return (
     <Motion style={{ width: '100%' }}>
-      <Title title="Wins" />
+      <Header title="Wins" />
 
       <Tabs
         variant="fullWidth"

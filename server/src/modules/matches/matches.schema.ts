@@ -63,6 +63,7 @@ export const matchUpdateDataSchema = matchSchema
 
 export const boardgameWinnersSummaryDTOSchema = z.object({
   boardgame: boardgameDtoSchema,
+  unknownPlayersWins: z.number(),
   players: z.array(
     z.object({
       id: z.number(),

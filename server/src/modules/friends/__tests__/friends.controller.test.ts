@@ -4,9 +4,9 @@ import type { AnonFriendDTO } from '../anonFriends/anonFriends.schema'
 import type { FriendshipRequest, GenericFriend } from '../friends.schema'
 import type { UserDTO } from '../../users/users.schema'
 import { SERVER_URL } from '../../../utils/testing.utils'
-import { createAnonFriend } from '../anonFriends/__tests__/anonFriends.controllers.mocks'
 import { createFriendship } from './friends.controller.mocks'
 import { createUser } from '../../users/__tests__/users.controller.mocks'
+import { anonFriendsControllerMocks } from '../anonFriends/__tests__/anonFriends.controllers.mocks'
 
 const getRequestingAndAnsweringUserPair = async () => ({
   requestingUser: await createUser(),
@@ -229,7 +229,9 @@ describe('GET /me/friends', () => {
     const { requestingUser, answeringUser } =
       await getRequestingAndAnsweringUserPair()
     await createFriendship({ requestingUser, answeringUser })
-    const anonFriend = await createAnonFriend(requestingUser.data.id)
+    const anonFriend = await anonFriendsControllerMocks.createAnonFriend(
+      requestingUser.data.id,
+    )
 
     const friends = (
       await axios.get<GenericFriend[]>(

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { getAuthConfig, SERVER_URL } from '../../utils/testing.utils'
-import type { UserCreationData, UserDTO } from './users.schema'
+import { getAuthConfig, SERVER_URL } from '../../../utils/testing.utils'
+import type { UserCreationData, UserDTO } from '../users.schema'
 import * as userMocks from './users.schema.mocks'
 
 export const createUser = async (creationDataParam?: UserCreationData) => {

@@ -1,8 +1,8 @@
-import type { AnonFriendCreationData } from './anonFriends.schema'
-import { getRandomNumber } from '../../../utils/schema.mocks.utils'
+import type { AnonFriendCreationData } from '../anonFriends.schema'
+import { getRandomNumber } from '../../../../utils/schema.mocks.utils'
 
 export const getCreationData = (
-  params?: AnonFriendCreationData
+  params?: AnonFriendCreationData,
 ): AnonFriendCreationData => {
   const hash = getRandomNumber()
   return {

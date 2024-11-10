@@ -1,9 +1,9 @@
 import axios from 'axios'
 import type { UserDTO } from '../users.schema'
 import { userDTOSchema } from '../users.schema'
-import * as userMocks from '../users.schema.mocks'
+import * as userMocks from './users.schema.mocks'
 import { getAuthConfig, SERVER_URL } from '../../../utils/testing.utils'
-import { createUser } from '../users.controller.mocks'
+import { createUser } from './users.controller.mocks'
 
 describe('POST /me', () => {
   it('creates the user properly', async () => {
@@ -26,7 +26,7 @@ describe('GET /me', () => {
 
     const { data: userDTO } = await axios.get<UserDTO>(
       `${SERVER_URL}/me`,
-      getAuthConfig(userId)
+      getAuthConfig(userId),
     )
 
     expect(userDTO).toMatchObject({ id: userId, ...userData })

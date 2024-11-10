@@ -4,9 +4,9 @@ import type { AnonFriendDTO } from '../anonFriends/anonFriends.schema'
 import type { FriendshipRequest, GenericFriend } from '../friends.schema'
 import type { UserDTO } from '../../users/users.schema'
 import { SERVER_URL } from '../../../utils/testing.utils'
-import { createAnonFriend } from '../anonFriends/anonFriends.controllers.mocks'
-import { createFriendship } from '../friends.controller.mocks'
-import { createUser } from '../../users/users.controller.mocks'
+import { createAnonFriend } from '../anonFriends/__tests__/anonFriends.controllers.mocks'
+import { createFriendship } from './friends.controller.mocks'
+import { createUser } from '../../users/__tests__/users.controller.mocks'
 
 const getRequestingAndAnsweringUserPair = async () => ({
   requestingUser: await createUser(),
@@ -37,12 +37,12 @@ describe('POST /me/friends/requests', () => {
     await axios.post(
       `${SERVER_URL}/me/friends/requests`,
       { userEmail: answeringUser.data.email },
-      requestingUser.auth
+      requestingUser.auth,
     )
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends/requests`, answeringUser.auth)
-      ).data.some(checkFriendRequestComesFromUser(requestingUser.data))
+      ).data.some(checkFriendRequestComesFromUser(requestingUser.data)),
     ).toBeTruthy()
   })
 
@@ -53,7 +53,7 @@ describe('POST /me/friends/requests', () => {
       .post(
         `${SERVER_URL}/me/friends/requests`,
         { userEmail: 'non@existent.email' },
-        requestingUser.auth
+        requestingUser.auth,
       )
       .then(() => {
         throw new Error('Should have thrown a 404 error')
@@ -73,7 +73,7 @@ describe('POST /me/friends/requests', () => {
       .post(
         `${SERVER_URL}/me/friends/requests`,
         { userEmail: answeringUser.data.email },
-        requestingUser.auth
+        requestingUser.auth,
       )
       .then(() => {
         throw new Error('Should have thrown a 409 error')
@@ -90,14 +90,14 @@ describe('POST /me/friends/requests', () => {
     await axios.post(
       `${SERVER_URL}/me/friends/requests`,
       { userEmail: answeringUser.data.email },
-      requestingUser.auth
+      requestingUser.auth,
     )
 
     await axios
       .post(
         `${SERVER_URL}/me/friends/requests`,
         { userEmail: answeringUser.data.email },
-        requestingUser.auth
+        requestingUser.auth,
       )
       .then(() => {
         throw new Error('Should have thrown a 409 error')
@@ -117,25 +117,25 @@ describe('GET /me/friends/requests', () => {
     await axios.post(
       `${SERVER_URL}/me/friends/requests`,
       { userEmail: answeringUser.data.email },
-      requestingUser.auth
+      requestingUser.auth,
     )
     await axios.post(
       `${SERVER_URL}/me/friends/requests`,
       { userEmail: answeringUser.data.email },
-      secondRequestingUser.auth
+      secondRequestingUser.auth,
     )
 
     const { data: friendRequests } = await axios.get(
       `${SERVER_URL}/me/friends/requests`,
-      answeringUser.auth
+      answeringUser.auth,
     )
     expect(
-      friendRequests.some(checkFriendRequestComesFromUser(requestingUser.data))
+      friendRequests.some(checkFriendRequestComesFromUser(requestingUser.data)),
     ).toBeTruthy()
     expect(
       friendRequests.some(
-        checkFriendRequestComesFromUser(secondRequestingUser.data)
-      )
+        checkFriendRequestComesFromUser(secondRequestingUser.data),
+      ),
     ).toBeTruthy()
   })
 })
@@ -147,29 +147,29 @@ describe('PUT /me/friends/requests/:userId', () => {
     await axios.post(
       `${SERVER_URL}/me/friends/requests`,
       { userEmail: answeringUser.data.email },
-      requestingUser.auth
+      requestingUser.auth,
     )
 
     await axios.put(
       `${SERVER_URL}/me/friends/requests/${requestingUser.data.id}`,
       { accept: true },
-      answeringUser.auth
+      answeringUser.auth,
     )
 
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends/requests`, answeringUser.auth)
-      ).data.some(checkFriendRequestComesFromUser(requestingUser.data))
+      ).data.some(checkFriendRequestComesFromUser(requestingUser.data)),
     ).toBeFalsy()
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends`, answeringUser.auth)
-      ).data.some(checkFriendMatchesUser(requestingUser.data))
+      ).data.some(checkFriendMatchesUser(requestingUser.data)),
     ).toBeTruthy()
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends`, requestingUser.auth)
-      ).data.some(checkFriendMatchesUser(answeringUser.data))
+      ).data.some(checkFriendMatchesUser(answeringUser.data)),
     ).toBeTruthy()
   })
 
@@ -179,29 +179,29 @@ describe('PUT /me/friends/requests/:userId', () => {
     await axios.post(
       `${SERVER_URL}/me/friends/requests`,
       { userEmail: answeringUser.data.email },
-      requestingUser.auth
+      requestingUser.auth,
     )
 
     await axios.put(
       `${SERVER_URL}/me/friends/requests/${requestingUser.data.id}`,
       { accept: false },
-      answeringUser.auth
+      answeringUser.auth,
     )
 
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends/requests`, answeringUser.auth)
-      ).data.some(checkFriendRequestComesFromUser(requestingUser.data))
+      ).data.some(checkFriendRequestComesFromUser(requestingUser.data)),
     ).toBeFalsy()
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends`, answeringUser.auth)
-      ).data.some(checkFriendMatchesUser(requestingUser.data))
+      ).data.some(checkFriendMatchesUser(requestingUser.data)),
     ).toBeFalsy()
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends`, requestingUser.auth)
-      ).data.some(checkFriendMatchesUser(answeringUser.data))
+      ).data.some(checkFriendMatchesUser(answeringUser.data)),
     ).toBeFalsy()
   })
 
@@ -213,7 +213,7 @@ describe('PUT /me/friends/requests/:userId', () => {
       .put(
         `${SERVER_URL}/me/friends/requests/${requestingUser.data.id}`,
         { accept: false },
-        answeringUser.auth
+        answeringUser.auth,
       )
       .then(() => {
         throw new Error('Should have thrown a 404 error')
@@ -234,13 +234,13 @@ describe('GET /me/friends', () => {
     const friends = (
       await axios.get<GenericFriend[]>(
         `${SERVER_URL}/me/friends`,
-        requestingUser.auth
+        requestingUser.auth,
       )
     ).data
 
     expect(friends.length).toBe(2)
     expect(
-      friends.some(checkFriendMatchesUser(answeringUser.data))
+      friends.some(checkFriendMatchesUser(answeringUser.data)),
     ).toBeTruthy()
     expect(friends.some(checkFriendMatchesAnonFriend(anonFriend))).toBeTruthy()
   })
@@ -254,13 +254,13 @@ describe('DELETE /me/friends/:userId', () => {
 
     await axios.delete(
       `${SERVER_URL}/me/friends/${answeringUser.data.id}`,
-      requestingUser.auth
+      requestingUser.auth,
     )
 
     expect(
       (
         await axios.get(`${SERVER_URL}/me/friends`, requestingUser.auth)
-      ).data.some(checkFriendMatchesUser(answeringUser.data))
+      ).data.some(checkFriendMatchesUser(answeringUser.data)),
     ).toBeFalsy()
   })
 

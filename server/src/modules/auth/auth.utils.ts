@@ -29,7 +29,7 @@ const unauthenticatedEndpoints = [
 export const authenticateToken: RequestHandler = (req, res, next) => {
   if (
     unauthenticatedEndpoints.some(
-      ({ path, method }) => req.path === path && req.method === method
+      ({ path, method }) => req.path === path && req.method === method,
     )
   ) {
     return next()
@@ -58,6 +58,6 @@ export const authenticateToken: RequestHandler = (req, res, next) => {
       req.userId = payload.userId
 
       next()
-    }
+    },
   )
 }

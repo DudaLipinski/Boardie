@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { userDTOSchema } from '../../users/users.schema'
-import * as userMocks from '../../users/users.schema.mocks'
+import * as userMocks from '../../users/__tests__/users.schema.mocks'
 import { SERVER_URL } from '../../../utils/testing.utils'
-import { createUser } from '../../users/users.controller.mocks'
+import { createUser } from '../../users/__tests__/users.controller.mocks'
 import type { Auth } from '../auth.schema'
 
 describe('POST /auth', () => {

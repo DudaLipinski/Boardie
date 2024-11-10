@@ -32,6 +32,17 @@ const draculaColors = [
 const getUserKey = (friend: { type: string; id: number }) =>
   `${friend.type}${friend.id}`
 
+const getPercentage = (
+  winsMappedByPlayer: Record<string, number>,
+  wins: number,
+) => {
+  const total = Object.values(winsMappedByPlayer).reduce(
+    (acc, wins) => acc + wins,
+    0,
+  )
+  return wins / total
+}
+
 const Dashboard = () => {
   const winnersSummaryQuery = useWinnersSummary()
   const userQuery = useUser()
@@ -44,7 +55,7 @@ const Dashboard = () => {
       return
     }
 
-    const { winnersByBoardgame, matchesCount } = winnersSummaryQuery.data
+    const { winnersByBoardgame } = winnersSummaryQuery.data
 
     const winsMappedByPlayer = winnersByBoardgame.reduce(
       (result, boardgameSummary) => {
@@ -81,7 +92,9 @@ const Dashboard = () => {
             playerKey,
             // @NOTE: Should backend return the name of the anon player?
             name: friendNames[playerKey] || 'Anon',
-            value: byPercentage ? wins / matchesCount : wins,
+            value: byPercentage
+              ? getPercentage(winsMappedByPlayer, wins)
+              : wins,
             type: 'count',
           }
         })

@@ -2,7 +2,6 @@ import { Box, Button, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { Motion } from '@components/Motion'
 import { useFriends, useFriendshipRequests } from '@src/queries/friends'
-import { Title } from '@components/Title'
 import { FriendCard } from './FriendCard'
 import { SendFriendRequestModal } from './SendFriendRequestModal'
 import { FriendshipRequests } from './FriendshipRequests'
@@ -11,6 +10,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { Trans } from '@lingui/macro'
 import { Tooltip } from '@components/Tooltip'
+import Header from '@components/Header'
 
 const Friends = () => {
   const [openFriendRequestModal, setOpenFriendRequestModal] = useState(false)
@@ -19,12 +19,12 @@ const Friends = () => {
 
   const anonFriends = useMemo(
     () => friends?.filter((friend) => friend.type === 'ANON_FRIEND'),
-    [friends]
+    [friends],
   )
 
   const userFriends = useMemo(
     () => friends?.filter((friend) => friend.type === 'USER'),
-    [friends]
+    [friends],
   )
 
   const userFriendsCards = useMemo(
@@ -32,7 +32,7 @@ const Friends = () => {
       userFriends?.map((friend) => (
         <FriendCard key={friend.id} friend={friend} />
       )),
-    [userFriends]
+    [userFriends],
   )
 
   const anonFriendsCards = useMemo(
@@ -40,29 +40,22 @@ const Friends = () => {
       anonFriends?.map((friend) => (
         <AnonFriendCard key={friend.id} friend={friend} />
       )),
-    [anonFriends]
+    [anonFriends],
   )
 
   return (
     <Motion style={{ width: '100%' }}>
       <Box>
-        <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
-          padding="20px 0 30px"
-        >
-          <Title title="Friends" sx={{ margin: 0 }} />
+        <Header title="Friends">
           <Button
             variant="contained"
-            size="medium"
+            size="small"
             type="button"
             onClick={() => setOpenFriendRequestModal(true)}
           >
-            <Trans>Add new</Trans> +
+            <Trans>Add friend</Trans>
           </Button>
-        </Box>
+        </Header>
 
         {friendsRequests?.length ? (
           <FriendshipRequests friendshipRequest={friendsRequests} />

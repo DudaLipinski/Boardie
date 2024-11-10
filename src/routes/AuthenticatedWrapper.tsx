@@ -22,14 +22,19 @@ export const AuthenticatedWrapper = () => {
   }
 
   return (
-    <Box height="inherit" display="flex" flexDirection="column" width="inherit">
+    <Box
+      height="inherit"
+      display="flex"
+      flexDirection="column"
+      width="inherit"
+      justifyContent="space-between"
+    >
       <Box
-        display="flex"
-        padding="24px 24px 0 24px"
-        flex="1"
+        component="main"
+        padding="0 24px"
         height="inherit"
         overflow="hidden auto"
-        component="main"
+        display="flex"
       >
         {isLoading ? null : <AuthenticatedRoutes />}
       </Box>

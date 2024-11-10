@@ -14,7 +14,7 @@ const styledDialog = {
   width: '344px',
   margin: 0,
   borderRadius: 'var(--border-radius)',
-  padding: '24px 32px',
+  padding: '16px',
   bgcolor: 'background.paper',
   backgroundImage: 'none',
 }
@@ -51,7 +51,7 @@ export const DeleteDialog = ({
     >
       <DialogTitle
         id="alert-dialog-title"
-        padding="0 0 10px 0!important"
+        padding="0 0 8px 0!important"
         fontWeight="700"
         component="h3"
         variant="h5"
@@ -65,7 +65,7 @@ export const DeleteDialog = ({
           </Button>
         ) : (
           <Button variant="contained" onClick={handleYesClick} autoFocus>
-            Confirm
+            Delete
           </Button>
         )}
         <Button variant="outlined" onClick={handleNoClick}>

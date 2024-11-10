@@ -3,7 +3,7 @@ import { useLogout } from '@src/routes/useLogout'
 
 import { Box, Button, Typography } from '@mui/material'
 import { Motion } from '@components/Motion'
-import { Title } from '@components/Title'
+import Header from '@components/Header'
 
 const Profile = () => {
   const { data: user } = useUser()
@@ -12,7 +12,7 @@ const Profile = () => {
   return (
     <Motion style={{ width: '100%' }}>
       <Box width="inherit">
-        <Title title="Profile" />
+        <Header title="Profile" />
         <Typography variant="body1" component="p" margin="10px 0">
           Name: {user?.firstName} {user?.middleAndSurname}
         </Typography>

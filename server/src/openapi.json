@@ -1260,6 +1260,9 @@
                             ],
                             "additionalProperties": false
                           },
+                          "unknownPlayersWins": {
+                            "type": "number"
+                          },
                           "players": {
                             "type": "array",
                             "items": {
@@ -1290,6 +1293,7 @@
                         },
                         "required": [
                           "boardgame",
+                          "unknownPlayersWins",
                           "players"
                         ],
                         "additionalProperties": false

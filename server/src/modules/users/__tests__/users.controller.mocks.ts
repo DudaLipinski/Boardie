@@ -12,3 +12,7 @@ export const createUser = async (creationDataParam?: UserCreationData) => {
     auth: getAuthConfig(data.id),
   }
 }
+
+export const userControllerMocks = {
+  createUser,
+}

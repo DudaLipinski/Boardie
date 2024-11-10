@@ -22,7 +22,7 @@ const allWithoutPassword = [
 
 export const create = async (
   user: Omit<User, 'id'>,
-  transaction?: Transaction
+  transaction?: Transaction,
 ) => {
   const result = await (transaction ?? kysely)
     .insertInto('user')
@@ -38,7 +38,7 @@ export const create = async (
 // and also when the credentials are wrong
 export const unregister = async (
   userId: number,
-  auth: Pick<User, 'email' | 'password'>
+  auth: Pick<User, 'email' | 'password'>,
 ) => {
   const result = await kysely
     .updateTable('user')

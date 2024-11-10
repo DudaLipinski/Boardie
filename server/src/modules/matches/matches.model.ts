@@ -6,6 +6,8 @@ import * as boardgamesModel from '../boardgames/boardgames.model'
 import { FriendType } from '../friends/friends.schema'
 import type { Boardgame } from '../boardgames/boardgames.model'
 import * as playersModel from './players/players.model'
+import * as friendsModel from '../friends/friends.model'
+import * as anonFriendsModel from '../friends/anonFriends/anonFriends.model'
 
 export interface Match {
   id: number
@@ -127,6 +129,7 @@ export const deleteById = (params: { id: number }) =>
 
 type BoardgameWinnersSummary = {
   boardgame: Boardgame
+  unknownPlayersWins: number
   players: {
     id: number
     type: FriendType
@@ -139,6 +142,13 @@ export const getWinnersSummary = async (userId: number) => {
   const matchIds = await matchesAuthoredOrPlayedByUserQuery(userId)
     .execute()
     .then((result) => result.map((row) => row.id))
+
+  const friendIds = new Set(
+    (await friendsModel.getAllByUserId(userId)).map((f) => f.id),
+  )
+  const anonFriendIds = new Set(
+    (await anonFriendsModel.getAllByUserId(userId)).map((f) => f.id),
+  )
 
   const winnersByBoardgame = await kysely
     .selectFrom('player')
@@ -163,9 +173,18 @@ export const getWinnersSummary = async (userId: number) => {
 
         if (!summary[row.boardgameId]) {
           summary[row.boardgameId] = {
+            unknownPlayersWins: 0,
             boardgame: boardgamesById[row.boardgameId],
             players: [],
           }
+        }
+
+        if (
+          (row.userId !== userId && row.userId && !friendIds.has(row.userId)) ||
+          (row.anonFriendId && !anonFriendIds.has(row.anonFriendId))
+        ) {
+          summary[row.boardgameId].unknownPlayersWins += row.wins
+          return
         }
 
         summary[row.boardgameId]!.players.push({

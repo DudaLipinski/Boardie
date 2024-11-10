@@ -14,3 +14,7 @@ export const getCreationData = (
     ...params,
   }
 }
+
+export const userMocks = {
+  getCreationData,
+}

@@ -69,29 +69,33 @@ const Dashboard = () => {
     )
     friendNames[`USER${userQuery.data?.id}`] = 'You'
 
-    const winsByPlayer = Object.entries(winsMappedByPlayer || {})
-      .map(([playerKey, wins]) => ({
-        playerKey,
-        name: friendNames[playerKey],
-        value: wins,
-        type: 'count',
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name))
+    const getWinsByPlayer = (
+      winsMappedByPlayer: Record<string, number>,
+      options?: { byPercentage: boolean },
+    ) => {
+      const { byPercentage } = options || {}
 
-    const winPercentageByPlayer = Object.entries(winsMappedByPlayer || {})
-      .map(([playerKey, wins]) => ({
-        playerKey,
-        name: friendNames[playerKey],
-        value: wins / matchesCount,
-        type: 'percentage',
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name))
+      return Object.entries(winsMappedByPlayer || {})
+        .map(([playerKey, wins]) => {
+          return {
+            playerKey,
+            // @NOTE: Should backend return the name of the anon player?
+            name: friendNames[playerKey] || 'Anon',
+            value: byPercentage ? wins / matchesCount : wins,
+            type: 'count',
+          }
+        })
+        .sort((a, b) => a.name.localeCompare(b.name))
+    }
+
+    const winsByPlayer = getWinsByPlayer(winsMappedByPlayer)
+    const winPercentageByPlayer = getWinsByPlayer(winsMappedByPlayer, {
+      byPercentage: true,
+    })
 
     const playerKeys = Object.keys(winsMappedByPlayer)
 
-    const labels = Object.values(winsByPlayer)
-      .map((player) => player.name)
-      .sort((a, b) => a.localeCompare(b))
+    const labels = Object.values(winsByPlayer).map((player) => player.name)
 
     return {
       labels,

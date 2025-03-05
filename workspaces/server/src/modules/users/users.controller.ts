@@ -23,12 +23,12 @@ const createUser = async (user: z.infer<typeof userCreationDataSchema>) => {
 const createUserFromAnonFriend = (
   user: z.infer<typeof userCreationDataSchema>,
   referringUserId: number,
-  anonFriendId: number
+  anonFriendId: number,
 ) =>
   kysely.transaction().execute(async (transaction) => {
     const id = await userModel.create(
       { ...user, referredByUserId: referringUserId },
-      transaction
+      transaction,
     )
     if (!id) {
       return { error: 409 }
@@ -38,7 +38,7 @@ const createUserFromAnonFriend = (
 
     await playersModel.transferAllFromAnonFriendToUser(
       { userId: id, anonFriendId },
-      transaction
+      transaction,
     )
     await Promise.all([
       friendsModel.createFriendship([referringUserId, id], transaction),
@@ -63,7 +63,7 @@ const create = endpoint.POST('/me')<
     let anonFriendReferral: { anonFriendId: number; userId: number } | undefined
     if (anonFriendInviteToken) {
       const decodedInviteToken = anonfriendsUtils.verifyInviteToken(
-        anonFriendInviteToken
+        anonFriendInviteToken,
       )
       if (!decodedInviteToken) {
         return res.sendStatus(403)
@@ -81,7 +81,7 @@ const create = endpoint.POST('/me')<
       ? await createUserFromAnonFriend(
           user,
           anonFriendReferral.userId,
-          anonFriendReferral.anonFriendId
+          anonFriendReferral.anonFriendId,
         )
       : await createUser(user)
 
@@ -115,7 +115,7 @@ const create = endpoint.POST('/me')<
         description: "There's already a user registered with this email",
       },
     },
-  }
+  },
 )
 
 const getLoggedUser = endpoint.GET('/me')<
@@ -144,11 +144,11 @@ const getLoggedUser = endpoint.GET('/me')<
         description: 'The logged user was not found',
       },
     },
-  }
+  },
 )
 
 /**
- * The ideal solution here would be to send an "unregistering confirmal" email
+ * The ideal solution here would be to send an "unregistering confirm" email
  * to the user and then complete the operation after that.
  *
  * To do so, we would have to generate a token containing the needed information
@@ -184,7 +184,7 @@ const unregisterLoggedUser = endpoint.POST('/me/unregister')<
         description: 'Invalid credentials',
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

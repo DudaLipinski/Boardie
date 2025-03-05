@@ -28,5 +28,5 @@ nvm install
 # MAIN BUSINESS
 # ================================================================
 
-pnpm install --frozen-lockfile
-pnpm start
+yarn install --frozen-lockfile
+yarn start

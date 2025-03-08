@@ -5,9 +5,9 @@ import kysely from '../../database'
 import * as boardgamesModel from '../boardgames/boardgames.model'
 import { FriendType } from '../friends/friends.schema'
 import type { Boardgame } from '../boardgames/boardgames.model'
-import * as playersModel from './players/players.model'
 import * as friendsModel from '../friends/friends.model'
 import * as anonFriendsModel from '../friends/anonFriends/anonFriends.model'
+import * as playersModel from './players/players.model'
 
 export interface Match {
   id: number

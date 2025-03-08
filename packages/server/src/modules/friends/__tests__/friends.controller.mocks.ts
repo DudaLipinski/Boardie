@@ -5,6 +5,7 @@ import { userControllerMocks } from '../../users/__tests__/users.controller.mock
 export const createFriendship = async ({
   requestingUser,
   answeringUser,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: any) => {
   await axios.post(
     `${SERVER_URL}/me/friends/requests`,

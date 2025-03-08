@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { getAuthConfig, SERVER_URL } from '../../../utils/testing.utils'
+import { SERVER_URL } from '../../../utils/testing.utils'
 import { friendsControllerMocks } from '../../friends/__tests__/friends.controller.mocks'
 import { anonFriendsControllerMocks } from '../../friends/anonFriends/__tests__/anonFriends.controllers.mocks'
-import { matchesSchemaMocks } from './matches.schema.mocks'
 import { FriendType } from '../../friends/friends.schema'
+import { matchesSchemaMocks } from './matches.schema.mocks'
 
 describe('GET /me/matches/winners/summary', () => {
   it('groups wins from players that are not friends of the user into a shallow counter for each boardgame', async () => {

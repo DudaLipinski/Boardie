@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import axios from 'axios'
 import type { AnonFriendDTO } from '../anonFriends/anonFriends.schema'
 import type { FriendshipRequest, GenericFriend } from '../friends.schema'
 import type { UserDTO } from '../../users/users.schema'
 import { SERVER_URL } from '../../../utils/testing.utils'
-import { createFriendship } from './friends.controller.mocks'
 import { createUser } from '../../users/__tests__/users.controller.mocks'
 import { anonFriendsControllerMocks } from '../anonFriends/__tests__/anonFriends.controllers.mocks'
+import { createFriendship } from './friends.controller.mocks'
 
 const getRequestingAndAnsweringUserPair = async () => ({
   requestingUser: await createUser(),

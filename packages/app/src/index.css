@@ -1,4 +1,24 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@config '../tailwind.config.js';
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 :root {
   --color-primary: #ff79c6;
@@ -52,7 +72,10 @@ h6 {
 
 @layer base {
   html {
-    font-family: Proxima Nova, system-ui, sans-serif;
+    font-family:
+      Proxima Nova,
+      system-ui,
+      sans-serif;
   }
 
   input:-webkit-autofill,

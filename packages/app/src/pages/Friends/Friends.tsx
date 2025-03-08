@@ -83,7 +83,7 @@ const Friends = () => {
               <Trans>Anonymous friends</Trans>
             </Typography>
 
-            <div className="mt-1 p-3 flex rounded-md bg-purple-200 bg-opacity-10">
+            <div className="mt-1 p-3 flex rounded-md bg-purple-200/10">
               <div>
                 <p>
                   <Trans>

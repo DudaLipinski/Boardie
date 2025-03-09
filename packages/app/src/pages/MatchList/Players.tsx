@@ -1,0 +1,36 @@
+import { AvatarGroup, Badge } from '@mui/material'
+import { styledAvatarGroup } from './MatchCard.styles'
+import { Player } from '@src/types/Match'
+import { Avatar } from '@components/Avatar'
+
+export const Players = ({ players }: { players: Player[] }) => {
+  const player = players.map((player, index) => {
+    const { id } = player.friend
+
+    if (!player.isWinner) {
+      return <Avatar user={player.friend} size="sm" key={`${id}-${index}`} />
+    }
+
+    return (
+      <Badge
+        key={id}
+        color="warning"
+        badgeContent="W"
+        variant="dot"
+        sx={{
+          '.MuiBadge-badge': {
+            background: 'var(--color-warning)',
+          },
+        }}
+      >
+        <Avatar user={player.friend} size="sm" sx={{ border: '0px' }} />
+      </Badge>
+    )
+  })
+
+  return (
+    <AvatarGroup max={4} sx={{ ...styledAvatarGroup }}>
+      {player}
+    </AvatarGroup>
+  )
+}

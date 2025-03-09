@@ -1,4 +1,0 @@
-/database*
-dist
-.env.local
-.pnpm-store

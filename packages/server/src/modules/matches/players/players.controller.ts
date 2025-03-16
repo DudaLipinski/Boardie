@@ -1,7 +1,7 @@
 import z from 'zod'
+import { endpoint } from '@boardie/endpoints'
 import * as matchesModel from '../matches.model'
 import * as friendsModel from '../../friends/friends.model'
-import { endpoint } from '../../../utils/endpoint.utils'
 import { FriendType } from '../../friends/friends.schema'
 import type { MatchDTO } from '../matches.schema'
 import {
@@ -12,14 +12,12 @@ import {
 } from './players.schema'
 import * as playersModel from './players.model'
 
-type PlayerDTO = z.infer<typeof playerDTOSchema>
 type PlayerCreationData = z.infer<typeof playerCreationDataSchema>
 type PlayerUpdateData = z.infer<typeof playerUpdateDataSchema>
-export type PlayerData = PlayerCreationData
 
 export const checkPlayerFriendship = (
   userId: number,
-  player: PlayerCreationData | PlayerUpdateData
+  player: PlayerCreationData | PlayerUpdateData,
 ) => {
   const { friend } = player
 
@@ -31,7 +29,7 @@ export const checkPlayerFriendship = (
   return friendsModel.genericCheckFriendshipExistsWith(
     userId,
     friend.id,
-    friend.type
+    friend.type,
   )
 }
 
@@ -39,31 +37,27 @@ const checkAccess = {
   create: async (
     userId: number,
     match: matchesModel.Match,
-    player: PlayerCreationData
+    player: PlayerCreationData,
   ) =>
     match.authorId === userId && (await checkPlayerFriendship(userId, player)),
   read: (userId: number, match: MatchDTO) =>
     match.authorId === userId ||
     match.players.some(
       (player) =>
-        player.friend.type === FriendType.USER && player.friend.id === userId
+        player.friend.type === FriendType.USER && player.friend.id === userId,
     ),
   update: async (
     userId: number,
     match: matchesModel.Match,
-    player: PlayerUpdateData
+    player: PlayerUpdateData,
   ) =>
     match.authorId === userId && (await checkPlayerFriendship(userId, player)),
   delete: (userId: number, match: matchesModel.Match) =>
     match.authorId === userId,
 }
 
-const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
-  { matchId: string },
-  void,
-  PlayerDTO[],
-  void
->(
+const getAllByMatchId = endpoint.get(
+  '/matches/:matchId/players',
   async (req, res) => {
     const { matchId } = req.params
 
@@ -97,15 +91,11 @@ const getAllByMatchId = endpoint.GET('/matches/:matchId/players')<
         description: 'The match was not found',
       },
     },
-  }
+  },
 )
 
-const create = endpoint.POST('/matches/:matchId/players')<
-  { matchId: string },
-  PlayerCreationData,
-  PlayerDTO,
-  void
->(
+const create = endpoint.post(
+  '/matches/:matchId/players',
   async (req, res) => {
     const matchId = parseInt(req.params.matchId)
     const userId = req.userId
@@ -153,15 +143,11 @@ const create = endpoint.POST('/matches/:matchId/players')<
         description: 'The match was not found',
       },
     },
-  }
+  },
 )
 
-const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
-  { matchId: string; playerId: string },
-  PlayerUpdateData,
-  PlayerDTO,
-  void
->(
+const update = endpoint.put(
+  '/matches/:matchId/players/:playerId',
   async (req, res) => {
     const matchId = parseInt(req.params.matchId)
     const playerId = parseInt(req.params.playerId)
@@ -226,15 +212,11 @@ const update = endpoint.PUT('/matches/:matchId/players/:playerId')<
         description: 'The match or player was not found',
       },
     },
-  }
+  },
 )
 
-const deleteById = endpoint.DELETE('/matches/:matchId/players/:playerId')<
-  { matchId: string; playerId: string },
-  void,
-  void,
-  void
->(
+const deleteById = endpoint.delete(
+  '/matches/:matchId/players/:playerId',
   async (req, res) => {
     const matchId = parseInt(req.params.matchId)
     const playerId = parseInt(req.params.playerId)
@@ -285,7 +267,7 @@ const deleteById = endpoint.DELETE('/matches/:matchId/players/:playerId')<
         description: 'The match or player was not found',
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

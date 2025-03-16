@@ -1,6 +1,7 @@
 import z from 'zod'
+import { endpoint } from '@boardie/endpoints'
 import * as usersModel from '../users/users.model'
-import { endpoint } from '../../utils/endpoint.utils'
+
 import kysely from '../../database'
 import * as anonFriendsModel from './anonFriends/anonFriends.model'
 import * as friendsModel from './friends.model'
@@ -13,17 +14,11 @@ import {
   existentFriendshipRequestSchema,
 } from './friends.schema'
 
-type GenericFriend = z.infer<typeof genericFriendDTOSchema>
-
-const getAllByLoggedUser = endpoint.GET('/me/friends')<
-  void,
-  void,
-  GenericFriend[],
-  void
->(
+const getAllByLoggedUser = endpoint.get(
+  '/me/friends',
   async (req, res) => {
     const anonFriends = (await anonFriendsModel.getAllByUserId(req.userId)).map(
-      (friend) => ({ ...friend, type: FriendType.ANON_FRIEND })
+      (friend) => ({ ...friend, type: FriendType.ANON_FRIEND }),
     )
 
     const friends = (await friendsModel.getAllByUserId(req.userId)).map(
@@ -31,7 +26,7 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
         id: friend.id as number,
         fullName: `${friend.firstName} ${friend.middleAndSurname}`,
         type: FriendType.USER,
-      })
+      }),
     )
 
     res.status(200).send([...friends, ...anonFriends])
@@ -45,15 +40,11 @@ const getAllByLoggedUser = endpoint.GET('/me/friends')<
         schema: z.array(genericFriendDTOSchema),
       },
     },
-  }
+  },
 )
 
-const sendRequest = endpoint.POST('/me/friends/requests')<
-  void,
-  z.infer<typeof friendshipRequestSchema>,
-  void,
-  void
->(
+const sendRequest = endpoint.post(
+  '/me/friends/requests',
   async (req, res) => {
     const { userEmail, userId: reqUserId } = req.body
 
@@ -113,21 +104,17 @@ const sendRequest = endpoint.POST('/me/friends/requests')<
           'The friendship already exists or the request was already sent',
       },
     },
-  }
+  },
 )
 
-const getAllRequests = endpoint.GET('/me/friends/requests')<
-  void,
-  void,
-  z.infer<typeof existentFriendshipRequestSchema>[],
-  void
->(
+const getAllRequests = endpoint.get(
+  '/me/friends/requests',
   async (req, res) => {
     const requests = (await friendsModel.getFriendshipRequests(req.userId)).map(
       (request) => ({
         userId: request.userId as number,
         fullName: `${request.firstName} ${request.middleAndSurname}`,
-      })
+      }),
     )
 
     res.status(200).send(requests)
@@ -141,17 +128,13 @@ const getAllRequests = endpoint.GET('/me/friends/requests')<
         schema: z.array(existentFriendshipRequestSchema),
       },
     },
-  }
+  },
 )
 
-const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
-  { requestingUserId: number },
-  z.infer<typeof answerFriendshipRequestSchema>,
-  void,
-  void
->(
+const answerRequest = endpoint.put(
+  '/me/friends/requests/:requestingUserId',
   async (req, res) => {
-    const { requestingUserId } = req.params
+    const requestingUserId = parseInt(req.params.requestingUserId, 10)
     const { accept } = req.body
 
     if (requestingUserId === req.userId) {
@@ -166,7 +149,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
     const result = await kysely.transaction().execute(async (transaction) => {
       const requestWasFound = await friendsModel.deleteRequest(
         friendRequest,
-        transaction
+        transaction,
       )
       if (!requestWasFound) {
         return 'not-found' as const
@@ -180,7 +163,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
           requestingUserId: friendRequest.requestedUserId,
           requestedUserId: friendRequest.requestingUserId,
         },
-        transaction
+        transaction,
       )
 
       if (!accept) {
@@ -189,7 +172,7 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
 
       const friendshipCreated = await friendsModel.createFriendship(
         [friendRequest.requestingUserId, friendRequest.requestedUserId],
-        transaction
+        transaction,
       )
       if (!friendshipCreated) {
         return 'conflict' as const
@@ -227,17 +210,13 @@ const answerRequest = endpoint.PUT('/me/friends/requests/:requestingUserId')<
         description: 'The friendship already exists',
       },
     },
-  }
+  },
 )
 
-const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
-  { friendUserId: number },
-  void,
-  void,
-  void
->(
+const deleteFriend = endpoint.delete(
+  '/me/friends/:friendUserId',
   async (req, res) => {
-    const { friendUserId } = req.params
+    const friendUserId = parseInt(req.params.friendUserId, 10)
 
     if (friendUserId === req.userId) {
       return res.sendStatus(400)
@@ -270,7 +249,7 @@ const deleteFriend = endpoint.DELETE('/me/friends/:friendUserId')<
         description: 'The friendship does not exist',
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

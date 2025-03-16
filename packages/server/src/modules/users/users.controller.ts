@@ -1,7 +1,7 @@
 import omit from 'lodash.omit'
 
 import z from 'zod'
-import { endpoint } from '../../utils/endpoint.utils'
+import { endpoint } from '@boardie/endpoints'
 import { authDTOSchema } from '../auth/auth.schema'
 import * as friendsModel from '../friends/friends.model'
 import * as playersModel from '../matches/players/players.model'
@@ -51,12 +51,8 @@ const createUserFromAnonFriend = (
 const isErrorResult = (result: unknown): result is { error: number } =>
   typeof result === 'object' && result !== null && 'error' in result
 
-const create = endpoint.POST('/me')<
-  void,
-  z.infer<typeof userCreationDataSchema> & { anonFriendInviteToken?: string },
-  z.infer<typeof userDTOSchema>,
-  void
->(
+const create = endpoint.post(
+  '/me',
   async (req, res) => {
     const { anonFriendInviteToken, ...user } = req.body
 
@@ -118,12 +114,8 @@ const create = endpoint.POST('/me')<
   },
 )
 
-const getLoggedUser = endpoint.GET('/me')<
-  void,
-  void,
-  z.infer<typeof userDTOSchema>,
-  void
->(
+const getLoggedUser = endpoint.get(
+  '/me',
   async (req, res) => {
     const user = await userModel.getById(req.userId)
     if (!user) {
@@ -158,12 +150,8 @@ const getLoggedUser = endpoint.GET('/me')<
  * The front-end will then have to have a specific route to handle that, that
  * will basically call a "confirm unregistering" endpoint passing the token
  */
-const unregisterLoggedUser = endpoint.POST('/me/unregister')<
-  void,
-  z.infer<typeof authDTOSchema>,
-  void,
-  void
->(
+const unregisterLoggedUser = endpoint.post(
+  '/me/unregister',
   async (req, res) => {
     const unregistered = await userModel.unregister(req.userId, req.body)
     if (!unregistered) {

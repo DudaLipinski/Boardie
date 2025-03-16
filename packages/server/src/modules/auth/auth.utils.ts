@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import type { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 import { JWT_AUTH_SECRET_KEY } from '../../constants'
@@ -18,6 +19,14 @@ const checkTokenIsAboutToExpire = (token: string) => {
   const { exp: expiresAt } = jwt.decode(token) as { exp: number }
   const now = Date.now() / 1000
   return expiresAt - now < RENEWAL_THRESHOLD
+}
+
+declare global {
+  namespace Express {
+    export interface Request {
+      userId: number
+    }
+  }
 }
 
 // [TODO] automatically generate these from the endpoint definitions

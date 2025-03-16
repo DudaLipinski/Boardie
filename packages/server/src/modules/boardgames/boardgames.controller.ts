@@ -1,17 +1,11 @@
 import z from 'zod'
-import { endpoint } from '../../utils/endpoint.utils'
-import type { DataObject } from '../../utils/schema.utils'
+import { endpoint } from '@boardie/endpoints'
 import { getDataObjectSchema } from '../../utils/schema.utils'
-import type { BoardgameDTO } from './boardgames.schema'
 import { boardgameDtoSchema } from './boardgames.schema'
 import * as boardgameModel from './boardgames.model'
 
-const getAll = endpoint.GET('/boardgames')<
-  void,
-  void,
-  DataObject<BoardgameDTO[]>,
-  void
->(
+const getAll = endpoint.get(
+  '/boardgames',
   async (_, res) => {
     const boardgames = await boardgameModel.getFullList()
 
@@ -26,15 +20,11 @@ const getAll = endpoint.GET('/boardgames')<
         schema: getDataObjectSchema(z.array(boardgameDtoSchema)),
       },
     },
-  }
+  },
 )
 
-const search = endpoint.GET('/boardgames/search')<
-  void,
-  void,
-  DataObject<BoardgameDTO[]>,
-  { query: string }
->(
+const search = endpoint.get(
+  '/boardgames/search',
   async (req, res) => {
     const { query } = req.query
 
@@ -58,7 +48,7 @@ const search = endpoint.GET('/boardgames/search')<
         schema: getDataObjectSchema(z.array(boardgameDtoSchema)),
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

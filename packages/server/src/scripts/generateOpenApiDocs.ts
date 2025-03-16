@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'fs'
 import path from 'path'
+import type { GenericEndpoint } from '@boardie/endpoints'
 import controllersMap from '../endpoints'
-import type { Path } from '../utils/endpoint.utils'
 import metadata from '../openapi.metadata.json' assert { type: 'json' }
 
 const controllers = Object.values(controllersMap)
 const endpoints = controllers.flatMap((endpoints) =>
-  Object.values(endpoints)
-) as Path<any, any, any, any>[]
+  Object.values(endpoints),
+) as GenericEndpoint[]
 
 const paths: Record<string, any> = {}
 endpoints.forEach((endpoint) => {
-  const path = endpoint.getPath()
-  const method = endpoint.getMethod()
+  const path = endpoint.path
+  const method = endpoint.method
 
   if (!paths[path]) {
     paths[path] = {}
@@ -34,7 +34,7 @@ fs.writeFile(
     if (err) {
       console.error(err)
     }
-  }
+  },
 )
 
 export {}

@@ -25,6 +25,7 @@
         "tags": [
           "auth"
         ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -109,16 +110,13 @@
             }
           },
           "400": {
-            "description": "The request body is invalid"
+            "description": "The user data is invalid"
           },
           "403": {
             "description": "The anon-friend invite-token is invalid"
           },
           "409": {
             "description": "There's already a user registered with this email"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -127,6 +125,7 @@
         "tags": [
           "auth"
         ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "The logged user",
@@ -170,9 +169,6 @@
           },
           "404": {
             "description": "The logged user was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -183,6 +179,7 @@
         "tags": [
           "auth"
         ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -211,14 +208,8 @@
           "200": {
             "description": "The logged user was unregistered"
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "401": {
             "description": "Invalid credentials"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -229,6 +220,7 @@
         "tags": [
           "auth"
         ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -307,14 +299,8 @@
               }
             }
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "401": {
             "description": "Provided credentials doesn't match any valid user"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         },
         "security": []
@@ -326,6 +312,7 @@
         "tags": [
           "matches"
         ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -549,17 +536,11 @@
               }
             }
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "403": {
             "description": "The logged user is not friends with one of the players"
           },
           "404": {
             "description": "No boardgame with the given id was found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -568,6 +549,7 @@
         "tags": [
           "matches"
         ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "The matches",
@@ -712,9 +694,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -882,9 +861,6 @@
           },
           "404": {
             "description": "The match was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -1166,17 +1142,11 @@
               }
             }
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "403": {
             "description": "The logged user is not the author of the match"
           },
           "404": {
             "description": "The match was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -1204,9 +1174,6 @@
           },
           "404": {
             "description": "The match was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1217,6 +1184,7 @@
         "tags": [
           "matches"
         ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "The summary of winners for matches played or authored by the user",
@@ -1311,9 +1279,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1324,6 +1289,7 @@
         "tags": [
           "friends"
         ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "The logged user's friends",
@@ -1359,9 +1325,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1372,6 +1335,7 @@
         "tags": [
           "friends"
         ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1396,17 +1360,11 @@
           "200": {
             "description": "The request was sent"
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "404": {
             "description": "The requested user does not exist"
           },
           "409": {
             "description": "The friendship already exists or the request was already sent"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -1415,6 +1373,7 @@
         "tags": [
           "friends"
         ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "The logged user's friendship requests",
@@ -1441,9 +1400,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1487,17 +1443,11 @@
           "200": {
             "description": "The request answer has been processed"
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "404": {
             "description": "The friendship request does not exist"
           },
           "409": {
             "description": "The friendship already exists"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1524,9 +1474,6 @@
           },
           "404": {
             "description": "The friendship does not exist"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1537,6 +1484,7 @@
         "tags": [
           "friends"
         ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1587,12 +1535,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "The request body is invalid"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1638,9 +1580,6 @@
           },
           "404": {
             "description": "The friend does not exist"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1651,6 +1590,7 @@
         "tags": [
           "friends"
         ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1707,17 +1647,11 @@
               }
             }
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "403": {
             "description": "The token is invalid"
           },
           "404": {
             "description": "The token is valid but the user/anon-friend do not exist anymore"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         },
         "security": []
@@ -1790,17 +1724,11 @@
               }
             }
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "403": {
             "description": "The logged user is not allowed to update the friend"
           },
           "404": {
             "description": "The friend does not exist"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -1828,9 +1756,6 @@
           },
           "404": {
             "description": "The friend does not exist"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -1912,9 +1837,6 @@
           },
           "404": {
             "description": "The match was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -2034,17 +1956,11 @@
               }
             }
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "403": {
             "description": "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the player trying to be created"
           },
           "404": {
             "description": "The match was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -2175,17 +2091,11 @@
               }
             }
           },
-          "400": {
-            "description": "The request body is invalid"
-          },
           "403": {
             "description": "The user doesn't have permissions to update the match, or doesn't have a friendship with the friend related to the player trying to be updated"
           },
           "404": {
             "description": "The match or player was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       },
@@ -2221,9 +2131,6 @@
           },
           "404": {
             "description": "The match or player was not found"
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -2234,6 +2141,7 @@
         "tags": [
           "boardgames"
         ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "All boardgames",
@@ -2283,9 +2191,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }
@@ -2355,9 +2260,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "An unexpected internal error"
           }
         }
       }

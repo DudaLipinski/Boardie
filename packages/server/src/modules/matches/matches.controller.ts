@@ -1,7 +1,7 @@
 import z from 'zod'
 import omit from 'lodash.omit'
+import { endpoint } from '@boardie/endpoints'
 import { FriendType } from '../friends/friends.schema'
-import { endpoint } from '../../utils/endpoint.utils'
 import type { Transaction } from '../../database'
 import kysely from '../../database'
 import { genericCheckFriendshipExistsWith } from '../friends/friends.model'
@@ -12,7 +12,6 @@ import type {
   MatchDTO,
   MatchUpdateData,
   Players,
-  BoardgameWinnersSummaryDTO,
 } from './matches.schema'
 import {
   matchUpdateDataSchema,
@@ -89,12 +88,8 @@ export const checkAccess = {
     match.authorId === userId,
 }
 
-const createForLoggedUser = endpoint.POST('/me/matches')<
-  void,
-  MatchCreationData,
-  MatchDTO,
-  void
->(
+const createForLoggedUser = endpoint.post(
+  '/me/matches',
   async (req, res) => {
     const { body: matchCreationData, userId } = req
 
@@ -163,12 +158,8 @@ const createForLoggedUser = endpoint.POST('/me/matches')<
   },
 )
 
-const getAllByLoggedUser = endpoint.GET('/me/matches')<
-  void,
-  void,
-  MatchDTO[],
-  void
->(
+const getAllByLoggedUser = endpoint.get(
+  '/me/matches',
   async (req, res) => {
     const matches = await matchesModel.getHydratedByUser(req.userId)
     res.status(200).send(matches)
@@ -185,12 +176,8 @@ const getAllByLoggedUser = endpoint.GET('/me/matches')<
   },
 )
 
-const getById = endpoint.GET('/matches/:matchId')<
-  { matchId: string },
-  void,
-  MatchDTO,
-  void
->(
+const getById = endpoint.get(
+  '/matches/:matchId',
   async (req, res) => {
     const { matchId } = req.params
     const match = await matchesModel.getHydratedById({ id: parseInt(matchId) })
@@ -258,12 +245,8 @@ const handlePlayersCRUD = async (
   }
 }
 
-const update = endpoint.PUT('/matches/:matchId')<
-  { matchId: string },
-  MatchUpdateData,
-  MatchDTO,
-  void
->(
+const update = endpoint.put(
+  '/matches/:matchId',
   async (req, res) => {
     const matchId = parseInt(req.params.matchId, 10)
 
@@ -333,12 +316,8 @@ const update = endpoint.PUT('/matches/:matchId')<
   },
 )
 
-const deleteById = endpoint.DELETE('/matches/:matchId')<
-  { matchId: string },
-  void,
-  void,
-  void
->(
+const deleteById = endpoint.delete(
+  '/matches/:matchId',
   async (req, res) => {
     const matchId = parseInt(req.params.matchId, 10)
 
@@ -381,15 +360,8 @@ const deleteById = endpoint.DELETE('/matches/:matchId')<
   },
 )
 
-export const getWinnersSummary = endpoint.GET('/me/matches/winners/summary')<
-  void,
-  void,
-  {
-    winnersByBoardgame: BoardgameWinnersSummaryDTO[]
-    matchesCount: number
-  },
-  void
->(
+export const getWinnersSummary = endpoint.get(
+  '/me/matches/winners/summary',
   async (req, res) => {
     res.status(200).send(await matchesModel.getWinnersSummary(req.userId))
   },

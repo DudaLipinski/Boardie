@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "module": "ESNext" /* Specify what module code is generated. */,
-    "rootDir": "./src" /* Specify the root folder within your source files. */,
     "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
     "resolveJsonModule": true /* Enable importing .json files. */,
     "outDir": "./dist" /* Specify an output folder for all emitted files. */,
@@ -11,9 +10,9 @@
     "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "declaration": true, // Generate .d.ts files
-    "composite": true
+    "composite": true,
+    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This is required when targeting ES5 or ES3. */
   },
-  "files": ["src/types/express.d.ts"],
-  "include": ["src/**/*.[ts|json]"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts", "src/**/*.json", "scripts/**/*.ts"],
+  "exclude": ["node_modules", "jest.config.ts"]
 }

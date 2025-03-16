@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
-import { endpoint } from '../../../utils/endpoint.utils'
+import { endpoint } from '@boardie/endpoints'
 import { FriendType } from '../friends.schema'
 import * as usersModel from '../../users/users.model'
-import { userNameDTOSchema, type UserNameDTO } from '../../users/users.schema'
+import { userNameDTOSchema } from '../../users/users.schema'
 import * as anonFriendsModel from './anonFriends.model'
 import * as anonFriendsUtils from './anonFriends.utils'
 import {
@@ -19,12 +19,8 @@ const checkAccess = {
     anonFriend.userId === userId,
 }
 
-const createForLoggedUser = endpoint.POST('/me/anonfriends')<
-  void,
-  z.infer<typeof anonFriendCreationDataSchema>,
-  z.infer<typeof anonFriendDTOSchema>,
-  void
->(
+const createForLoggedUser = endpoint.post(
+  '/me/anonfriends',
   async (req, res) => {
     const { id } = await anonFriendsModel.create({
       ...req.body,
@@ -47,20 +43,14 @@ const createForLoggedUser = endpoint.POST('/me/anonfriends')<
         schema: anonFriendDTOSchema,
       },
     },
-  }
+  },
 )
 
 // QUESTIONING: the /me prefix might not be necessary here
-const generateInviteToken = endpoint.POST(
-  '/me/anonfriends/:anonFriendId/invite'
-)<
-  { anonFriendId: z.infer<typeof anonFriendDTOSchema>['id'] },
-  void,
-  { inviteToken: string },
-  void
->(
+const generateInviteToken = endpoint.post(
+  '/me/anonfriends/:anonFriendId/invite',
   async (req, res) => {
-    const { anonFriendId } = req.params
+    const anonFriendId = parseInt(req.params.anonFriendId, 10)
 
     const anonFriend = await anonFriendsModel.getById(anonFriendId)
     if (!anonFriend) {
@@ -101,15 +91,11 @@ const generateInviteToken = endpoint.POST(
         description: 'The friend does not exist',
       },
     },
-  }
+  },
 )
 
-const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
-  void,
-  { inviteToken: string },
-  { invitingUser: UserNameDTO; anonFriendFullName: string },
-  void
->(
+const verifyInviteToken = endpoint.post(
+  '/anonfriends/invite/verify',
   async (req, res) => {
     const { inviteToken } = req.body
 
@@ -162,15 +148,11 @@ const verifyInviteToken = endpoint.POST('/anonfriends/invite/verify')<
           'The token is valid but the user/anon-friend do not exist anymore',
       },
     },
-  }
+  },
 )
 
-const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
-  { anonFriendId: string },
-  z.infer<typeof anonFriendUpdateDataSchema>,
-  z.infer<typeof anonFriendDTOSchema>,
-  void
->(
+const update = endpoint.put(
+  '/me/anonfriends/:anonFriendId',
   async (req, res) => {
     const anonFriendUpdateData = req.body
     const anonFriendId = parseInt(req.params.anonFriendId, 10)
@@ -212,15 +194,11 @@ const update = endpoint.PUT('/me/anonfriends/:anonFriendId')<
         description: 'The friend does not exist',
       },
     },
-  }
+  },
 )
 
-const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
-  { anonFriendId: string },
-  void,
-  void,
-  void
->(
+const deleteById = endpoint.delete(
+  '/me/anonfriends/:anonFriendId',
   async (req, res) => {
     const anonFriendId = parseInt(req.params.anonFriendId, 10)
 
@@ -259,7 +237,7 @@ const deleteById = endpoint.DELETE('/me/anonfriends/:anonFriendId')<
         description: 'The friend does not exist',
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

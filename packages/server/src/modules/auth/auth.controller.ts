@@ -1,15 +1,10 @@
-import type z from 'zod'
+import { endpoint } from '@boardie/endpoints'
 import * as userModel from '../users/users.model'
-import { endpoint } from '../../utils/endpoint.utils'
 import { generateAccessToken } from './auth.utils'
 import { authSchema, authDTOSchema } from './auth.schema'
 
-const auth = endpoint.POST('/auth')<
-  void,
-  z.infer<typeof authDTOSchema>,
-  z.infer<typeof authSchema>,
-  void
->(
+const auth = endpoint.post(
+  '/auth',
   async (req, res) => {
     const loggedUser = await userModel.auth(req.body)
     if (!loggedUser) {
@@ -37,7 +32,7 @@ const auth = endpoint.POST('/auth')<
         description: "Provided credentials doesn't match any valid user",
       },
     },
-  }
+  },
 )
 
 export const endpoints = {

@@ -44,7 +44,7 @@ interface CreationResponse<ResponseBody> {
 }
 
 // [TODO] When giving a responseBody schema, make specifying a schema inside the response required.
-type PathResponses<ResponseBody> =
+type EndpointResponses<ResponseBody> =
   | SuccessResponse<ResponseBody>
   | CreationResponse<ResponseBody>
   | MessageResponse
@@ -58,7 +58,7 @@ type OperationDefinition<
   PathParamsDict extends Params,
   RequestBody,
   ResponseBody,
-  QueryParamsDict extends Params
+  QueryParamsDict extends Params,
 > = ExcludeVoidProperties<{
   path: string
   method: HttpMethod
@@ -71,17 +71,17 @@ type OperationDefinition<
     ? void
     : Record<keyof QueryParamsDict, ParameterObject>
   body: RequestBody extends void ? void : z.ZodType<RequestBody>
-  responses: PathResponses<ResponseBody>
+  responses: EndpointResponses<ResponseBody>
   security?: OpenAPIV3_1.SecurityRequirementObject[]
 }>
 
 type PathMethodConstructor = (
-  path: string
+  path: string,
 ) => <
   PathParamsDict extends Params,
   RequestBody,
   ResponseBody,
-  QueryParamsDict extends Params
+  QueryParamsDict extends Params,
 >(
   handler: RequestHandler<
     PathParamsDict,
@@ -97,7 +97,7 @@ type PathMethodConstructor = (
       QueryParamsDict
     >,
     'method' | 'path'
-  >
+  >,
 ) => Path<PathParamsDict, RequestBody, ResponseBody, QueryParamsDict>
 
 /**
@@ -109,7 +109,7 @@ export class Path<
   PathParamsDict extends Params,
   RequestBody,
   ResponseBody,
-  QueryParamsDict extends Params
+  QueryParamsDict extends Params,
 > {
   path: string
   method: HttpMethod
@@ -118,7 +118,7 @@ export class Path<
   private pathParams: Record<keyof PathParamsDict, ParameterObject> | null
   private queryParams: Record<keyof QueryParamsDict, ParameterObject> | null
   private body: z.ZodType<RequestBody> | null
-  private responses: PathResponses<ResponseBody>
+  private responses: EndpointResponses<ResponseBody>
   private allowedStatusCodes: Set<number>
   private security?: OpenAPIV3_1.SecurityRequirementObject[]
   private handler: RequestHandler<
@@ -140,7 +140,7 @@ export class Path<
       RequestBody,
       ResponseBody,
       QueryParamsDict
-    >
+    >,
   ) {
     this.path = def.path
     this.method = def.method
@@ -204,13 +204,13 @@ export class Path<
     // Checking query params
     if (this.queryParams) {
       const requiredQueryParams = Object.entries(this.queryParams).filter(
-        ([, param]) => (param as ParameterObject).required
+        ([, param]) => (param as ParameterObject).required,
       )
 
       const missingQueryParams = requiredQueryParams
         .filter(
           ([paramName]) =>
-            !Object.prototype.hasOwnProperty.call(req.query, paramName)
+            !Object.prototype.hasOwnProperty.call(req.query, paramName),
         )
         .map(([paramName]) => paramName)
 
@@ -226,7 +226,7 @@ export class Path<
 
       if (!bodyParseResult.success) {
         const errorMessage = JSON.stringify(
-          bodyParseResult.error.format()
+          bodyParseResult.error.format(),
         ).replace(/"/g, "'")
 
         return statusCheckedRes.status(400).send({ message: errorMessage })
@@ -256,7 +256,7 @@ export class Path<
 
   private getOpenApiParameter = (
     _in: 'query' | 'path',
-    [paramName, paramSchema]: [string, unknown]
+    [paramName, paramSchema]: [string, unknown],
   ): OpenAPIV3_1.ParameterObject => {
     const schema = paramSchema as ParameterObject
 
@@ -270,11 +270,11 @@ export class Path<
     }
   }
 
-  private getOpenApiParameters = () => {
+  private getOpenApiParameters = (): OpenAPIV3_1.ParameterObject[] => {
     const getPathParam = this.getOpenApiParameter.bind(this, 'path')
     const pathParams = this.pathParams
       ? Object.entries(this.pathParams).map(getPathParam)
-      : []
+      : ([] as OpenAPIV3_1.ParameterObject[])
 
     const getQueryParam = this.getOpenApiParameter.bind(this, 'query')
     const queryParams = this.queryParams
@@ -282,7 +282,7 @@ export class Path<
       : []
 
     const params = [...pathParams, ...queryParams]
-    return params.length ? params : undefined
+    return params
   }
 
   private getOpenApiRequestBody = () => {
@@ -338,24 +338,24 @@ export class Path<
     const pathParams = (this.path.match(/:[a-zA-Z]+/g) ?? []) as string[]
 
     const missingOnPath = requiredParams.filter(
-      (param) => !pathParams.includes(`:${param}`)
+      (param) => !pathParams.includes(`:${param}`),
     )
     if (missingOnPath.length > 0) {
       throw new Error(
         `Missing path params ${missingOnPath.join(
-          ', '
-        )} for path ${this.method.toUpperCase()} ${this.path}`
+          ', ',
+        )} for path ${this.method.toUpperCase()} ${this.path}`,
       )
     }
 
     const missingOnSchema = pathParams.filter(
-      (param) => !requiredParams.includes(param.slice(1))
+      (param) => !requiredParams.includes(param.slice(1)),
     )
     if (missingOnSchema.length > 0) {
       throw new Error(
         `Missing schema params ${missingOnSchema.join(
-          ', '
-        )} for path ${this.method.toUpperCase()} ${this.path}`
+          ', ',
+        )} for path ${this.method.toUpperCase()} ${this.path}`,
       )
     }
   }
@@ -368,7 +368,7 @@ export class Path<
   private checkAllowedStatusCodes = (statusCode: number) => {
     if (!this.allowedStatusCodes.has(statusCode)) {
       console.warn(
-        `Sending not-defined status code "${statusCode}" for path ${this.method} ${this.path}`
+        `Sending not-defined status code "${statusCode}" for path ${this.method} ${this.path}`,
       )
     }
   }

@@ -31,7 +31,7 @@ export const getFriendshipRequests = async (userId: number) =>
 
 export const deleteRequest = (
   { requestingUserId, requestedUserId }: FriendshipRequest,
-  transaction?: Transaction
+  transaction?: Transaction,
 ) => {
   return (transaction ?? kysely)
     .deleteFrom('friendship_request')
@@ -55,7 +55,7 @@ const getOrderedFriendship = ([
 
 export const createFriendship = (
   request: Friendship,
-  transaction: Transaction
+  transaction: Transaction,
 ) => {
   return (transaction ?? kysely)
     .insertInto('friendship')
@@ -99,7 +99,7 @@ export const checkFriendshipExists = (friendship: Friendship) => {
 export const genericCheckFriendshipExistsWith = async (
   userId: number,
   friendId: number,
-  friendType: FriendType
+  friendType: FriendType,
 ) => {
   if (friendType === FriendType.ANON_FRIEND) {
     const friendshipExists = await checkAnonFriendshipExists({

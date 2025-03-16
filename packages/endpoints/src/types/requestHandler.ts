@@ -36,13 +36,17 @@ type ExtractPathParams<T extends OperationDefinition<any>> =
   T['pathParams'] extends never
     ? never
     : {
-        [Key in keyof T['pathParams']]: TypeStringToType[T['pathParams'][Key]['type']]
+        [Key in keyof T['pathParams']]: string
+        // TODO: re-enable different types after implementing string-to-type conversion inside endpoint
+        // [Key in keyof T['pathParams']]: TypeStringToType[T['pathParams'][Key]['type']]
       }
 
 type ExtractQueryParams<T extends OperationDefinition<any>> =
   T['queryParams'] extends QueryParameters
     ? {
-        [Key in keyof T['queryParams']]: TypeStringToType[T['queryParams'][Key]['type']]
+        [Key in keyof T['queryParams']]: string
+        // TODO: re-enable different types after implementing string-to-type conversion inside endpoint
+        // [Key in keyof T['queryParams']]: TypeStringToType[T['queryParams'][Key]['type']]
       }
     : never
 

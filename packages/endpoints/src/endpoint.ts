@@ -7,6 +7,7 @@ import type {
   RequestHandler,
 } from './types/requestHandler'
 import { getOpenApiObject } from './utils/openApi.utils'
+import type { OpenAPIV3_1 } from 'openapi-types'
 
 const endpoint = <Path extends string, T extends OperationDefinition<Path>>(
   method: HttpMethod,
@@ -60,9 +61,7 @@ const endpoint = <Path extends string, T extends OperationDefinition<Path>>(
 
   return {
     path,
-    getPath: () => path,
     method,
-    getMethod: () => method,
     setRouter,
     getOpenApiObject: () => getOpenApiObject(def),
   }
@@ -85,4 +84,11 @@ export const endpointMethods = {
   patch: endpointWithMethod('patch'),
   head: endpointWithMethod('head'),
   options: endpointWithMethod('options'),
+}
+
+export interface GenericEndpoint {
+  path: string
+  method: HttpMethod
+  setRouter: (app: Express) => void
+  getOpenApiObject: () => OpenAPIV3_1.OperationObject<{}>
 }
